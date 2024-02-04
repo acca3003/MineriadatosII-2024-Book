@@ -1,0 +1,124 @@
+project:
+  type: book
+
+book:
+  title: "Módulo 8. Minería de Datos II"
+  subtitle: "Curso Modular Big Data y Data Science Aplicados a la Economía y a la Administración y Dirección de Empresas"
+  author:
+    - "Pablo Sánchez Cabrera"
+    - "Ángel Rodríguez Chicote"
+    - "Alfonso Carabantes Álamo"
+  date: "Julio 2024"
+  output-file: "MineriaDatosII-2024"
+  # portada en html
+  cover-image: imagenes/portada.png 
+
+  
+  chapters:
+    - index.qmd
+    - capitulo1.qmd # deep learning
+    - capitulo2.qmd # Análisis causal
+    - capitulo3.qmd # Genéticos
+    - capitulo4.qmd # Lógica Difusa
+    - references.qmd
+  appendices:
+    - anexo1.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    highlight-style: tango
+  pdf:
+    highlight-style: tango
+    code-line-numbers: true
+    keep-tex: true
+    papersize: a4
+    geometry:
+      - top=28mm
+      - bottom=30mm
+
+    toc-depth: 3
+    toc-title: Índice
+    include-in-header: 
+      text: |
+        \usepackage{makeidx}
+        \makeindex
+        
+        % Poner el texto adecuado por delante
+        \renewcommand{\figurename}{Imagen}
+        \renewcommand{\tablename}{Tabla}
+        
+        % Formatear el Capitulo, sección y subsección
+        \setkomafont{chapter}{\normalfont\huge\sffamily\bfseries\color{blue}}
+        \addtokomafont{section}{\color{blue}}
+        \addtokomafont{subsection}{\color{blue}}
+        
+        % Para las cabeceras y pies (sin la líneas en las cabeceras, usaremos tcolorbox)
+        \usepackage{scrlayer-scrpage}
+        \pagestyle{scrheadings}
+        
+        % Misma cabecera y pie en página de Capiutlo
+        \renewcommand*{\chapterpagestyle}{scrheadings}
+        
+        % Para que luego se ponga correctamente el nombre del capitulo
+        \automark[chapter]{chapter}
+        
+        % Para personalizar los bloques de código
+        \usepackage{xcolor}
+        \usepackage{listings}
+        \lstset{breaklines=true}
+        %\lstset{language=[python]}
+        \lstset{basicstyle=\small\ttfamily}
+        \lstset{extendedchars=true}
+        \lstset{tabsize=2}
+        \lstset{columns=fixed}
+        \lstset{showstringspaces=false}
+        \lstset{frame=single}
+        %\lstset{frameround=tttt}
+        %\lstset{framesep=4pt}
+        \lstset{numbers=left}
+        \lstset{numberstyle=\tiny\ttfamily}
+        \lstset{postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}}
+
+
+    include-before-body: 
+      text: |
+        \renewcommand{\figurename}{Imagen}
+        \KOMAoptions{footsepline=true,footbotline=true}
+        
+    include-after-body: 
+      text: |
+        \printindex
+
+        
+    header-includes: |
+      \titlehead{\center{\includegraphics[]{imagenes/Licencia.png} \includegraphics[]{imagenes/portada.png} }}
+      \author{First Author}
+      \author{Second Author}
+      \author{Third Author}
+      \author{Supervisor Author}
+      
+      % Colocar elementos en Cabecera y pie
+
+      \cehead[]{
+              \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+                Minería de datos II   \hfill          \leftmark
+              \end{tcolorbox}} 
+
+      \cohead[]{              
+              \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+                Minería de datos II   \hfill          \leftmark
+              \end{tcolorbox}} 
+      \cofoot[]{              
+              \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+                \hfill          -\thepage -
+              \end{tcolorbox}}   
+      \cefoot[]{              
+              \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
+                \hfill          -\thepage -
+              \end{tcolorbox}}  
+  
+editor: visual
+

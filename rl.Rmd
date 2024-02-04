@@ -1,0 +1,887 @@
+---
+title: "Aprendizaje por Refuerzo"
+author: "Alfonso Carabantes Alamo"
+date: "13/10/2020"
+output:
+  html_document: default
+  pdf_document: 
+    extra_dependencies:
+      algorithm2e: ["ruled","vlined"]
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Introducción
+
+Hasta ahora hemos visto como el Deep Learning se usa para el
+**aprendizaje supervisado** y el **aprendizaje no supervisado**, pero
+vamos a dar un paso más, en el que veremos como usar Deep Learning en
+otro tipo de aprendizaje llamado **aprendizaje por refuerzo**.
+
+El **Aprendizaje por Refuerzo** (**RL** por sus siglas en ingles,
+Reinforcement Learning) trata de conseguir que el sistema aprenda
+mediante recompensa/castigo, en función de si los pasos que da son
+buenos o malos. De esta manera, cuanta mayor recompensa se tenga es que
+nuestro sistema se ha acercado a la solución buena. Se trata de aprender
+mediante la interacción y la retroalimentación de lo que ocurra.
+
+Partiremos de dos elementos clave **agente** (es el que aprende y toma
+decisiones), y el **entorno** (donde el agente aprende y decide que
+acciones tomar). Tendremos que el agente podrá realizar **acciones** que
+normalmente provocarán un cambio de **estado** y a la vez se tendrá una
+**recompensa** (positiva o negativa) en función de la acción tomada en
+el entorno en ese momento.
+
+Es decir, nos encontraremos un agente que realizará una acción $a_t$ en
+el tiempo $t$, esta acción afectará al entorno que estará en un estado
+$S_t$ y mediante esta acción cambiará a un estado $S_{t+1}$ y además
+dará una recompensa $r_{t+1}$ en función de los malo o bueno que haya
+sido este paso.
+
+El agente volverá a examinar el nuevo estado del entorno $S_{t+1}$ y la
+nueva recompensa recibida $r_{t+1}$ y volverá a tomar la decisión de
+realizar una nueva acción $a_{t+1}$.
+
+```{r echo=FALSE, fig.align='center', fig.cap="Esquema Aprendizaje por Refuerzo - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl-diagrama.png' )
+
+```
+
+# Historia del Aprendizaje por Refuerzo
+
+# Formalismo Matemático
+
+El formalismo matemático para el Aprendizaje por Refuerzo está basado en
+los **Procesos de Decisión de Markov** (MDP por sus siglas en ingles).
+(CS229 Lecture notes).
+
+## Propiedad de Markov
+
+Si tenemos una secuencia de estados $s_1, s_2, ..., s_t$ y tenemos la
+probabilidad de pasar a otro estado $s_{t+1}$, diremos que se cumple la
+**Propiedad de Markov** si el **futuro** es independiente del **pasado**
+y sólo se ve afectado por el **presente**, es decir:
+
+$$
+\mathbb P[S_{t+1}| S_t] = \mathbb P[ S_{t+1}| S_t, s_{t-1}, ... S_2, S_1]
+$$
+
+Tendremos una **Matriz de Probabilidades de Transición** a una matriz
+con las probabilidades de todos los posibles cambios de estado que se
+puedan producir, $$\mathcal P_{ss'}=\mathbb P[S_{t+1}=s'|S_t = s]$$
+
+## Proceso de Markov
+
+Así llamaremos **Proceso de Markov** a un proceso aleatorio sin
+memmoria, es decir, una secuencia de estados $S_1, S_2, …$ con la
+propiedad de Markov.
+
+Un Proceso de Markov está formado por una dupla
+$<\mathcal S,\mathcal P>$,:
+
+-   $\mathcal S$ conjunto finito de Estados
+-   $\mathcal P$ matriz de probabilidades de transición
+
+## Proceso de Recompensa de Markov
+
+LLamaremos **Proceso de Recompensa de Markov** (**MRP,** por sus siglas
+en ingles) a una cuádrupla $<\mathcal S,\mathcal P,\mathcal R,\gamma>$,
+formada por:
+
+-   $\mathcal S$ conjunto finito de Estados
+-   $\mathcal P$ matriz de probabilidades de transición
+-   $\mathcal R$ Función de recompensa definida como:
+    $\mathcal R_s=E[R_{t+1}|S_t=s]$, donde $R_{t+1}$es la recompensa
+    obtenida de pasar al estado $S_{t+1}$ desde el estado $S_t$
+-   $\gamma$ Factor de descuento, con $\gamma \in [0,1]$
+
+En este contexto llamaremos **Saldo (**$G_t$**)** a la suma de todas las
+recompensas conseguidas a partir del estado $s_t$ con el factor de
+descuento aplicado.
+
+$$
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... = \sum_{k=0}^\infty\gamma^kR_{t+k+1}
+$$
+
+El hecho de usar $\gamma$ (**factor descuento**), nos permite dar
+grandes recompensas lo antes posible, y no dar tanto valor a futuras
+recompensas lejanas. También puede haber otras interpretaciones por
+ejemplo a nivel económico, si la recompensa está basado en un dato
+monetario real, tendría sentido que el dinero a futuro tendría menos
+valor. También nos permite asegurar que este valor de $G_t$ es finito ya
+que produce que la serie sea convergente.
+
+Cuando los valores del factor descuento se acercan a **0** podríamos
+decir que nos fijamos sólo en los valores más cercanos de la recompensa.
+En cambio cuando los valores se acercan a **1** entonces les daremos más
+peso a los valores más lejanos de la recompensa.
+
+Una vez definido el Saldo podemos definir la **Función Valor de Estado**
+como la función que nos da el **Saldo Esperado** comenzando por el
+estado $s$. Es decir:
+
+$$
+V(s) = \mathbb E[G_t|S_t=s]
+$$
+
+Esta función nos dice cómo de bueno es partir de este estado y
+continuar.
+
+## Proceso de Decisión de Markov
+
+Un **Proceso de Decisión de Markov (MDP por sus siglas en inglés)** es
+un tupla $<\mathcal S,\mathcal A,\mathcal P,\mathcal R, \gamma >$ donde:
+
+-   $\mathcal S$ es el conjunto de posibles **estados**.
+
+-   $\mathcal A$ es el conjunto de posibles **acciones**.
+
+-   $\mathcal P$ son las **probabilidades de transición** de un estado a
+    otro en función de la acción realizada. Por cada estado y acción hay
+    una distribución de probabilidad para pasar a otro estado.
+
+    $$
+    \mathcal P_{ss'}^a=\mathbb P[S_{t+1}=s'|S_t=s,A_t=a]$$
+
+-   $\gamma$ es el conocido como **factor de descuento** y tendrá un
+    valor entre $[0,1)]$ y nos proporciona cuanto descontamos en las
+    recompensas a futuro.
+
+-   $\mathcal R$ es la **Función de recompensa** definida como:
+    $\mathcal R_s^a=E[R\_{t+1}|S_t=s, A_t=a]$, donde $R\_{t+1}$es la
+    recompensa obtenida de pasar al estado $S_{t+1}$ desde el estado
+
+Además tenemos que este **proceso estocástico** cumple la **propiedad de
+Markov** que dice que el futuro es independiente del pasado dado el
+presente. En términos de nuestro problema, podría decir que pasar de un
+estado $s_t$ al siguiente $s_{t+1}$ sólo depende de $s_t$ y no de los
+anteriores estados $$
+\mathbb P(s_{t+1}|s_t)= \mathbb P(s_{t+1}|s_1,s_2,...,s_t)
+$$
+
+Veamos cual es la **dinámica** de un MDP:
+
+-   Empezamos con un estado $s_0 \in \mathcal S$
+-   Elegimos una acción $a_0 \in \mathcal A$ (la política será la que la
+    elija)
+-   Obtenemos una recompensa $R_1 = R(s_0) = R(s_0, a_0)$
+-   Elegimos una acción $a_1 \in \mathcal A$(la política será la que la
+    elija)
+-   Se transiciona aleatoriamente a un estado $s_1$ en un función del
+    valor de $P_{s_0s_1}^{a_1}$
+-   Obtenemos una recompensa $R_2 = R(s_1) = R(s_1, a_1)$
+-   Se transiciona a aleatoriamente a un estado $s_12$ en un función del
+    valor de $P_{s_1s_2}^{a_2}$
+-   ...
+-   Repetimos de forma iterativa este proceso
+
+La meta en RL es elegir las **acciones** adecuadas en el tiempo para
+**maximizar**:
+$$\mathbb E[G_t] =\mathbb E[R(s_0) + \gamma R(s_1) + \gamma^2 R(s_2) + \gamma^3 R(s_3) + ...]$$
+Que es conocido como la **hipotesis de la recompensa**.
+
+Vamos a introducir el término de **política** como una función
+$\pi : \mathcal S \rightarrow \mathcal A$ que mapea los estados a las
+acciones. Es decir, es la que decide que **acción** hay que **ejecutar**
+en función de **cual** es el **estado** en el que estamos. Una política
+podría ser determinística o estocástica. $$
+a = \pi(s) \\
+a = \pi (a|s)=\mathbb P[A=a|S=s]
+$$
+
+Una política define cual va a ser el comportamiento de un **agente**. En
+un MDP las políticas dependen del estado actual, y no de la historia de
+los estados pasados.
+
+Diremos que estamos **ejecutando una política** $\pi$ si cuando estamos
+en un estado $s$ aplicamos la acción $a=\pi(s)$
+
+Definiremos:
+
+$$
+\mathcal P_{s,s`}^\pi = \sum_{a \in \mathcal A}\pi(a|s)\mathcal P_{s,s`}^a \\
+\mathcal R_{s}^\pi = \sum_{a \in \mathcal A}\pi(a|s)\mathcal R_{s}^a 
+$$
+
+También definiremos la **Función Valor de Estado** para una **política**
+$\pi$ a la función que nos predice la recompensa a futuro (el **saldo
+esperado**): $$V^{\pi}(s)=\mathbb E_\pi[G_t|S_t=s]=
+\mathbb E_\pi[R(s_t) + \gamma R(s_{t+1}) + \gamma^2 R(s_{t+2}) + \gamma^3 R(s_{t+3}) + ...|s_t=s]$$
+Es decir, la esperanza de la suma de las recompensas con factor
+descuento suponiendo el comienzo en $s_t=s$ y tomando las acciones bajo
+la política $\pi$. Nos permite decir cómo de buenos o malos son los
+estados.
+
+Añadiremos el concepto de la **Función Valor de Acción,** también
+llamada **Función de Calidad** (por eso se usa la $Q$ (Quality)**,**
+para una **política** $\pi$ a la función que nos predice la recompensa a
+futuro (el saldo esperado), suponiendo que se se **parte de una acción**
+$a$. $$
+Q^\pi(s,a)=\mathbb E_\pi[G_t|S_t=s,A_t=a]\\
+=\mathbb E_\pi[R(s_t) + \gamma R(s_{t+1}) + \gamma^2 R(s_{t+2}) + \gamma^3 R(s_{t+3}) + ...|s_t=s,A_t=a]
+$$ La función de **Valor de Estado** puede ser descompuesta en la
+**recompensa inmediata** y el resto de la recompensa: $$
+V^\pi(s) = \mathbb E_\pi[R_{t+1}+\gamma V^\pi(S_{t+1)}|S_t=s]
+$$ y del mismo modo se puede descomponer la función **Valor de Acción**:
+$$
+Q^\pi(s,a) = \mathbb E_\pi[R_{t+1}+\gamma Q^\pi(S_{t+1}, A_{t+1})|S_t=s,A_t=a]
+$$ Luego tenemos $$
+V^\pi(s) = \sum_{a\in A}\pi(a|s)Q^\pi(s,a)
+$$
+
+y $$
+Q^\pi(s,a) = R_s^a+\gamma \sum_{s'\in S} P_{ss'}^{a}V^\pi(s')
+$$
+
+Llegando a
+
+$$
+V^\pi(s) = \sum_{a\in A}\pi(a|s)(R_s^a+\gamma \sum_{s'\in S} P_{ss'}^{a}V^\pi(s'))
+$$
+
+y
+
+$$
+Q^\pi(s,a) = R_s^a+\gamma \sum_{s'\in S} P_{ss'}^{a}\sum_{a \in \mathcal A} \pi (a|s)Q^\pi(s',a)
+$$
+
+Dada una política $\pi$ su **función valor de estado** asociada
+$V^{\pi}(s)$ cumple la **Ecuación de Bellman**:
+$$V^{\pi}(s)=R_s+ + \gamma\sum_{s'\in S}P_{s,\pi(s)}(s')V^{\pi}(s')$$ Lo
+que nos dice que la **función valor** está separada en **dos términos**:
+
+-   La recompensa inmediata $R(s)$
+-   La suma de recompensas a futuro con el factor de descuento.
+
+Igualmente su **función valor de acción asociada** $Q^\pi(s,a)$cumple la
+**Ecuación de Bellman**:
+
+$$
+Q^\pi(s,a) = R_s^a+\gamma \sum_{s'\in S} P_{ss'}^{a}\sum_{a \in \mathcal A} \pi (a|s)Q^\pi(s',a)
+$$
+
+Las **Ecuaciones de Bellman** permiten garantizar una **solución
+óptima** del problema de forma que dada una **política óptima**
+($\pi^*$), además se cumple:
+
+$$
+V^{\pi^*}(s)=V^*(s)=max_\pi V^\pi(s)\\
+Q^{\pi^*}(s,a)=Q^*(s,a)=max_\pi Q^\pi(s,a)
+$$
+
+Es decir, que las funciones de valor de estado y de acción óptimas son
+las mismas que se general con la **política óptima**.
+
+Como la meta del RL es encontrar una **política óptima** $\pi^*$ la cual
+maximize el valor del **saldo esperado total (desde el inicio)**
+$G_0=\sum_{t=0}^\infty$, es decir, podríamos definir la política óptima
+como:
+
+```{=tex}
+\begin{equation}
+\pi^*(a|s)= \left\lbrace
+\begin{array}{ll}
+1 \text{ si } a=\mathop{\mathrm{argmax}}\limits_{a \in \mathcal A} Q^* (s,a) \\
+0 \text{ si cualqier otro caso} 
+\end{array}
+\right.
+\end{equation}
+```
+Luego si conocemos $Q^*(s,a)$ inmediatamente tenemos una **política
+óptima.**
+
+### Resolución de las Ecuaciones de Bellman
+
+Las ecuaciones de Bellman pueden ser usadas para resolver de forma
+eficiente $V^\pi$, especialmente en un **MDP** de un número finito de
+estado, escribiendo una ecuación $V^\pi (s)$ por cada estado.
+
+La mayoría de los algoritmos de RL usan las Ecuaciones de Bellman para
+resolver el problema. La forma básica de resolverlo es usando
+**progración dinámica** (PD por sus siglas en inglés), aunque nos
+encontramos con muchos problemas para resolverla cuando el número de
+acciones/estados aumenta. También se usan otras técnicas como los
+**métodos de montecarlo** (MMC, por sus siglas en inglés) o los métodos
+de **diferencia temporal** (TD, por sus siglas en ingles).
+
+Pasemos a ver una clasificación de los tipos de algoritmos para resolver
+los problemas de RL.
+
+# Taxonomía de Algoritmos
+
+Desde OpenAI
+(<https://spinningup.openai.com/en/latest/spinningup/rl_intro2.html#citations-below>)
+obtenemos la siguiente taxonomía de algoritmos de RL que nos servirá
+como guía para entender como clasificar los algoritmos:
+
+```{r echo=FALSE, fig.align='center', fig.cap="Esquema Aprendizaje por Refuerzo - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl_algorithms.svg' )
+
+
+```
+
+La primera gran separación se hace sobre si los algoritmos siguen un
+modelo definido (model-baed) o no (modelo-free).
+
+**Model-free**
+
+Por otro lado los **model-free** usan la experiencia para aprender o una
+o ambas de dos cantidades más simples (valores estado/acción o
+políticas).
+
+Las aproximaciones de estos algorimtos son de tres tipos:
+
+-   **Policy Optimization**
+
+El agente aprende directamente la función política que mapea el estado a
+una acción. Nos podemos encontrar con dos tipos de políticas, las
+**políticas deterministicas** (no hay incertidumbre en el mapeo) y las
+**políticas estocásticas** (tenemos una distribución de probabilidad en
+las acciones)**.** En este último caso diremos que tenemos un Proceso de
+Decisión de Markov Parcialmente Observable (POMDP, por sus siglas en
+ingles).
+
+-   **Q-Learning**
+
+En este caso el agente aprende una función valor de acción $Q(s,a)$ que
+nos dirá cómo de bueno es tomar una acción dependiendo del estado.
+
+-   **Híbridos**
+
+Estos métodos combinan la fortaleza de los dos métodos anteriores,
+aprendiendo tanto la función política como la función valor de acción.
+
+**Model-based**
+
+Los algoritmos **model-based** usan la experiencia para construir un
+modelo interno de transiciones y resultados inmediatos en el entorno.
+Las acciones son elegidas mediante búsqueda o planificación en este
+modelo construido.
+
+Las aproximaciones de estos algorimtos son de dos tipos:
+
+-   Aprender el Modelo
+
+Para aprender el modelo se ejecuta una política base,
+
+-   Aprender dado el Modelo
+
+Nos centraremos en los algoritmos de tipo **Model-Free** que son los más
+utilizados ya que no requieren del modelo. Si se quieren profundizar en
+los diferentes algoritmos, se puede consultar las documentación en:
+<https://spinningup.openai.com/en/latest/spinningup/rl_intro2.html#links-to-algorithms-in-taxonomy>.
+
+Vamos a ver 2 de los algoritmos de tipo **Model-free** que nos van a
+permitir el ver el paso de un algoritmo sin **Deep Learning** y otro en
+el que se aplica **Deep Learning** para obtener el objetivo final de
+tener un **agente** capaz de aprender por sí solo a realizar las tareas
+específicas que se tengan que realizar.
+
+# Q-Learning (value)
+
+Q-Learning es un método basado en valor y que usa el **sistema TD**
+(actualización su función valor en cada paso) para el entrenamiento y su
+función de valor de estado.
+
+En nombre de **Q** viende de **Quality** (calidad), por que nos da la
+calidad de la acción en un determinado estado. Lo que tenemos es que
+vamos a tener una **función de valor de acción (Q-función)** que nos da
+un valor numérico de cómo de buena es a partir de un estado **s** y una
+acción **a**.
+
+En este caso tenemos que internamente nuestra **Q-función
+(**$Q(s,a)$**)** es una **Q-tabla**, de forma que cada fila corresponde
+a un estado, y cada columna a una de las posibles acciones.
+
+```{r echo=FALSE, fig.align='center', fig.cap="Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl_qlearning.png' )
+
+
+```
+
+Es decir, esta tabla va a contener la información de **recompensa total
+esperada** para cada valor de estado y acción. Cuando nosotros
+realizamos el **entrenamiento** de la Q-función, nosotros conseguimos
+una función que **optimice** esta **Q-tabla**.
+
+Si nosotros tenemos una Q-función óptima ($Q^*(s,a)$), entonces podremos
+obtener la **política óptima** a partir de ella:
+
+$$
+\pi^*(s) = \mathop{\mathrm{argmax}}\limits_{a \in \mathcal A}Q^*(s,a)
+$$ Veamos cuales serían los pasos que deberíamos dar:
+
+**Inicializamos** nuestra **Q-Tabla** con valores a 0. Conforme avanece
+nuestro entrenamiento estos valores irán cambiando en función de los
+datos que se obtengan al **porbar** a realizar **acciones** y obtener
+las **recompensas** correspondientes.
+
+El siguiente elemento que necesitamos es una **política de
+entrenamiento** (función que nos permita elegir que acción tomar en
+función del estado en el que estemos), en este caso nuestra política
+estará basada en los valores de la **Q-tabla**, es lo que llamaremos
+**explotación** (explotamos la información que tenemos cogiendo la
+acción con mejor valor Q) o elegiremos otra acción, es lo que llamaremos
+**exploración** (exploramos nuevos caminos cogiendo una acción de forma
+aleatoria).
+
+Esto es lo que se llama una política $\epsilon$-greedy, ya que se usa un
+parámetro $\epsilon$, valor entre 0 y 1, que nos permite decidir si
+elegimos **explorar** o si queremos **explotar** los datos que ya
+tenemos.
+
+XXXXX Imagen del gráfico epsilon (epsilon respecto al número de
+epsisodios)
+
+Tendremos que:
+
+-   con probabilidad 1-$\epsilon$ nosotros haremos **explotación** y
+-   con probabilidad $\epsilon$ nosotros haremos **exploración**.
+
+Es decir, inicialmente le damos valor 1 a $\epsilon$ de forma que
+empezaremos haciendo **exploración** e iremos bajando este valor de
+epsilon conforme avance el entrenamiento para que cada vez usemos más la
+**explotación**.
+
+La idea base es que al principio del entrenamiento, lo prioritario es
+**explorar**, es decir, seleccionar una acción al azar y obtener su
+recompensa, ya que nuestra **Q-Tabla** está inicializada a 0. Conforme
+avance el entrenamiento nos tendremos que ir fiando más de los datos que
+ya tenemos y tendrá que primar la **explotación** de nuestros datos de
+la **Q-Tabla**. Para hacer ésto de una forma efectiva, usaremos un
+parámetro **decay_epsion** que conforme avancemos en entrenamiento se
+encargará de ir reduciendo el valor de $\epsilon$ para conseguir este
+efecto.
+
+Una vez que tenemos nuestros elementos base, pasaremos al
+**entrenamiento**, de forma que para todos los **episodios**
+(iteraciones de partidas) que definamos haremos lo siguiente:
+
+-   Partimos de un **estado inicial**, y obtenemos una **acción** a
+    partir de nuestra **política de entrenamiento**
+-   Actualizmos $\epsilon$ con el nuevo valor en este episodio
+-   Iteramos para un número máximo de pasos dentro de este episodio
+-   Obtenemos el nuevo estado, así como la recompensa obtenida
+-   Actulizamos el valor de la **Q-Tabla** correspondiente según la
+    fórmula basada en los métodos de **TD** (Diferencias temporales) $$
+    Q(s,a) = Q(s,a) + \alpha(R(s,a)+\gamma argmax_aQ(s',a) - Q(s,a))\\
+    \text{donde }s\text{ es el estado actual y }s'\text{ es el nuevo estado}
+    $$
+-   Verificamos si se ha llegado al final del juego para salir de este
+    espisodio si es el caso
+-   Cambiamos el **estado** como el **nuevo estado**
+
+Una vez acabemos nuestro entrenamiento, obtendremos nuestra **política
+óptima** como: $$
+\pi^*(s) = \mathop{\mathrm{argmax}}\limits_{a \in \mathcal A}Q^*(s,a)
+$$
+
+**Pseudo código Q-Learning**
+
+```{r echo=FALSE, fig.align='center', fig.cap="Algoritmo Q-Learning - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl_algoritmo_qlearning.png' )
+
+
+```
+
+# DQN (Deep Q-Learning)
+
+<https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/>
+
+Hemos visto el algoritmo de **Q-Learning** en el que usábamos una
+**Q-Tabla**, es decir una tabla donde guardábamos todos los valores de
+la función $Q(s,a)$ y que entrenando el agente, éramos capaces de
+conseguir aproximar a la función **Q óptima**, con lo cual teníamos una
+**Política Óptima**.
+
+Este tipo de algoritmos son válidos cuando nos encontramos con un número
+"limitado" de estados y acciones, de forma que la tabla es relativamente
+manejable y somos capaces de entrenarla. Si nos encontramos ante un
+problema en el que tenemos miles o cientos de miles de estados no va a
+ser efectivo construir una tabla y entrenarla para todas las posibles
+combinaciones **etado-acción**. Para abordar este tipo de problemas, la
+mejor solución es buscar un **aproximador** de la función $Q(s,a)$, que
+nos permita obtener la mejor solución sin necesidad de entrenar todas
+las posibles combinaciones.
+
+Para realizar este trabajo una de las posibles opciones es usar **redes
+neuronales** como función aproximadora y que nos abrirá la posibilidad
+de trabajar con problemas en los que existan grandes cantidades de
+estados/acciones.
+
+Fue el equipo de **Deepmind** en 2013
+(<https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf>), en su artítulo
+**"Human-level control through deep reinforcementlearning"**, los
+primeros que decidieron atacar los problemas de alta dimensionalidad de
+**estados/acciones** mediante el uso de **Redes Neuronales Profundas**.
+La forma de probar su código fue mediante la implementación de
+**agentes** que fueran capaces de aprender a jugar a los clásicos
+**juegos de Atari 2600**. De forma que el agente, recibiendo la
+información de entrada de los pixels que hay en cada momento en pantalla
+y el marcador del juego, eran capaces de sobrepasar el rendimiento de
+algoritmos actuales que hacían ese trabajo. En estte caso usaron la
+misma red neuronal, con la misma arquitectura e hiperparámetros para los
+49 juegos con los que se probaron.
+
+```{r echo=FALSE, fig.align='center', fig.cap="Deep Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl_dqlearning.png' )
+
+
+```
+
+Con nuestro algoritmo de **Q-Learning** teníamos una función $Q(s,a)$
+que implementábamos con un tabla y nos daba para cada **estado** y cada
+**acción** cual era el valor de **Q** (Quality) de la recompensa
+esperada. Ahora, con **Deep Q-Learning** nos encontramos que vamos a
+tener una red neuronal que será la encargada de para cada **estado**
+obtener el valor de **Q** para cada posible **acción**.
+
+**DQN (Deep Q-Network) Arquitectura**
+
+Para poder implementar nuestro trabajo con redes neuronales nos vamos a
+encontrar con el problema de entrenar la red neuronal (obtener los
+pesos) que permitan alcancar nuestra función **Q-Óptima** que nos daría
+la **Política Òptima** que es lo que realmente buscamos.
+
+Básicamente para realizar el trabajo usaremos 2 redes neuronales que
+tendrán la misma arquitectura de forma que el entrenamiento sea estable.
+
+-   **DQN** que será la red de predicción, y que será la que
+    entrenaremos para minimizar el valor del error
+    $(R+\gamma argmax_{a'}Q(s',a',w')-Q(s,a,w))^2$
+-   **DQN_Target** que será la red que calculará
+    $R+\gamma argmax_a'Q(s',a',w')$
+
+```{r echo=FALSE, fig.align='center', fig.cap="Arquitectura Redes DQN - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl_arquitectura_redes.png' )
+
+
+```
+
+**Experience Replay**
+
+El mecanismo del **Experience Replay** nos va a permitir entrenar
+nuestra red **DQN** con minibatchs que vamos a extraer de forma
+aleatoria de la memoria en la que vamos a ir guardando los resultados
+que vamos obteniendo **\<s,a,r,s'\>**.
+
+Ésto nos va a permitir por un lado **entrenar** nuestra **red de
+predicción** y además va a servirnos para evitar **correlaciones** de
+secuencias consecutivas que pudieran producir un sesgo en nuestros
+resultados. De esta manera, al elegir al azar los elementos que vamos a
+usar para entrenar la red, no tendrán ninguna relación con los datos
+consecutivos que se van produciendo en los pasos de los episodios.
+
+**Algoritmo Deep Q-Learning**
+
+-   Obtenemos los datos de entrada, que es el estado.
+-   Seleccionamos la acción usando nuestra política de entrenamiento
+    epsilon-greedy
+-   Ejecutamos la acción y obtenemos el siguiente estado así como la
+    recompensa obtenida
+-   Almacenamos en memoria \<s,a,r,s'\>
+-   Si tenemos bastantes elementos en la memoria
+    -   Hacemos un minibatch aleatorio y enteramos la red siendo
+        $R+\gamma argmax_{a'}Q(s',a',w')$ el **target de la red** y
+        $Q(s,a,w)$ el valor predicho.
+    -   La función de pérdida será la de Diferencia de Cuadrados
+        $L = (R+\gamma argmax_a'Q(s',a',w')-Q(s,a,w))^2$
+-   Después de cada C iteraciones, copiaremos los pesos de la red DQN a
+    la DQN_Target
+-   Repetiremos estos pasos durante M episodios
+
+**Pseudo-código Deep Q-Learning**
+
+```{r echo=FALSE, fig.align='center', fig.cap="Algoritmo Deep Q-Learning - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
+
+knitr::include_graphics( '../imagenes_documentacion/rl_algoritmo_dqn.png' )
+
+
+```
+
+**Variantes de Deep Q-Learning**
+
+-   Double Deep Q Network (DDQN) -- 2015
+-   Deep Recurrent Q Network (DRQN) -- 2015
+-   Dueling Q Network -- 2015
+-   Persistent Advantage Learning (PAL) -- 2015
+-   Bootstrapped Deep Q Network -- 2016
+-   Normalized Advantage Functions (NAF) = Continuous DQN -- 2016
+-   N-Step Q Learning -- 2016
+-   Noisy Deep Q Network (NoisyNet DQN) -- 2017
+-   Deep Q Learning for Demonstration (DqfD) -- 2017
+-   Categorical Deep Q Network = Distributed Deep Q Network = C51 --
+    2017
+    -   Rainbow -- 2017
+-   Quantile Regression Deep Q Network (QR-DQN) -- 2017
+-   Implicit Quantile Network -- 2018
+
+# Listado Algoritmos
+
+**1. Model-Free**
+
+**Value-based**
+
+[Q-learning = SARSA
+max](https://link.springer.com/content/pdf/10.1007/BF00992698.pdf) --
+1992
+
+[State Action Reward State-Action
+(SARSA)](http://mi.eng.cam.ac.uk/reports/svr-ftp/auto-pdf/rummery_tr166.pdf)--
+1994
+
+[Deep Q Network (DQN)](https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf)
+-- 2013
+
+[Double Deep Q Network (DDQN)](https://arxiv.org/pdf/1509.06461.pdf) --
+2015
+
+[Deep Recurrent Q Network (DRQN)](https://arxiv.org/abs/1507.06527) --
+2015
+
+[Dueling Q Network](https://arxiv.org/abs/1511.06581) -- 2015
+
+[Persistent Advantage Learning (PAL)](https://arxiv.org/abs/1512.04860)
+-- 2015
+
+[Bootstrapped Deep Q Network](https://arxiv.org/abs/1602.04621) -- 2016
+
+[Normalized Advantage Functions (NAF) = Continuous
+DQN](https://arxiv.org/abs/1603.00748) -- 2016
+
+[N-Step Q Learning](https://arxiv.org/abs/1602.01783) -- 2016
+
+[Noisy Deep Q Network (NoisyNet DQN)](https://arxiv.org/abs/1706.10295)
+-- 2017
+
+[Deep Q Learning for Demonstration
+(DqfD)](https://arxiv.org/abs/1704.03732) -- 2017
+
+[Categorical Deep Q Network = Distributed Deep Q Network =
+C51](https://arxiv.org/abs/1707.06887) -- 2017
+
+-   [Rainbow](https://arxiv.org/abs/1710.02298) -- 2017
+
+[Quantile Regression Deep Q Network
+(QR-DQN)](https://arxiv.org/pdf/1710.10044v1.pdf) -- 2017
+
+[Implicit Quantile Network](https://arxiv.org/abs/1806.06923)-- 2018
+
+[Mixed Monte Carlo (MMC)](https://arxiv.org/abs/1703.01310) -- 2017
+
+[Neural Episodic Control (NEC)](https://arxiv.org/abs/1703.01988) --
+2017
+
+**Policy-based**
+
+[Cross-Entropy Method
+(CEM)](https://link.springer.com/article/10.1023/A:1010091220143)-- 1999
+
+Policy Gradient
+
+-   [REINFORCE = Vanilla Policy
+    Gradient](https://people.cs.umass.edu/~barto/courses/cs687/williams92simple.pdf)(VPG)-
+    1992
+-   Policy gradient softmax
+-   [Natural Policy Gradient (Optimisation) (NPG) /
+    (NPO)](https://papers.nips.cc/paper/2073-a-natural-policy-gradient.pdf)
+    -- 2002
+-   [Truncated Natural Policy Gradient
+    (TNPG)](https://arxiv.org/abs/1604.06778) -- 2016
+
+**Actor-Critic**
+
+[Advantage Actor Critic (A2C)](https://arxiv.org/abs/1602.01783) -- 2016
+
+[Asynchronous Advantage Actor-Critic
+(A3C)](https://arxiv.org/abs/1602.01783)  -- 2016
+
+[Generalized Advantage Estimation
+(GAE)](https://arxiv.org/abs/1506.02438) -- 2015
+
+[Trust Region Policy Optimization
+(TRPO)](https://arxiv.org/abs/1502.05477) -- 2015
+
+[Deterministic Policy Gradient
+(DPG)](http://proceedings.mlr.press/v32/silver14.pdf) -- 2014
+
+[Deep Deterministic Policy Gradients
+(DDPG)](https://arxiv.org/abs/1509.02971)  -- 2015
+
+-   [Distributed Distributional Deterministic Policy Gradients
+    (D4PG)](https://arxiv.org/abs/1804.08617) -- 2018
+-   [Twin Delayed Deep Deterministic Policy Gradient
+    (TD3)](https://arxiv.org/pdf/1802.09477.pdf) -- 2018
+
+[Actor-Critic with Experience Replay
+(ACER)](https://arxiv.org/abs/1611.01224) -- 2016
+
+[Actor Critic using Kronecker-Factored Trust Region
+(ACKTR)](https://arxiv.org/abs/1708.05144) -- 2017
+
+[Proximal Policy Optimization
+(PPO) ](https://arxiv.org/abs/1707.06347)-- 2017
+
+-   [Distributed PPO (DPPO)](https://arxiv.org/abs/1707.02286) -- 2017
+-   [Clipped PPO (CPPO)](https://arxiv.org/pdf/1707.06347.pdf)  -- 2017
+-   [Decentralized Distributed PPO
+    (DD-PPO)](https://arxiv.org/abs/1911.00357)-- 2019
+
+[Soft Actor-Critic (SAC)](https://arxiv.org/abs/1801.01290)  -- 2018
+
+**General Agents**
+
+-   [Covariance Matrix Adaptation Evolution Strategy
+    (CMA-ES)](https://ieeexplore.ieee.org/document/542381)-- 1996
+-   [Episodic Reward-Weighted Regression
+    (ERWR)](https://papers.nips.cc/paper/3545-policy-search-for-motor-primitives-in-robotics.pdf)
+    -- 2009
+-   [Relative Entropy Policy Search
+    (REPS)](https://www.aaai.org/ocs/index.php/AAAI/AAAI10/paper/viewFile/1851/2264)--
+    2010
+-   [Direct Future Prediction (DFP)](https://arxiv.org/abs/1611.01779)
+    -- 2016
+
+**Imitation Learning Agents**
+
+Behavioral Cloning (BC)
+
+[Dataset Aggregation
+(Dagger)](https://www.cs.cmu.edu/~sross1/publications/Ross-AIStats11-NoRegret.pdf)
+(i.e. query the expert) -- 2011
+
+Adversarial Reinforcement Learning
+
+-   [Generative Adversarial Imitation Learning
+    (GAIL)](https://arxiv.org/abs/1606.03476) -- 2016
+-   [Adverserial Inverse Reinforcement Learning
+    (AIRL)](https://arxiv.org/abs/1710.11248)-- 2017
+
+[Conditional Imitation Learning](https://arxiv.org/abs/1710.02410) --
+2017
+
+[Soft Q-Imitation Learning (SQIL)](https://arxiv.org/abs/1905.11108) --
+2019
+
+**Hierarchical Reinforcement Learning Agents**
+
+-   [Hierarchical Actor Critic
+    (HAC)](https://arxiv.org/abs/1712.00948.pdf) -- 2017
+
+**Memory Types**
+
+-   [Prioritized Experience Replay
+    (PER)](https://arxiv.org/abs/1511.05952) -- 2015
+-   [Hindsight Experience Replay
+    (HER)](https://arxiv.org/abs/1707.01495.pdf) -- 2017
+
+**Exploration Techniques**
+
+-   E-Greedy
+-   Boltzmann
+-   Ornstein--Uhlenbeck process
+-   Normal Noise
+-   Truncated Normal Noise
+-   [Bootstrapped Deep Q Network](https://arxiv.org/abs/1602.04621) 
+-   [UCB Exploration via Q-Ensembles
+    (UCB)](https://arxiv.org/abs/1706.01502) 
+-   [Noisy Networks for Exploration](https://arxiv.org/abs/1706.10295) 
+-   [Intrinsic Curiosity Module
+    (ICM)](https://pathak22.github.io/noreward-rl/) -- 2017
+
+**Meta Learning**
+
+-   [Model-agnostic meta-learning
+    (MAML)](https://arxiv.org/abs/1703.03400)-- 2017
+-   [Improving Generalization in Meta Reinforcement Learning using
+    Learned Objectives](https://openreview.net/pdf?id=S1evHerYPr)
+    (MetaGenRLis) -- 2020
+
+**2. Model-Based**
+
+**Dyna-Style Algorithms / Model-based data generation**
+
+-   [Dynamic Programming (DP) =
+    DYNA-Q](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.51.7362&rep=rep1&type=pdf)
+    -- 1990
+-   [Embed to Control (E2C)](https://arxiv.org/abs/1506.07365)-- 2015
+-   [Model-Ensemble Trust-Region Policy Optimization
+    (ME-TRPO)](https://arxiv.org/abs/1802.10592) -- 2018
+-   [Stochastic Lower Bound Optimization
+    (SLBO)](https://arxiv.org/abs/1807.03858) -- 2018
+-   [Model-Based Meta-Policy-Optimzation
+    (MB-MPO)](https://arxiv.org/abs/1809.05214) (meta learning) -- 2018
+-   [Stochastic Ensemble Value Expansion
+    (STEVE)](https://arxiv.org/abs/1803.00101) -- 2018
+-   [Model-based Value Expansion
+    (MVE)](https://arxiv.org/abs/1803.00101) -- 2018
+-   [Simulated Policy Learning
+    (SimPLe)](https://arxiv.org/abs/1903.00374) -- 2019
+-   [Model Based Policy Optimization
+    (MBPO)](https://arxiv.org/abs/1906.08253) -- 2019
+
+**Policy Search with Backpropagation through Time / Analytic gradient
+computation**
+
+-   [Differential Dynamic Programming
+    (DDP)](https://www.jstor.org/stable/3613752?origin=crossref&seq=1)
+    -- 1970
+-   [Linear Dynamical Systems and Quadratic Cost
+    (LQR)](http://users.cecs.anu.edu.au/~john/papers/BOOK/B03.PDF) --
+    1989
+-   [Iterative Linear Quadratic Regulator
+    (ILQR)](https://homes.cs.washington.edu/~todorov/papers/LiICINCO04.pdf)
+    -- 2004
+-   [Probabilistic Inference for Learning Control
+    (PILCO)](https://www.ias.informatik.tu-darmstadt.de/uploads/Publications/Deisenroth_ICML_2011.pdf)
+    -- 2011
+-   [Iterative Linear Quadratic-Gaussian
+    (iLQG)](https://homes.cs.washington.edu/~todorov/papers/TassaIROS12.pdf)
+    -- 2012
+-   [Approximate iterative LQR with Gaussian Processes
+    (AGP-iLQR)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.716.4271&rep=rep1&type=pdf)
+    -- 2014
+-   [Guided Policy Search
+    (GPS)](https://graphics.stanford.edu/projects/gpspaper/gps_full.pdf)
+    -- 2013
+-   [Stochastic Value Gradients (SVG)](https://arxiv.org/abs/1510.09142)
+    -- 2015
+-   [Policy search with Gaussian
+    Process](https://dl.acm.org/doi/10.5555/3306127.3331874) -- 2019
+
+**Shooting Algorithms / sampling-based planning**
+
+[Random Shooting (RS)](https://arxiv.org/pdf/1708.02596.pdf) -- 2017
+
+[Cross-Entropy Method
+(CEM)](https://www.sciencedirect.com/science/article/pii/B9780444538598000035)--
+2013
+
+-   [Deep Planning Network (DPN)](https://arxiv.org/abs/1811.04551)-2018
+-   [Probabilistic Ensembles with Trajectory Sampling (PETS-RS and
+    PETS-CEM)](https://arxiv.org/abs/1805.12114) -- 2018
+-   [Visual Foresight](https://arxiv.org/abs/1610.00696) -- 2016
+
+[Model Predictive Path Integral
+(MPPI)](https://arxiv.org/abs/1509.01149) -- 2015
+
+-   [Planning with Deep Dynamics Models
+    (PDDM)](https://arxiv.org/abs/1909.11652) -- 2019
+
+[Monte-Carlo Tree Search
+(MCTS)](https://hal.inria.fr/inria-00116992/document) -- 2006
+
+-   [AlphaZero](https://arxiv.org/abs/1712.01815) -- 2017
+
+ 
+
+## Referencias
+
+!!!!!!!!

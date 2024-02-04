@@ -1,0 +1,10 @@
+# Lógica Difusa
+
+## Conceptos clave.
+### Conjuntos difusos y funciones de membresía
+### Inferencia y Modelamiento difuso
+
+## Ejemplos prácticos
+
+### Clustering Difuso
+### Herramientas de Diagnóstico

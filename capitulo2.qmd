@@ -1,0 +1,16 @@
+# Análisis Causal y Modelos Gráficos Probabilísticos
+
+## Relaciones y Modelos Causales
+
+## Redes bayesianas: aprendizaje y clasificadores
+
+### Hipótesis MAP y Naive-Bayes
+### Modelos bayesianos
+
+## Modelos Ocultos de Markov
+###  Tipos de cadenas de Markov
+###  Aplicaciones de MOMs
+
+## Causal Machine Learning
+###  Efectos causales. ATE y CATE
+###  Uplift

@@ -14,7 +14,7 @@ El agente volverá a examinar el nuevo estado del entorno $S_{t+1}$ y la nueva r
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Esquema Aprendizaje por Refuerzo - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl-diagrama.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl-diagrama.png' )
 
 ```
 
@@ -198,7 +198,7 @@ Desde OpenAI (<https://spinningup.openai.com/en/latest/spinningup/rl_intro2.html
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Esquema Aprendizaje por Refuerzo - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl_algorithms.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_algorithms.png' )
 
 
 ```
@@ -249,7 +249,7 @@ En este caso tenemos que internamente nuestra **Q-función (**$Q(s,a)$**)** es u
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl_qlearning.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_qlearning.png' )
 
 
 ```
@@ -300,7 +300,7 @@ $$
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Algoritmo Q-Learning - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl_algoritmo_qlearning.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_algoritmo_qlearning.png' )
 
 
 ```
@@ -319,7 +319,7 @@ Fue el equipo de **Deepmind** en 2013 (<https://www.cs.toronto.edu/~vmnih/docs/d
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Deep Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl_qlearning.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_qlearning.png' )
 
 
 ```
@@ -337,7 +337,7 @@ Básicamente para realizar el trabajo usaremos 2 redes neuronales que tendrán l
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Arquitectura Redes DQN - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl_arquitectura_redes.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_arquitectura_redes.png' )
 
 
 ```
@@ -364,7 +364,7 @@ El mecanismo del **Experience Replay** nos va a permitir entrenar nuestra red **
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Algoritmo Deep Q-Learning - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
 
-knitr::include_graphics( 'imagenes/reinforcement_learning/rl_algoritmo_dqn.png' )
+knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_algoritmo_dqn.png' )
 
 
 ```

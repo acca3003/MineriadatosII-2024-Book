@@ -1,0 +1,5 @@
+## Arquiecturas Preentranadas
+
+### Detección de objetos
+### Tratamiento de audios
+### Tareas sobre textos

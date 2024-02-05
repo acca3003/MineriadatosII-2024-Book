@@ -8,7 +8,8 @@ book:
     - "Pablo Sánchez Cabrera"
     - "Ángel Rodríguez Chicote"
     - "Alfonso Carabantes Álamo"
-  date: "Julio 2024"
+  date: "2024"
+  
   output-file: "MineriaDatosII-2024"
   # portada en html
   cover-image: imagenes/portada.png 
@@ -16,8 +17,8 @@ book:
   
   chapters:
     - index.qmd
-    - capitulo1.qmd # deep learning
-    - capitulo2.qmd # Análisis causal
+    - capitulo1.qmd # Deep learning
+    - capitulo2.qmd # Bayes Análisis causal
     - capitulo3.qmd # Genéticos
     - capitulo4.qmd # Lógica Difusa
     - references.qmd
@@ -65,28 +66,12 @@ format:
         % Para que luego se ponga correctamente el nombre del capitulo
         \automark[chapter]{chapter}
         
-        % Para personalizar los bloques de código
-        \usepackage{xcolor}
-        \usepackage{listings}
-        \lstset{breaklines=true}
-        %\lstset{language=[python]}
-        \lstset{basicstyle=\small\ttfamily}
-        \lstset{extendedchars=true}
-        \lstset{tabsize=2}
-        \lstset{columns=fixed}
-        \lstset{showstringspaces=false}
-        \lstset{frame=single}
-        %\lstset{frameround=tttt}
-        %\lstset{framesep=4pt}
-        \lstset{numbers=left}
-        \lstset{numberstyle=\tiny\ttfamily}
-        \lstset{postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}}
-
 
     include-before-body: 
       text: |
         \renewcommand{\figurename}{Imagen}
-        \KOMAoptions{footsepline=true,footbotline=true}
+        % Activar líneas en cabecera y pie
+        %\KOMAoptions{headsepline=true, headtopline=true footsepline=true,footbotline=true}
         
     include-after-body: 
       text: |
@@ -94,11 +79,14 @@ format:
 
         
     header-includes: |
-      \titlehead{\center{\includegraphics[]{imagenes/Licencia.png} \includegraphics[]{imagenes/portada.png} }}
-      \author{First Author}
-      \author{Second Author}
-      \author{Third Author}
-      \author{Supervisor Author}
+      % Página portada
+      \titlehead{\center{\includegraphics[]{imagenes/Licencia.png} \par\vspace{3cm} \includegraphics[]{imagenes/portada.png} }}
+      %\title{\includegraphics[]{imagenes/organizadores_colaborador.png} }
+      
+ 
+      % Reorganizar lineas de código largas
+      \usepackage{fvextra}
+      \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
       
       % Colocar elementos en Cabecera y pie
 

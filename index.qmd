@@ -8,19 +8,19 @@ Referecnia bibliografica [@knuth84]
 
 Referencia gráfico @fig-diagrama-conceptual Otra referencia a gráfico \ref{fig-diagrama-conceptual}
 
-::: callout-note
+::: {.callout-note title="Nota:"}
 Note that there are five types of callouts, including: `note`, `warning`, `important`, `tip`, and `caution`.
 :::
 
-::: callout-warning
+::: {.callout-warning title="Atención!"}
 Atención!!!
 :::
 
-::: callout-important
+::: {.callout-important title="Recordad"}
 Importante
 :::
 
-::: callout-tip
+::: {.callout-tip title="Truco"}
 ## Tip with Title
 
 This is an example of a callout with a title.

@@ -1,25 +1,7 @@
-# Métodos Bayesianos
+## Redes Recurrentes
 
-## Introducción de los Métodos Bayesianos
+### Elman, Jordan, LSTM y GRU
 
-aaaa
+### Forecasting en series de tiempo
 
-## Introducción de los Métodos Bayesianos
-
-aaa
-
-### Introducción de los Métodos Bayesianos
-
-aaa
-
-### Introducción de los Métodos Bayesianos
-
-aaa
-
-### Introducción de los Métodos Bayesianos
-
-aaa
-
-## Introducción de los Métodos Bayesianos
-
-aaa
+###Clasificación y generación de textos

@@ -1,9 +1,10 @@
+## Aprendizaje por Refuerzo
 
 ### Introducción
 
 Hasta ahora hemos visto como el Deep Learning se usa para el **aprendizaje supervisado** y el **aprendizaje no supervisado**, pero vamos a dar un paso más, en el que veremos como usar Deep Learning en otro tipo de aprendizaje llamado **aprendizaje por refuerzo**.
 
-El **Aprendizaje por Refuerzo** (**RL** por sus siglas en ingles, Reinforcement Learning) trata de conseguir que el sistema aprenda mediante recompensa/castigo, en función de si los pasos que da son buenos o malos. De esta manera, cuanta mayor recompensa se tenga es que nuestro sistema se ha acercado a la solución buena. Se trata de aprender mediante la interacción y la retroalimentación de lo que ocurra.
+El **Aprendizaje por Refuerzo** (**RL** por sus siglas en ingles, **Reinforcement Learning**) trata de conseguir que el sistema aprenda mediante recompensa/castigo, en función de si los pasos que da son buenos o malos. De esta manera, cuanta mayor recompensa se tenga es que nuestro sistema se ha acercado a la solución buena. Se trata de aprender mediante la interacción y la retroalimentación de lo que ocurra.
 
 Partiremos de dos elementos clave **agente** (es el que aprende y toma decisiones), y el **entorno** (donde el agente aprende y decide que acciones tomar). Tendremos que el agente podrá realizar **acciones** que normalmente provocarán un cambio de **estado** y a la vez se tendrá una **recompensa** (positiva o negativa) en función de la acción tomada en el entorno en ese momento.
 
@@ -17,7 +18,6 @@ knitr::include_graphics( 'imagenes/reinforcement_learning/rl-diagrama.png' )
 
 ```
 
-### Historia del Aprendizaje por Refuerzo
 
 ### Formalismo Matemático
 
@@ -243,7 +243,7 @@ Vamos a ver 2 de los algoritmos de tipo **Model-free** que nos van a permitir el
 
 Q-Learning es un método basado en valor y que usa el **sistema TD** (actualización su función valor en cada paso) para el entrenamiento y su función de valor de estado.
 
-En nombre de **Q** viende de **Quality** (calidad), por que nos da la calidad de la acción en un determinado estado. Lo que tenemos es que vamos a tener una **función de valor de acción (Q-función)** que nos da un valor numérico de cómo de buena es a partir de un estado **s** y una acción **a**.
+El nombre de **Q** viende de **Quality** (calidad), por que nos da la calidad de la acción en un determinado estado. Lo que tenemos es que vamos a tener una **función de valor de acción (Q-función)** que nos da un valor numérico de cómo de buena es a partir de un estado **s** y una acción **a**.
 
 En este caso tenemos que internamente nuestra **Q-función (**$Q(s,a)$**)** es una **Q-tabla**, de forma que cada fila corresponde a un estado, y cada columna a una de las posibles acciones.
 

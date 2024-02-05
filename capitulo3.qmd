@@ -226,11 +226,17 @@ Cualquier algoritmo genético necesita ciertos parámetros que deben fijarse ant
 
 **Probabilidad de ocurrencia de una mutación:** En toda ejecución de un algoritmo genético hay que decidir con qué frecuencia se va a aplicar la mutación. Se debe de añadir algún parámetro adicional que indique con qué frecuencia se va a aplicar dentro de cada gen del cromosoma. La frecuencia de aplicación de cada operador estará en función del problema; teniendo en cuenta los efectos de cada operador, tendrá que aplicarse con cierta frecuencia o no. Generalmente, la mutación y otros operadores que generen diversidad se suelen aplicar con poca frecuencia; la recombinación se suele aplicar con frecuencia alta.
 
-## Conclusiones
-
+::: {.callout-important title="Recordad"}
 Los algoritmos genéticos es uno de los enfoques más originales en data mining. Su sencillez, combinada con su flexibilidad les proporciona una robustez que les hace adecuados a infinidad de problemas. No obstante, su simplicidad y sobre todo independencia del problema hace que sean algoritmos poco específicos. Recorriendo este capítulo hemos visto los numerosos parámetros y métodos aplicables a los algoritmos genéticos que nos ayudan a realizar una adaptación de los algoritmos genéticos más concreta a un problema. En definitiva, la implementación de esquemas evolutivos tal y como se describen en biología podemos afirmar que funciona.
+:::
 
-## Ejemplos prácticos
+
+
+## Casos de uso
+
+### Selección de Variable
+### Entrenamiento de Red Neuronal
+### Arquitecura de Red Neuronal
 
 ### Algoritmos genéticos con R
 

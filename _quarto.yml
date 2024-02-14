@@ -32,6 +32,7 @@ format:
     theme: cosmo
     highlight-style: tango
   pdf:
+    cite-method: biblatex
     highlight-style: tango
     code-line-numbers: true
     keep-tex: true
@@ -51,10 +52,33 @@ format:
         \renewcommand{\figurename}{Imagen}
         \renewcommand{\tablename}{Tabla}
         
+
         % Formatear el Capitulo, sección y subsección
         \setkomafont{chapter}{\normalfont\huge\sffamily\bfseries\color{blue}}
-        \addtokomafont{section}{\color{blue}}
-        \addtokomafont{subsection}{\color{blue}}
+        \setkomafont{section}{\normalfont\LARGE\sffamily\bfseries\color{blue}}
+        \setkomafont{subsection}{\normalfont\Large\sffamily\bfseries\color{blue}}
+
+        % Para poder cambiar la tabla contenidos
+        %\setkomafont{disposition}{\normalfont}
+        %\RedeclareSectionCommands[
+        %    tocentryformat=\usekomafont{\bfseries\color{blue}},
+        %    tocpagenumberformat=\usekomafont{\bfseries\color{blue}}
+        %  ]{chapter,section,subsection,subsubsection,paragraph,subparagraph}
+        
+      
+        % Formatear tabla contenidos el Capitulo, sección y subsección
+        \setkomafont{chapterentry}{\bfseries\color{blue}}
+        \setkomafont{chapterentrydots}{\color{blue}}
+        \setkomafont{chapterentrypagenumber}{\color{blue}}
+
+        %\setkomafont{disposition}{\normalfont}        
+        %\setkomafont {partentry}{ \usekomafont{sectionentry}} 
+        %\setkomafont {partentrypagenumber}{ \usekomafont{sectionentrypagenumber}} 
+        %\setkomafont{sectionentry}{\color{blue}}
+        %\setkomafont{sectionentrydots}{\color{blue}}
+        %\setkomafont{sectionentrypagenumber}{\color{blue}}
+
+
         
         % Para las cabeceras y pies (sin la líneas en las cabeceras, usaremos tcolorbox)
         \usepackage{scrlayer-scrpage}
@@ -80,7 +104,7 @@ format:
         
     header-includes: |
       % Página portada
-      \titlehead{\center{\includegraphics[]{imagenes/Licencia.png} \par\vspace{3cm} \includegraphics[]{imagenes/portada.png} }}
+      \titlehead{\center{\includegraphics[]{imagenes/PortadaCompleta.png}}}
       %\title{\includegraphics[]{imagenes/organizadores_colaborador.png} }
       
  
@@ -89,23 +113,24 @@ format:
       \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
       
       % Colocar elementos en Cabecera y pie
-
+      % Ponemos box
       \cehead[]{
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
-                Minería de datos II   \hfill          \leftmark
+               Minería de datos II  \hfill    \leftmark
               \end{tcolorbox}} 
 
       \cohead[]{              
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
-                Minería de datos II   \hfill          \leftmark
+               Minería de datos II    \hfill    \leftmark 
               \end{tcolorbox}} 
+              
       \cofoot[]{              
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
-                \hfill          -\thepage -
+               \hfill -\thepage - \hfill
               \end{tcolorbox}}   
       \cefoot[]{              
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
-                \hfill          -\thepage -
+                \hfill -\thepage - \hfill
               \end{tcolorbox}}  
   
 editor: visual

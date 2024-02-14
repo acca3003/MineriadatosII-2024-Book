@@ -8,6 +8,20 @@ Referecnia bibliografica [@knuth84]
 
 Referencia gráfico @fig-diagrama-conceptual Otra referencia a gráfico \ref{fig-diagrama-conceptual}
 
+Formulas con numeración y referencia
+$$
+\frac{\partial \mathrm C}{ \partial \mathrm t } + \frac{1}{2}\sigma^{2} \mathrm S^{2}
+\frac{\partial^{2} \mathrm C}{\partial \mathrm C^2}
+  + \mathrm r \mathrm S \frac{\partial \mathrm C}{\partial \mathrm S}\ =
+  \mathrm r \mathrm C 
+$$ {#eq-black-scholes}
+
+
+Ver la fórmula \ref{eq-black-scholes}
+Ver la fórmula \ref{eq:black-scholes}
+o ver la fórmula @eq-black-scholes
+
+
 ::: {.callout-note title="Nota:"}
 Note that there are five types of callouts, including: `note`, `warning`, `important`, `tip`, and `caution`.
 :::
@@ -21,7 +35,6 @@ Importante
 :::
 
 ::: {.callout-tip title="Truco"}
-## Tip with Title
 
 This is an example of a callout with a title.
 :::

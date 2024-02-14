@@ -26,7 +26,7 @@ Individuo o Cromosoma Compuesto de Genes Codificación de genes (Binaria, Entera
 
 ## Introducción
 
-Los algoritmos genéticos es un método bastante común en minería de datos. Se inspiran en el **proceso natural de selección y evolución** tal y como se describe por la teoría evolucionista de la selección natural postulada por **Darwin**.
+Los **algoritmos genéticos**, o también llamados **algoritmos evolutivos** es un método bastante común en minería de datos. Se inspiran en el **proceso natural de selección y evolución** tal y como se describe por la teoría evolucionista de la selección natural postulada por **Darwin** [@darwin1859].
 
 Los **principios** sobre los que se asientan los algoritmos genéticos son:
 
@@ -36,7 +36,9 @@ Los **principios** sobre los que se asientan los algoritmos genéticos son:
 
 -   De forma esporádica y natural se producen **mutaciones** en el material genético de algunos individuos, provocando cambios permanentes.
 
-Los algoritmos genéticos son adecuados para obtener buenas aproximaciones en **problemas de búsqueda, aprendizaje y optimización** \[Marczyk. 2004\].
+Los algoritmos genéticos se empezaron a estudiar sobre los años 60 a partir del trabajo de Fogel [@fogel1966] (donde los organismos eran máquinas de esados finitos), siguiendo con los trabajos de Rechenberg [@rechenberg1973] (se establecen estrategias de selección) y principalmente de Holland [@holland1975] (se estableció el nombre de **Algoritmos Genéticos**).
+
+Los algoritmos genéticos son adecuados para obtener buenas aproximaciones en **problemas de búsqueda, aprendizaje y optimización** [@marczyk2004].
 
 De forma esquemática un algoritmo genético es una **función matemática** que tomando como entrada unos individuos iniciales (**población origen**) selecciona aquellos **ejemplares** (también llamados individuos o cromosomas) que **recombinándose** por algún método generarán como resultado la **siguiente generación**. Esta función se aplicará de forma **iterativa** hasta verificar alguna condición de parada, bien pueda ser un número máximo de iteraciones o bien la obtención de un individuo que cumpla unas restricciones iniciales.
 
@@ -76,15 +78,21 @@ Habitualmente, la segunda condición es la más complicada de conseguir, para ci
 
 -   Puede llegar a ser muy complicado encontrar una función de evaluación de cada uno de los individuos para seleccionar los mejores de los peores.
 
-## Fundamentos teóricos (conceptos)
+## Fundamentos teóricos
 
-A continuación, se explican, someramente, los conceptos básicos de los algoritmos genéticos.
+A continuación, se explican los conceptos básicos de los algoritmos genéticos.
 
 ### Codificación de los datos
 
-Cada **individuo o cromosoma** está formado por unos cuantos **genes**. Estos individuos con sus genes los tenemos que representar de forma que podamos codificar esa información.
+Cada **individuo o cromosoma** está formado por unos cuantos **genes**. Para nuestro caso vamos a establecer que los indiduos tienen un único cromosoma con una cierta cantida de genes. Estos genes los consideramos como la cantidad mínima de información que se puede transferir. Los genes se pueden agrupar en **características o rasgos** que nos podrían ayudar en la resolución de ciertos problemas. 
 
-Los principales métodos de representación son: - **Binaria:** Los individuos/cromosomas están representados por una serie de genes que son bits ( valores 0 ó 1).
+Estos individuos con sus genes los tenemos que representar de forma que podamos codificar esa información.
+
+![Representación de un cromosoma](imagenes/capitulo3/cromosoma.png){#fig-cromosoma}
+
+Los principales métodos de representación son: 
+
+-   **Binaria:** Los individuos/cromosomas están representados por una serie de genes que son bits ( valores 0 ó 1).
 
 -   **Entera:** Los individuos/cromosomas están representados por una serie de genes que son números enteros.
 
@@ -94,11 +102,13 @@ Los principales métodos de representación son: - **Binaria:** Los individuos/c
 
 -   **Basada en árboles:** Los individuos/cromosomas están representados por una serie de genes que son estructuras jerárquicas.
 
+![Diferentes representaciones](imagenes/capitulo3/representaciones_individuo.png){#fig-representaciones-individuo}
+
 El primer paso para conseguir que un ordenador procese unos **datos** es conseguir **representarlos** de una forma apropiada. En primer término, para codificar los datos, es necesario separar las posibles configuraciones posibles del dominio del problema en un **conjunto** de **estados** **finito**.
 
 Una vez obtenida esta clasificación el objetivo es representar cada **estado** de **forma** **unívoca** con una cadena de caracteres (compuesta en la mayoría de casos por unos y ceros).
 
-A pesar de que cada estado puede codificarse con alfabetos de diferente cardinalidad[^capitulo3-2], uno de los resultados fundamentales de la teoría de algoritmos genéticos es el **teorema del esquema**, que afirma que la codificación **óptima** es aquella en la que los algoritmos tienen un alfabeto de cardinalidad, es decir el uso del **alfabeto** **binario**.
+A pesar de que cada estado puede codificarse con alfabetos de diferente cardinalidad[^capitulo3-2], uno de los resultados fundamentales de la teoría de algoritmos genéticos es el **teorema del esquema** de Holland [@holland1975], que afirma que la codificación **óptima** es aquella en la que los algoritmos tienen un alfabeto de cardinalidad, es decir el uso del **alfabeto** **binario**.
 
 [^capitulo3-2]: La longitud de las cadenas que representen los posibles estados no es necesario que sea fija, representaciones como la de Kitano para representar operaciones matemáticas son un ejemplo de esto
 
@@ -114,19 +124,23 @@ Otra opción muy común es establecer a cada uno de los posibles casos un **núm
 
 Un algoritmo genético implementado en **pseudo código** podría ser el siguiente:
 
-`Generar de forma aleatoria una población inicial aleatoria. Cada individuo/cromosoma tiene sus propios genes.`
+`Generar de forma aleatoria una población inicial aleatoria.`
+
+`Cada individuo/cromosoma tiene sus propios genes.`
 
 `Mientras (condición de terminación es falsa).`
 
-`Evaluar el fitness de cada uno de los individuos.`
+`   Evaluar el fitness de cada uno de los individuos.`
 
-`Selección de los individuos con mejor fitness.`
+`   Selección de los individuos con mejor fitness.`
 
-`Recombinación de los individuos.`
+`   Recombinación de los individuos.`
 
-`Mutación de los indiviudos.`
+`   Mutación de los indiviudos.`
 
-Un posible esquema que puede representar una posible implementación de algoritmos genéticos se muestra en la figura @fig-esquema-genetico .
+`   Evaluar la Población.`
+
+Un posible esquema que puede representar una posible implementación de algoritmos genéticos se muestra en la figura \ref{fig-esquema-genetico} .
 
 ![Esquema de implementación de un algoritmo genético](imagenes/capitulo3/esquema_genetico.png){#fig-esquema-genetico}
 
@@ -134,13 +148,13 @@ A continuación, en los siguientes apartados, se hará una descripción de las f
 
 **Inicializar Población**
 
-Como ya se ha explicado antes el primer paso es inicializar la población origen. Habitualmente la inicialización se hace de forma **aleatoria** procurando una **distribución** **homogénea** en los casos iniciales de prueba. No obstante, si se tiene un conocimiento más profundo del problema es posible obtener mejores resultados inicializando la población de una forma apropiada a la clase de soluciones que se esperan obtener.
+Como ya se ha explicado antes, el primer paso es inicializar la población origen. Habitualmente la inicialización se hace de forma **aleatoria** procurando una **distribución** **homogénea** en los casos iniciales de prueba. No obstante, si se tiene un conocimiento más profundo del problema es posible obtener mejores resultados inicializando la población de una forma apropiada a la clase de soluciones que se esperan obtener.
 
 **Evaluar Población**
 
-Durante cada **iteración** (generación) cada gen se decodifica convirtiéndose en un grupo de parámetros del problema y se evalúa el problema con esos datos.
+Durante cada **iteración** (generación) cada individuo/cromosoma se decodifica convirtiéndose en un grupo de parámetros del problema y se evalúa el problema con esos datos.
 
-Pongamos por ejemplo que queremos evaluar el máximo de la función $f(x)=x²$ en el intervalo $[0,1]$ y supongamos que construimos cada gen con **6 dígitos** $(2^6=64)$ , por lo que interpretando el número obtenido en binario natural y dividiéndolo entre 64 obtendremos el punto de la función que corresponde al gen (individuo). Evaluando dicho punto en la función que queremos evaluar ($f(x)=x²$) obtenemos lo que en nuestro caso sería el **fitness**, en este caso cuanto mayor fitness tenga un gen mejor valorado está y más probable es que prospere su descendencia en el futuro. No en todas las implementaciones de algoritmos genéticos se realiza una fase de evaluación de la población tal y como aquí está descrita, en ciertas ocasiones se omite y no se genera ningún fitness asociado a cada estado evaluado. Selección La fase de selección elije los individuos a reproducirse en la próxima generación, esta selección puede realizarse por muy distintos métodos.
+Pongamos por **ejemplo** que queremos evaluar el máximo de la función $f(x)=x²$ en el intervalo $[0,1]$ y supongamos que construimos cada individuo con **6 dígitos** $(2^6=64)$ , por lo que interpretando el número obtenido en binario natural y dividiéndolo entre 64 obtendremos el punto de la función que corresponde al individuo. Evaluando dicho punto en la función que queremos evaluar ($f(x)=x²$) obtenemos lo que en nuestro caso sería el **fitness**, en este caso cuanto mayor fitness tenga un individuo, mejor valorado está y más probable es que prospere su descendencia en el futuro. No en todas las implementaciones de algoritmos genéticos se realiza una fase de evaluación de la población tal y como aquí está descrita, en ciertas ocasiones se omite y no se genera ningún fitness asociado a cada estado evaluado. La fase de selección elige los individuos a reproducirse en la próxima generación, esta selección puede realizarse por muy distintos métodos.
 
 En el algoritmo mostrado en pseudo código anteriormente el **método** de **selección** usado depende del fitness de cada individuo. A continuación, se describen los más comunes:
 
@@ -152,9 +166,7 @@ En el algoritmo mostrado en pseudo código anteriormente el **método** de **sel
 
 **Selección por torneo:** se eligen subgrupos de individuos de la población, y los miembros de cada subgrupo compiten entre ellos. Sólo se elige a un individuo de cada subgrupo para la reproducción.
 
-**Selección por rango:** a cada individuo de la población se le asigna un rango numérico basado en su fitness, y la selección se basa en este ranking, en lugar de las diferencias absolutas en el fitness. La ventaja de este método es que puede evitar que individuos muy aptos ganen dominancia al principio a expensas de los menos aptos, lo que reduciría la diversidad genética de la población y podría obstaculizar la búsqueda de una solución aceptable.
-
-Un ejemplo de esto podría ser que al intentar maximizar una función el algoritmo genético convergiera hacía un máximo local que posee un fitness mucho mejor que el de sus congéneres de población lo que haría que hubiera una dominancia clara con la consecuente desaparición de los individuos menos aptos (con peor fitness).
+**Selección por rango:** a cada individuo de la población se le asigna un rango numérico basado en su fitness, y la selección se basa en este ranking, en lugar de las diferencias absolutas en el fitness. La ventaja de este método es que puede evitar que individuos muy aptos ganen dominancia al principio a expensas de los menos aptos, lo que reduciría la diversidad genética de la población y podría obstaculizar la búsqueda de una solución aceptable. Un ejemplo de esto podría ser que al intentar maximizar una función el algoritmo genético convergiera hacía un máximo local que posee un fitness mucho mejor que el de sus congéneres de población lo que haría que hubiera una dominancia clara con la consecuente desaparición de los individuos menos aptos (con peor fitness).
 
 **Selección generacional**: la descendencia de los individuos seleccionados en cada generación se convierte en la siguiente generación. No se conservan individuos entre las generaciones.
 
@@ -166,9 +178,9 @@ Un ejemplo de esto podría ser que al intentar maximizar una función el algorit
 
 **Recombinación**.
 
-**Recombinación** también llamada **Cross-over o reproducción**. La recombinación es el operador genético más utilizado y consiste en el **intercambio** de **material** **genético** entre **dos** **individuos** al azar (pueden ser incluso entre el mismo elemento). El material genético se intercambia entre **bloques**. Gracias a la presión selectiva[^capitulo3-3] irán predominando los mejores bloques génicos.
+**Recombinación** también llamada **Cross-over o reproducción**. La recombinación es el operador genético más utilizado y consiste en el **intercambio** de **material** **genético** entre **dos** **individuos** al azar (pueden ser incluso entre el mismo elemento). El material genético se intercambia entre **bloques**. Gracias a la presión selectiva[^ Presión Selectiva es la fuerza a la que se ven sometido naturalmente los genes con el paso del tiempo. Con el sucesivo paso de las generaciones los genes menos útiles estarán sometidos a una mayor presión selectiva produciéndose la paulatina desaparición de estos] irán predominando los mejores bloques génicos.
 
-[^capitulo3-3]: Presión Selectiva es la fuerza a la que se ven sometido naturalmente los genes con el paso del tiempo. Con el sucesivo paso de las generaciones los genes menos útiles estarán sometidos a una mayor presión selectiva produciéndose la paulatina desaparición de estos
+
 
 Existen diversos **tipos** de **cross-over:**
 
@@ -180,17 +192,27 @@ Existen diversos **tipos** de **cross-over:**
 
 **Cross-over especializados.** En ocasiones, el espacio de soluciones no es continuo y hay soluciones que a pesar de que sean factibles de producirse en el gen no lo son en la realidad, por lo que hay que incluir restricciones al realizar la recombinación que impidan la aparición de algunas combinaciones.
 
+::: {#fig-crossover layout-ncol=3}
+
+![Cross-over 1 punto](imagenes/capitulo3/cross-over1.png){#fig-crossover1}
+
+![Cross-over n puntos](imagenes/capitulo3/cross-overN.png){#fig-crossoevern}
+
+![Cross-over uniforme](imagenes/capitulo3/cross-over-uniforme.png){#fig-crossover-uniforme}
+
+Cross-Over
+:::
+
+
 **Mutación**.
 
-Este fenómeno, generalmente muy raro en la naturaleza, se modela de la siguiente forma: cuando se genera un gen hijo se examinan uno a uno los bits del mismo y se genera un coeficiente aleatorio para cada uno. En el caso de que algún coeficiente supere un cierto umbral se modifica dicho bit. Modificando el umbral podemos variar la probabilidad de la mutación. Las mutaciones son un mecanismo muy interesante por el cual es posible generar nuevos individuos con rasgos distintos a sus predecesores.
+Este fenómeno, generalmente muy raro en la naturaleza, se modela de la siguiente forma: cuando se genera un hijo se examinan uno a uno los genes del mismo y se genera un coeficiente aleatorio para cada uno. En el caso de que algún coeficiente supere un cierto umbral se modifica dicho gen. Modificando el umbral podemos variar la probabilidad de la mutación. Las mutaciones son un mecanismo muy interesante por el cual es posible generar nuevos individuos con rasgos distintos a sus predecesores.
 
 Los **tipos** de **mutación** más conocidos son:
+       
 
-```         
-En la imagen @fig-mutacion mostramos gráficamente este tipo.
 
-![Esquema de mutación multibit de un algoritmo genético](imagenes/capitulo3/mutacion.png){#fig-mutacion}
-```
+
 
 -   **Mutación de gen**[^capitulo3-4]: existe una única probabilidad de que se produzca una mutación de algún bit. De producirse, el algoritmo toma aleatoriamente un bit, y lo invierte.
 
@@ -200,7 +222,19 @@ En la imagen @fig-mutacion mostramos gráficamente este tipo.
 
 -   **Mutación de barajado:** existe una probabilidad de que se produzca una mutación. De producirse, toma dos genes aleatoriamente y baraja de forma aleatoria los genes, según hubiéramos escogido, comprendidos entre los dos.
 
-[^capitulo3-4]: **Gen e Individuo en este contexto es lo mismo**
+::: {#fig-crossover layout-ncol=2}
+
+![Mutacion gen](imagenes/capitulo3/mutacion-gen.png){#fig-mutacion-gen}
+
+![Mutacion multigen](imagenes/capitulo3/mutacion-multigen.png){#fig-mutacion-multigen}
+
+![Mutacion intercambio](imagenes/capitulo3/mutacion-intercambio.png){#fig-mutacion-intercambio}
+
+![Mutacion barajado](imagenes/capitulo3/mutacion-barajado.png){#fig-mutacion-barajado}
+
+Mutación
+:::
+
 
 **Condición de finalización**
 

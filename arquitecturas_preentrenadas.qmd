@@ -1,5 +1,83 @@
-## Arquiecturas Preentranadas
+## Arquitecturas preentrenadas
+
+Las **arquitecturas pre-entrenadas** en Deep Learning son modelos de redes neuronales que han sido previamente entrenados en grandes conjuntos de datos para realizar tareas específicas como clasificación de imágenes, generación de texto o reconocimiento de voz. Durante el entrenamiento, estos modelos aprenden patrones complejos de los datos, lo que les permite realizar tareas relacionadas con alta precisión y generalización.
+
+El funcionamiento de las arquitecturas pre-entrenadas se basa en el concepto de **transferencia de aprendizaje**. La transferencia de aprendizaje consiste en aprovechar el conocimiento aprendido en una tarea para aplicarlo a otra tarea diferente; es decir, se utiliza como base para realizar tareas específicas con mayor facilidad.
+
+Las arquitecturas pre-entrenadas suelen ser diseñadas por investigadores y equipos de desarrollo en instituciones académicas, laboratorios de investigación y empresas de tecnología. Estos expertos desarrollan las arquitecturas, definen el proceso de entrenamiento y seleccionan los conjuntos de datos adecuados para cada tarea. Algunas de las organizaciones e instituciones que lideran el diseño de arquitecturas pre-entrenadas son:
+
+-   *Google AI*: ha desarrollado arquitecturas pre-entrenadas como BERT y Vision Transformers, las cuales han tenido un gran impacto en el procesamiento del lenguaje natural y la visión artificial, respectivamente. Además, en los últimos años, han publicado Gema y Gemini, que permiten el aprendizaje automático en general, ofreciendo flexibilidad, escalabilidad y alto rendimiento en diversas tareas
+-   *Facebook AI Research*: ha contribuido con arquitecturas pre-entrenadas como FAIRSEQ y Detectron2, que han impulsado el rendimiento en tareas de procesamiento del lenguaje natural y detección de objetos, respectivamente. Además, también ha desarrollado Llama, Llama2 y Llama3, modelos que han destacado por su versatilidad y precisión en aplicaciones de reconocimiento de voz y procesamiento de texto.
+-   *OpenAI*: conocido por sus arquitecturas pre-entrenadas líderes como GPT-3 y Whisper, ha lanzado recientemente GPT-4. Este modelo promete mejorar la comprensión contextual y la generación de texto, lo que podría tener un gran impacto en aplicaciones de procesamiento del lenguaje natural. GPT-4 representa un avance significativo en la investigación de inteligencia artificial y abre nuevas posibilidades para sistemas más avanzados.
+
+Estos modelos son entrenados en grandes clústeres de servidores con hardware especializado, como GPUs y TPUs, utilizando conjuntos de datos masivos y técnicas de optimización avanzadas. A día de hoy se han convertido en un elemento capital para los desarrolladores de aprendizaje automático puesto que nos permite aprovechar modelos entrenados previamente que, en condiciones normales, sería casi imposible realizar por centros no especializados. Así, podríamos destacar las siguientes ventajas: 
+
+- Ahorro de tiempo y recursos: al aprovechar el conocimiento pre-entrenado, nos permiten a los desarrolladores ahorrar tiempo y recursos computacionales en comparación con entrenar un modelo desde cero 
+- Mayor rendimiento: suelen ofrecer un rendimiento superior a los modelos entrenados desde cero, especialmente para tareas complejas 
+- Facilidad de uso: las librerías y entornos facilitan el acceso y la utilización de arquitecturas pre-entrenadas, incluso para usuarios con poca experiencia en Deep Learning
+
+Como se ha dicho, cada vez más se emplean este tipo de arquitecturas para realizar tareas que, con otro tipo de diseños de aprendizaje automático serían más complejas y costosas de abordar. En este aspecto, destacar que a la hora de elegir qué tipo de arquitectura pre-entrenada es adecuada para un caso de uso es necesario tener en cuenta la tarea específica a abordar, el conjunto de datos con los que ha sido entrenada y la similaridad con los nuestros propios así como si disponemos de ciertas limitaciones en cuanto a recursos computacionales.
+
+Por último, destacar que existen diversas librerías y entornos que facilitan el trabajo con arquitecturas pre-entrenadas. Algunas de las opciones más interesantes son:
+
+\- TensorFlow Hub: es un repositorio de módulos pre-entrenados para TensorFlow, que incluye una amplia gama de arquitecturas pre-entrenadas para diversas tareas. - Hugging Face Hub: es una plataforma similar a TensorFlow Hub, pero que ofrece soporte para múltiples frameworks de Deep Learning, incluyendo TensorFlow, PyTorch y JAX.
+
+### Paquetes específicos en Python
+
+#### Transformers
+
+Transformers es una biblioteca de código abierto en Python desarrollada por Hugging Face que proporciona un conjunto de herramientas para trabajar con modelos de lenguaje basados en redes neuronales transformadoras.
+
+Esta librería se caracteriza por su gran variedad de modelos pre-entrenados y capacidad de hacer fine-tuning de modelos. Así, entre sus principales ventajas podemos citar: - La facilidad de uso - La flexibilidad y la escalabilidad - La comunidad activa de desarrolladores
+
+Finalmente, indicamos proporcionamos una serie de recursos adicionales:
+
+-   Sitio web de Transformers: <https://huggingface.co/docs/transformers/en/index>
+-   Documentación de Transformers: <https://huggingface.co/docs>
+-   Tutoriales de Transformers: <https://www.youtube.com/watch?v=QEaBAZQCtwE>
+
+### Tensorflow-Hub
+
+Tensorflow-Hub alberga una gran colección de módulos de aprendizaje automático pre-entrenados y reutilizables, creados por Google y la comunidad de TensorFlow.
+
+Esta librería se caracteriza por disponer de una gran cantidad de modelos pre-entrenados para diferentes tareas relacionadas con el aprendizaje profundo. Así, entre sus principales ventajas podemos citar: - El acceso a modelos pre-entrenados de última generación - La flexibilidad y personalización - La facilidad de
+
+Finalmente, indicamos proporcionamos una serie de recursos adicionales:
+
+-   Sitio web de TensorFlow Hub: <https://www.tensorflow.org/hub>
+-   Documentación de TensorFlow Hub: <https://www.tensorflow.org/hub>
+-   Tutoriales de TensorFlow Hub: <https://www.tensorflow.org/hub/tutorials>
+
+### Arquitecturas Zero-shot
+
+Las **arquitecturas Zero-Shot**, también conocidas como *modelos de Aprendizaje por Analogía* son capaces de realizar tareas de clasificación sin necesidad de entrenamiento específico para cada categoría. En su lugar, estas arquitecturas aprenden representaciones vectoriales de conceptos a partir de datos no etiquetados, lo que les permite generalizar a nuevas categorías sin haberlas visto nunca antes.
+
+<img src="../apuntes/soporte_imagenes/zero-shot.png" width="720" height="720"/>
+
+#### Uso en imágenes
+
+En el ámbito de la visión artificial, las arquitecturas Zero-Shot para imágenes han demostrado ser particularmente útiles para tareas como la clasificación de imágenes de escenas naturales, la identificación de animales y la detección de objetos. Entre los modelos más destacados en esta área se encuentran: - *ImageNet-pretrained CLIP*: basado en la arquitectura CLIP (Contrastive Language-Image Pre-training), este modelo utiliza representaciones de imágenes y texto para realizar clasificación Zero-Shot de imágenes con gran precisión - *ResNet-pretrained ZSL*: Este modelo combina la arquitectura ResNet, conocida por su rendimiento en tareas de clasificación de imágenes, con un enfoque Zero-Shot basado en la distancia entre representaciones
+
+`MATERIAL COMPLEMENTARIO - NOTEBOOK`: ejemplo en `Zero-shot: clasificación animales`
+
+#### Uso en texto
+
+En el procesamiento del lenguaje natural, las arquitecturas Zero-Shot para texto han ganado popularidad para tareas como la clasificación de documentos, la extracción de información y la categorización de textos. Algunos modelos representativos en este campo son:
+
+-   *BERT-pretrained ZSL*: basado en la arquitectura BERT (Bidirectional Encoder Representations from Transformers), este modelo utiliza representaciones contextuales de palabras para realizar clasificación Zero-Shot de texto con gran precisión
+-   *Siamese Networks with Word Embeddings*: este enfoque utiliza redes siamesas, un tipo de red neuronal que aprende a comparar pares de entradas, para clasificar texto Zero-Shot utilizando representaciones de palabras pre-entrenadas.
 
 ### Detección de objetos
-### Tratamiento de audios
-### Tareas sobre textos
+
+La **detección de objetos** es una tarea fundamental en el ámbito de la visión artificial, que consiste en identificar y localizar objetos dentro de una imagen o video. Las arquitecturas pre-entrenadas para la detección de objetos han revolucionado este campo, ofreciendo modelos de alta precisión y eficiencia. Entre los modelos más utilizados se encuentran:
+
+-   *Faster R-CNN*: Este modelo combina la arquitectura de redes convolucionales profundas (CNN) con una región de propuesta de regiones (RPN) para detectar y localizar objetos con gran precisión
+-   *YOLOv5*: Este modelo destaca por su velocidad y eficiencia, utilizando una arquitectura basada en convoluciones y bloques de atención para detectar objetos en tiempo real
+
+`MATERIAL COMPLEMENTARIO - VIDEOTUTORIAL`: ejemplo en `Arquitecturas Tensorflow-Hub`
+
+### Conversión de voz a texto
+
+La *conversión de voz a texto*, también llamado como **Speech-to-Text** es una tarea crucial para la interacción hombre-máquina. Las arquitecturas pre-entrenadas para este tipo de casos han impulsado el desarrollo de sistemas de reconocimiento de voz de alta precisión, capaces de transcribir audio en texto con gran fluidez. Uno de los principales modelos para esta tarea es *Whisper* el cual fue desarrollado por OpenAI. Este modelo se basa en la arquitectura *Transformer* y utiliza aprendizaje supervisado y multitarea para lograr una precisión y robustez excepcionales en una amplia gama de condiciones acústicas.
+
+`MATERIAL COMPLEMENTARIO - VIDEOTUTORIAL`: ejemplo en `Speech2Text`

@@ -21,16 +21,40 @@ book:
     - capitulo2.qmd # Bayes Análisis causal
     - capitulo3.qmd # Genéticos
     - capitulo4.qmd # Lógica Difusa
-    - references.qmd
+    #- references.qmd
   appendices:
     - anexo1.qmd
 
 bibliography: references.bib
 
+filters:
+  - pseudocode
+  
 format:
   html:
     theme: cosmo
     highlight-style: tango
+    include-in-header: 
+      text: |
+        % Para el pseudocodigo
+        <script>
+        MathJax = {
+          loader: {
+            load: ['[tex]/boldsymbol']
+          },
+          tex: {
+            tags: "all",
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\\[','\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            packages: {
+              '[+]': ['boldsymbol']
+            }
+          }
+        };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
   pdf:
     cite-method: biblatex
     highlight-style: tango
@@ -40,11 +64,15 @@ format:
     geometry:
       - top=28mm
       - bottom=30mm
+      - left=15mm
+      - right=15mm
 
     toc-depth: 3
     toc-title: Índice
     include-in-header: 
       text: |
+
+
         \usepackage{makeidx}
         \makeindex
         
@@ -97,12 +125,16 @@ format:
         % Activar líneas en cabecera y pie
         %\KOMAoptions{headsepline=true, headtopline=true footsepline=true,footbotline=true}
         
+        
     include-after-body: 
       text: |
         \printindex
 
         
     header-includes: |
+      % Para seudocodigo
+      \usepackage{algpseudocode}
+      
       % Página portada
       \titlehead{\center{\includegraphics[]{imagenes/PortadaCompleta.png}}}
       %\title{\includegraphics[]{imagenes/organizadores_colaborador.png} }
@@ -115,20 +147,24 @@ format:
       % Colocar elementos en Cabecera y pie
       % Ponemos box
       \cehead[]{
+              %\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
                Minería de datos II  \hfill    \leftmark
               \end{tcolorbox}} 
 
       \cohead[]{              
+              %\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
                Minería de datos II    \hfill    \leftmark 
               \end{tcolorbox}} 
               
       \cofoot[]{              
+              %\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
                \hfill -\thepage - \hfill
               \end{tcolorbox}}   
       \cefoot[]{              
+              %\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
               \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black]
                 \hfill -\thepage - \hfill
               \end{tcolorbox}}  

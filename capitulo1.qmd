@@ -17,6 +17,3 @@
 {{< include reinforcement_learning.qmd >}}
 
 
-## Redes Generativas Adversarias????
-
-

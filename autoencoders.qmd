@@ -4,7 +4,12 @@
 
 Los **Autoencoders (AE)** son uno de los tipos de redes neuronales que caen dentro del ámbito del Deep Learning, en la que nos encontramos con un modelo de **aprendizaje no supervisado**.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+Ya se empezó a hablar de AE en la década de los 80 (Bourlard and Kamp 1988), aunque es en estos últimos años donde más se está trabajando con ellos. La arquitectura de un AE es una Red Neuronal Artificial (ANN por sus siglas en inglés) que se encuentra dividida en dos partes, **encoder** y **decoder** (Charte et al. 2018), (Goodfellow, Bengio, and Courville 2016). El encoder va a ser la parte de la ANN que va codificar o comprimir los datos de entrada, y el decoder será el encargado de regenerar de nuevo los datos en la salida. Esta estructura de codificación y decodificación le llevará a tener una estructura simétrica. El AE es entrenado para ser capaz de reconstruir los datos de entrada en la capa de salida de la ANN, implementando una serie de restricciones (la reducción de elementos en las capas ocultas del encoder) que van a evitar que simplemente se copie la entrada en la salida. Si recordamos la estructura de una ANN clásica o también llamada Red Neuronal Densamente Conectada (ya que cada neurona conecta con todas las de la siguiente capa) nos encontramos en que en esta arquitectura, generalmente, el número de neuronas por capa se va reduciendo hasta llegar a la capa de salida que debería ser normalmente un número (si estamos en un problema regresión), un dato binario (si es un problema de clasificación). Figura nº 86: Red Neuronal Clasica
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 
 Ya se empezó a hablar de AE en la década de los 80 (Bourlard and Kamp 1988), aunque es en estos últimos años donde más se está trabajando con ellos. La arquitectura de un AE es una Red Neuronal Artificial (ANN por sus siglas en inglés) que se encuentra dividida en dos partes, **encoder** y **decoder** (Charte et al. 2018), (Goodfellow, Bengio, and Courville 2016). El encoder va a ser la parte de la ANN que va codificar o comprimir los datos de entrada, y el decoder será el encargado de regenerar de nuevo los datos en la salida. Esta estructura de codificación y decodificación le llevará a tener una estructura simétrica. El AE es entrenado para ser capaz de reconstruir los datos de entrada en la capa de salida de la ANN, implementando una serie de restricciones (la reducción de elementos en las capas ocultas del encoder) que van a evitar que simplemente se copie la entrada en la salida. Si recordamos la estructura de una ANN clásica o también llamada Red Neuronal Densamente Conectada (ya que cada neurona conecta con todas las de la siguiente capa) nos encontramos en que en esta arquitectura, generalmente, el número de neuronas por capa se va reduciendo hasta llegar a la capa de salida que debería ser normalmente un número (si estamos en un problema regresión), un dato binario (si es un problema de clasificación). Figura nº 86: Red Neuronal Clasica
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
@@ -24,6 +29,7 @@ Donde los valores de son los datos de entrada y los datos son la reconstrucción
 
 Cuando hablamos de Incompleto nos referimos a que tenemos una reducción de dimensiones que permite llegar a conseguir una "compresión" de los datos iniciales como técnica para que aprenda los patrones internos. En el caso de Extra dimensionado es cuando subimos de dimensión para conseguir que aprenda esos patrones. En este último caso sería necesario aplicar técnicas de regularización para evitar que haya un sobreajuste en el aprendizaje. Cuando hablamos de Simple estamos haciendo referencia a que hay una única capa oculta, y en el caso de Profundo es que contamos con más de una capa oculta. Normalmente se trabaja con las arquitecturas de tipo Incompleto profundo, sobre todo cuando se está trabajando con tipos de datos que son imágenes. Aunque también podríamos encontrar una combinación de Incompleto con Extra dimensionado profundo cuando trabajamos con tipos de datos que no son imágenes y así crecer en la primera o segunda capa oculta, para luego reducir. Esto nos permitiría por ejemplo adaptarnos a estructuras de AE en las que trabajemos con número de neuronas en una capa que sean potencia de 2, y poder construir arquitecturas dinámicas en función del tamaño de los datos, adaptándolos a un tamaño prefijado. A continuación, vemos un gráfico de una estructura mixta Extra dimensionado - Incompleto profundo. 
 
+<<<<<<< HEAD
 
 ![Autoencoder Mixto (Incompleto y Extra dimensionado)](imagenes/capitulo1/autoencoder_mixto.png){#fig-autoencoder_mixto}
 
@@ -125,6 +131,9 @@ Una vez que tenemos entrenado nuestro autoencoder seremos capaces de construir n
 
 
 <<<<<<< HEAD
+=======
+### Casos de uso
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 ### Casos de uso
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172

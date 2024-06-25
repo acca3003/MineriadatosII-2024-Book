@@ -10,6 +10,10 @@ Las **redes convolucionales** son actualmente utilizadas para diferentes propós
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
@@ -20,7 +24,10 @@ En este modelo de redes convolucionales las neuronas se corresponden a campos re
 Una forma intuitiva para entender cómo trabajan estas redes neuronales es ver cómo nos representamos y vemos las imágenes. Para reconocer una cara primero tenemos que tener una imagen interna de lo que es una cara. Y a una imagen de una cara la reconocemos porque tiene nariz, boca, orejas, ojos, etc. Pero en muchas ocasiones una oreja está tapada por el pelo, es decir, los elementos de una cara se pueden ocultar de alguna manera. Antes de clasificarla, tenemos que saber la proporción y disposición y también cómo se relacionan la partes entre sí. 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Para saber si las partes de la cara se encuentran en una imagen tenemos que identificar previamente líneas bordes, formas, texturas, relación de tamaño, etcétera. En una red convolucional, cada capa lo que va a ir aprendiendo son los diferentes niveles de abstracción de la imagen inicial. Para comprender mejor el concepto anterior hemos seleccionado esta imagen de Raschka y Mirjalili (2019) donde se observa como partes del perro se transforman en neuronas del mapa de características
@@ -29,9 +36,12 @@ Para saber si las partes de la cara se encuentran en una imagen tenemos que iden
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 El objetivo de las redes CNN es aprender características de orden superior utilizando la operación de convolución. 
@@ -41,7 +51,10 @@ Puesto que las redes neuronales convolucionales pueden aprender relaciones de en
 La **convolución** consiste en **filtrar** una imagen utilizando una **máscara**. Diferentes máscaras producen distintos resultados. Las máscaras representan las conexiones entre neuronas de capas anteriores. Estas capas aprenden progresivamente las características de orden superior de la entrada sin procesar. 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Las redes neuronales convolucionales se forman usando dos tipos de capas: convolucionales y pooling. La capa de convolución transforma los datos de entrada a través de una operación matemática llamada convolución. Esta operación describe cómo fusionar dos conjuntos de información diferentes. A esta operación se le suele aplicar una función de transformación, generalmente la RELU. Después de la capa o capas de convolución se usa una capa de pooling, cuya función es resumir las respuestas de las salidas cercanas. Antes de obtener el output unimos la última capa de pooling con una red densamente conectada. Previamente se ha aplanado (Flatering) la última capa de pooling para obtener un vector de entrada a la red neural final que nos ofrecerá los resultados.
@@ -49,7 +62,10 @@ Las redes neuronales convolucionales se forman usando dos tipos de capas: convol
 ![Arquitectura de una CNN](imagenes/capitulo1/arquitectura_convolucional.png){#fig-arquitectura_convolucional}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Las redes neuronales convolucionales debido a su forma de concebirse son aptas para poder aprender a clasificar todo tipo de datos donde éstos estén distribuidos de una forma continua a lo largo del mapa de entrada, y a su vez sean estadísticamente similares en cualquier lugar del mapa de entrada. Por esta razón, son especialmente eficaces para clasificar imágenes. También pueden ser aplicadas para la clasificación de series de tiempo o señales de audio. 
@@ -59,7 +75,10 @@ En relación con el color y la forma de codificarse, en las redes convolucionale
 Las imágenes son matrices de píxeles que van de cero a 255 y que para la red neuronal se normalizan para que sus valores oscilen entre cero y uno. 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 #### Convolución
@@ -69,7 +88,10 @@ En las redes convolucionales todas las neuronas de la capa de entrada (los píxe
 ![Conexión de las neuronas de la capa de entrada con la capa oculta](imagenes/capitulo1/conexion_neuronas_convolucional.png){#fig-conexion-neuronas-convolucional}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Veamos un ejemplo para la base de datos de los dígitos del 1 a 9. Vamos a conectar cada neurona de la capa oculta con una región de 5 x 5 neurona, es decir, con 25 neuronas de la capa de entrada, que podemos denominarla ventana. Esta ventana va a ir recorriendo todo el espacio de entrada de 28 x 28 empezando por arriba y desplazándose de izquierda a derecha y de arriba abajo. Suponemos que los desplazamientos de la ventana son de un paso (un pixel) aunque este es un parámetro de la red que podemos modificar (en la programación lo llamaremos stride). 
@@ -77,13 +99,17 @@ Veamos un ejemplo para la base de datos de los dígitos del 1 a 9. Vamos a conec
 Para conectar la capa de entrada con la de salida utilizaremos una matriz de pesos (W) de tamaño 3 x 3 que recibe el nombre de filtro (filter) y el valor del sesgo. Para obtener el valor de cada neurona de la capa oculta realizaremos el producto escalar entre el filtro y la ventana de la capa de entrada. Utilizamos el mismo filtro para obtener todas las neuronas de la capa oculta, es decir en todos los productos escalares siempre utilizamos la misma matriz, el mismo filtro. 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Se definen matemáticamente estos productos escalares a través de la siguiente expresión:
 
 $$
 Y=X * W \rightarrow Y[i, j]=\sum_{k_1=-\infty}^{+\infty} \sum_{k_2=-\infty}^{+\infty} X\left[i-k_1, j-k_2\right] W\left[k_1, k_2\right]
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 $$ 
@@ -93,11 +119,16 @@ $$
 $$
 ![Convolución](imagenes/capitulo1/producto_convolucion.png){#fig-producto_convolucion}
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
+=======
+$$
+![Convolución](imagenes/capitulo1/producto_convolucion.png){#fig-producto_convolucion}
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 
 Como en este tipo de red un filtro sólo nos permite revelar una característica muy concreta de la imagen, lo que se propone es usar varios filtros simultáneamente, uno para cada característica que queramos detectar. Una forma visual de representarlo (si suponemos que queremos aplicar 32 filtros) es como se muestra a continuación:
 
 ![Primera capa de la red convolucional con 32 filtros](imagenes/capitulo1/primera_capa_convolucional.png){#fig-primera-capa-convolucional}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 Al resultado de la aplicación de los diferentes filtros se les suele aplicar la función de activación denominada RELU y que ya se comentó en la introducción. 
@@ -119,6 +150,24 @@ El filtro enfocar lo que consigue es afinar los rasgos, los contornos lo que nos
 Lo contario al filtro enfocar lo obtenemos a través de la matriz siguiente, difuminando la imagen al ser estos píxeles mezclados o combinados con los pixeles cercanos. Promedia todos los píxeles vecinos a un pixel dado lo que implica que se obtienen bordes borrosos. 
 
 
+=======
+Al resultado de la aplicación de los diferentes filtros se les suele aplicar la función de activación denominada RELU y que ya se comentó en la introducción. 
+
+Una interesante fuente de información es la documentación del software gratuito GIMP donde expone diferentes efectos que se producen en las imágenes al aplicar diversas convoluciones. 
+
+Un ejmplo claro y didáctico lo podemos obtener de la docuemntación del software libre de dibujo y tratamiento de imágenes denominado GIMP (https://docs.gimp.org/2.6/es/plug-in-convmatrix.html). Algunos de estos efectos nos ayudan a entender la operación de los filtros en las redes convolucionales y cómo afectan a las imágenes, en concreto, el ejemplo que presenta lo realiza sobre la figura del Taj Mahal.
+
+El filtro enfocar lo que consigue es afinar los rasgos, los contornos lo que nos permite agudizar los objetos de la imagen. Toma el valor central de la matriz de cinco por cinco lo multiplica por cinco y le resta el valor de los cuatro vecinos. Al final hace una media, lo que mejora la resolución del pixel central porque elimina el ruido o perturbaciones que tiene de sus pixeles vecinos.
+
+**El filtro enfocar (Sharpen)**
+
+
+![Filtro Enfocar](imagenes/capitulo1/filtro_enfocar.png){#fig-filtro_enfocar}
+
+
+Lo contario al filtro enfocar lo obtenemos a través de la matriz siguiente, difuminando la imagen al ser estos píxeles mezclados o combinados con los pixeles cercanos. Promedia todos los píxeles vecinos a un pixel dado lo que implica que se obtienen bordes borrosos. 
+
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 Al resultado de la aplicación de los diferentes filtros se les suele aplicar la función de activación denominada RELU y que ya se comentó en la introducción. 
 
@@ -142,10 +191,15 @@ Lo contario al filtro enfocar lo obtenemos a través de la matriz siguiente, dif
 ![Filtro DesEnfocar](imagenes/capitulo1/filtro_desenfocar.png){#fig-filtro_desenfocar}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 **Filtro Detectar bordes (Edge Detect)** 
 
 
+=======
+**Filtro Detectar bordes (Edge Detect)** 
+
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 **Filtro Detectar bordes (Edge Detect)** 
 
@@ -162,7 +216,10 @@ En este filto se observa que la matriz es simétrica y lo que intenta a través 
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 #### Pooling
@@ -186,6 +243,7 @@ La transformación max-pooling presenta un tipo de invarianza local: pequeños c
 
 ![Mantenimiento del pooling con la transformación](imagenes/capitulo1/transformacion_pooling.png){#fig-transformacion-pooling}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
@@ -193,6 +251,16 @@ La transformación max-pooling presenta un tipo de invarianza local: pequeños c
 
 Para explicar el concepto del **Padding** vamos a suponer que tenemos una imagen de 5 x 5 píxeles, es decir 25 neuronas en la capa de entrada, y que elegimos, para realizar la convolución, una ventana de 3 x 3. El número de neuronas de la capa oculta resultará ser de nueve. Enumeramos los píxeles de la imagen de forma natural del 1 al 25 para que resulte más sencillo de entender.
 
+=======
+
+
+#### Padding
+
+Para explicar el concepto del **Padding** vamos a suponer que tenemos una imagen de 5 x 5 píxeles, es decir 25 neuronas en la capa de entrada, y que elegimos, para realizar la convolución, una ventana de 3 x 3. El número de neuronas de la capa oculta resultará ser de nueve. Enumeramos los píxeles de la imagen de forma natural del 1 al 25 para que resulte más sencillo de entender.
+
+
+
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 
 
@@ -221,6 +289,7 @@ Hasta ahora, la forma de recorrer la matriz a través de la ventana se realiza d
 ![Operación de convolución con una ventana de 3 x 3 y stride 2](imagenes/capitulo1/con_stride2.png){#fig-con-stride2}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 Finalmente, para resumir, una **red convolucional** contiene los siguientes elementos: 
 
@@ -233,6 +302,19 @@ Finalmente, para resumir, una **red convolucional** contiene los siguientes elem
 ![Operación de convolución completa](imagenes/capitulo1/convolucion_completa.png){#fig-convolucion-completa} 
 
 
+=======
+Finalmente, para resumir, una **red convolucional** contiene los siguientes elementos: 
+
+- **Entrada**: Son el número de pixeles de la imagen. Serán alto, ancho y profundidad. Tenemos un solo color (escala de grises) o tres: rojo, verde y azul.
+- **Capa de convolución**: procesará la salida de neuronas que están conectadas en «regiones locales» de entrada (es decir pixeles cercanos), calculando el producto escalar entre sus pesos (valor de pixel) y una pequeña región a la que están conectados. En este epígrafe se presentan las imágenes con 32 filtros, pero puede realizarse con la cantidad que deseemos.
+- **Capa RELU** Se aplicará la función de activación en los elementos de la matriz.
+- **Pooling** (agrupar) o Submuestreo: Se procede normalmente a una reducción en las dimensiones alto y ancho, pero se mantiene la profundidad. 
+- **Capa tradicional**. Se finalizará con la red de neuronas feedforward (Perceptrón multicapa que se denomina normalmente como red densamente conectada) que vinculará con la última capa de subsampling y finalizará con la cantidad de neuronas que queremos clasificar. En el gráfico siguiente se muestran todas las fases de una red neuronal convolucional.
+
+![Operación de convolución completa](imagenes/capitulo1/convolucion_completa.png){#fig-convolucion-completa} 
+
+
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 Finalmente, para resumir, una **red convolucional** contiene los siguientes elementos: 
 
@@ -271,7 +353,10 @@ Resumiendo, las tres principales aportaciones de este modelo son:
   - Modelos muy profundos (152 capas) Aunque se encuentran otros modelos que también son muy populares con 34, 50 y 101 capas.
   
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Una buena parte de los modelos comentados se incluyen en la librería de Keras y se pueden encontrar en la siguiente dirección de internet: https://keras.io/api/applications/ Según los autores del programa Keras: "Las aplicaciones Keras son modelos de aprendizaje profundo que están disponibles junto con pesos preentrenados. Estos modelos se pueden usar para predicción, extracción de características y ajustes. Los pesos se descargan automáticamente cuando se crea una instancia de un modelo. Se almacenan en \~ / .keras / models /. Tras la creación de instancias, los modelos se construirán de acuerdo con el formato de datos de imagen establecido en su archivo de configuración de Keras en \~ / .keras / keras.json. Por ejemplo, si ha configurado image_data_format = channel_last, cualquier modelo cargado desde este repositorio se construirá de acuerdo con la convención de formato de datos TensorFlow,"Altura-Ancho-Profundidad".
@@ -279,6 +364,10 @@ Una buena parte de los modelos comentados se incluyen en la librería de Keras y
 ![Modelos preentrenados en Keras](imagenes/capitulo1/modelos_entrenados.png){#fig-modelos-entrenados}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
@@ -321,7 +410,10 @@ plt.show()
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Como puede verse, se parte de once tipos de productos diferentes; si bien, para varios de ellos el número de reclamaciones no es considerado significativo por el área legal de la entidad. Por ello, y en base a la similitud de los productos, se agrupan las cuatro categorías con un menor número reclamaciones en 
@@ -331,7 +423,10 @@ Como puede verse, se parte de once tipos de productos diferentes; si bien, para 
 - Money transfers y Other financial service: forman un grupo conjunto denominado "Money transfers and Other financial service"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 ``` python
@@ -368,7 +463,10 @@ Como puede verse, la reclamación 101 del dataset está asociada a un préstamo 
 - Para poder hacer este preprocesado de textos se hace uso del paquete re de Python.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 ``` python
@@ -402,7 +500,10 @@ print('Test:', X_train_text.shape)
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Antes de definir la arquitectura de la red, se lleva a cabo la conversión del texto a variables numéricas que es el input que puede leer la red. Para ello, se realiza: 
@@ -411,7 +512,10 @@ Antes de definir la arquitectura de la red, se lleva a cabo la conversión del t
 - El truncamiento y rellenado de las secuencias de entrada para igualar la longitud en la modelización.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 ``` python
@@ -432,7 +536,10 @@ print('Datos de entrada:', X_train.shape)
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Por último, se crea la red neuronal siguiendo el método funcional. La red tiene las siguientes capas: 
@@ -444,7 +551,10 @@ Por último, se crea la red neuronal siguiendo el método funcional. La red tien
 - Salida: capa densa con 8 neuronas (número de categorías del target) y función de activación "softmax"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 ``` python
@@ -479,7 +589,10 @@ metrics=['accuracy'])
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 Para el proceso de entrenamiento de la red destacar: 
@@ -489,7 +602,10 @@ Para el proceso de entrenamiento de la red destacar:
 - Uso de parada temprana para recoger el mejor modelo posible en el proceso iterativo
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 =======
 >>>>>>> 2c8e66f7b3a635cfd6d4d0ce05998dc4e6088172
 ``` python

@@ -1,46 +1,121 @@
 ## Redes Neuronales Convolucionales
 
 ### Introducción
-
+ 
 Esta arquitectura de redes de neuronas convolucionales, CNN, Convolutional Neural Networks es en la actualidad el campo de investigación más fecundo dentro de las redes neuronales artificiales de Deep learning y donde los investigadores, empresas e instituciones están dedicando más recursos e investigación. Para apoyar esta aseveración, en google trend se observa que el término convolutional neural network en relación con el concepto de artificial neural network crece y está por encima desde el año 2016. Es en este último lustro donde el Deep learning ha tomado una importancia considerable.
 
 ![búsqueda de términos de redes neuronales en google trend](imagenes/capitulo1/busqueda_google.png){#fig-busqueda-google}
 
-Fuente: Google Trend En este modelo de redes convolucionales las neuronas se corresponden a campos receptivos similares a las neuronas en la corteza visual de un cerebro humano. Este tipo de redes se han mostrado muy efectivas para tareas de detección y categorización de objetos y en la clasificación y segmentación de imágenes. Por ejemplo, estas redes en la década de 1990 las aplicó AT & T para desarrollar un modelo para la lectura de cheques. También más tarde se desarrollaron muchos sistemas OCR basados en CNN. En esta arquitectura cada neurona de una capa no recibe conexiones entrantes de todas las neuronas de la capa anterior, sino sólo de algunas. Esta estrategia favorece que una neurona se especialice en una región del conjunto de números (píxeles) de la capa anterior, lo que disminuye notablemente el número de pesos y de operaciones a realizar. Lo más normal es que neuronas consecutivas de una capa intermedia se especialicen en regiones solapadas de la capa anterior. Una forma intuitiva para entender cómo trabajan estas redes neuronales es ver cómo nos representamos y vemos las imágenes. Para reconocer una cara primero tenemos que tener una imagen interna de lo que es una cara. Y a una imagen de una cara la reconocemos porque tiene nariz, boca, orejas, ojos, etc. Pero en muchas ocasiones una oreja está tapada por el pelo, es decir, los elementos de una cara se pueden ocultar de alguna manera. Antes de clasificarla, tenemos que saber la proporción y disposición y también cómo se relacionan la partes entre sí. Para saber si las partes de la cara se encuentran en una imagen tenemos que identificar previamente líneas bordes, formas, texturas, relación de tamaño, etcétera. En una red convolucional, cada capa lo que va a ir aprendiendo son los diferentes niveles de abstracción de la imagen inicial. Para comprender mejor el concepto anterior hemos seleccionado esta imagen de Raschka y Mirjalili (2019) donde se observa como partes del perro se transforman en neuronas del mapa de características
+Las **redes convolucionales** son actualmente utilizadas para diferentes propósitos: tratamiento de imágenes(visión por computador, extracción de características, segmentación, etc.), generación y clasificación de texto(o audio), predicción de series temporales, etc. En este capítulo veremos su aplicación en clasificación de imágenes y de texto.
+
+
+### Clasificación  de imágenes
+
+En este modelo de redes convolucionales las neuronas se corresponden a campos receptivos similares a las neuronas en la corteza visual de un cerebro humano. Este tipo de redes se han mostrado muy efectivas para tareas de detección y categorización de objetos y en la clasificación y segmentación de imágenes. Por ejemplo, estas redes en la década de 1990 las aplicó AT & T para desarrollar un modelo para la lectura de cheques. También más tarde se desarrollaron muchos sistemas OCR basados en CNN. En esta arquitectura cada neurona de una capa no recibe conexiones entrantes de todas las neuronas de la capa anterior, sino sólo de algunas. Esta estrategia favorece que una neurona se especialice en una región del conjunto de números (píxeles) de la capa anterior, lo que disminuye notablemente el número de pesos y de operaciones a realizar. Lo más normal es que neuronas consecutivas de una capa intermedia se especialicen en regiones solapadas de la capa anterior. 
+
+Una forma intuitiva para entender cómo trabajan estas redes neuronales es ver cómo nos representamos y vemos las imágenes. Para reconocer una cara primero tenemos que tener una imagen interna de lo que es una cara. Y a una imagen de una cara la reconocemos porque tiene nariz, boca, orejas, ojos, etc. Pero en muchas ocasiones una oreja está tapada por el pelo, es decir, los elementos de una cara se pueden ocultar de alguna manera. Antes de clasificarla, tenemos que saber la proporción y disposición y también cómo se relacionan la partes entre sí. 
+
+
+Para saber si las partes de la cara se encuentran en una imagen tenemos que identificar previamente líneas bordes, formas, texturas, relación de tamaño, etcétera. En una red convolucional, cada capa lo que va a ir aprendiendo son los diferentes niveles de abstracción de la imagen inicial. Para comprender mejor el concepto anterior hemos seleccionado esta imagen de Raschka y Mirjalili (2019) donde se observa como partes del perro se transforman en neuronas del mapa de características
 
 ![Correspondencia de zonas de la imagen y mapa de características](imagenes/capitulo1/correspondencia_featrures.png){#fig-correspondencia-features}
 
-Fuente: Raschka y Mirjalili (2019)
 
-El objetivo de las redes CNN es aprender características de orden superior utilizando la operación de convolución. Puesto que las redes neuronales convolucionales pueden aprender relaciones de entrada-salida (donde la entrada es una imagen), en la convolución, cada pixel de salida es una combinación lineal de los pixeles de entrada. La convolución consiste en filtrar una imagen utilizando una máscara. Diferentes máscaras producen distintos resultados. Las máscaras representan las conexiones entre neuronas de capas anteriores. Estas capas aprenden progresivamente las características de orden superior de la entrada sin procesar. Las redes neuronales convolucionales se forman usando dos tipos de capas: convolucionales y pooling. La capa de convolución transforma los datos de entrada a través de una operación matemática llamada convolución. Esta operación describe cómo fusionar dos conjuntos de información diferentes. A esta operación se le suele aplicar una función de transformación, generalmente la RELU. Después de la capa o capas de convolución se usa una capa de pooling, cuya función es resumir las respuestas de las salidas cercanas. Antes de obtener el output unimos la última capa de pooling con una red densamente conectada. Previamente se ha aplanado (Flatering) la última capa de pooling para obtener un vector de entrada a la red neural final que nos ofrecerá los resultados.
+
+
+
+El objetivo de las redes CNN es aprender características de orden superior utilizando la operación de convolución. 
+
+Puesto que las redes neuronales convolucionales pueden aprender relaciones de entrada-salida (donde la entrada es una imagen en este caso), en la convolución, cada pixel de salida es una combinación lineal de los pixeles de entrada.
+
+La **convolución** consiste en **filtrar** una imagen utilizando una **máscara**. Diferentes máscaras producen distintos resultados. Las máscaras representan las conexiones entre neuronas de capas anteriores. Estas capas aprenden progresivamente las características de orden superior de la entrada sin procesar. 
+
+
+Las redes neuronales convolucionales se forman usando dos tipos de capas: convolucionales y pooling. La capa de convolución transforma los datos de entrada a través de una operación matemática llamada convolución. Esta operación describe cómo fusionar dos conjuntos de información diferentes. A esta operación se le suele aplicar una función de transformación, generalmente la RELU. Después de la capa o capas de convolución se usa una capa de pooling, cuya función es resumir las respuestas de las salidas cercanas. Antes de obtener el output unimos la última capa de pooling con una red densamente conectada. Previamente se ha aplanado (Flatering) la última capa de pooling para obtener un vector de entrada a la red neural final que nos ofrecerá los resultados.
 
 ![Arquitectura de una CNN](imagenes/capitulo1/arquitectura_convolucional.png){#fig-arquitectura_convolucional}
 
-Las redes neuronales convolucionales debido a su forma de concebirse son aptas para poder aprender a clasificar todo tipo de datos donde éstos estén distribuidos de una forma continua a lo largo del mapa de entrada, y a su vez sean estadísticamente similares en cualquier lugar del mapa de entrada. Por esta razón, son especialmente eficaces para clasificar imágenes. También pueden ser aplicadas para la clasificación de series de tiempo o señales de audio. En relación con el color y la forma de codificarse, en las redes convolucionales se realiza en tensores 3D, dos ejes para el ancho (width) y el alto (height) y el otro eje llamado de profundidad (depht) que es el canal del color con valor tres si trabajamos con imágenes de color RGB (Red, Green y Blue) rojo, verde y azul. Si disponemos de imágenes en escala de grises el valor de depht es uno. La base de datos MNIST (National Institute of Standards and Technology database) con la que trabajaremos en este epígrafe contiene imágenes de 28 x 28 pixeles, los valores de height y de widht son ambos 28, y al ser una base de datos en blanco y negro el valor de depht es 1. Las imágenes son matrices de píxeles que van de cero a 255 y que para la red neuronal se normalizan para que sus valores oscilen entre cero y uno. 7.4.2. Convolución En las redes convolucionales todas las neuronas de la capa de entrada (los píxeles de las imágenes) no se conectan con todas las neuronas de la capa oculta del primer nivel como lo hacen las redes clásicas del tipo perceptrón multicapa o las redes que conocemos de forma genérica como redes densamente conectadas. Las conexiones se realizan por pequeñas zonas de la capa de entrada.
+
+Las redes neuronales convolucionales debido a su forma de concebirse son aptas para poder aprender a clasificar todo tipo de datos donde éstos estén distribuidos de una forma continua a lo largo del mapa de entrada, y a su vez sean estadísticamente similares en cualquier lugar del mapa de entrada. Por esta razón, son especialmente eficaces para clasificar imágenes. También pueden ser aplicadas para la clasificación de series de tiempo o señales de audio. 
+
+En relación con el color y la forma de codificarse, en las redes convolucionales se realiza en tensores 3D, dos ejes para el ancho (width) y el alto (height) y el otro eje llamado de profundidad (depht) que es el canal del color con valor tres si trabajamos con imágenes de color RGB (Red, Green y Blue) rojo, verde y azul. Si disponemos de imágenes en escala de grises el valor de depht es uno. La base de datos MNIST (National Institute of Standards and Technology database) con la que trabajaremos en este epígrafe contiene imágenes de 28 x 28 pixeles, los valores de height y de widht son ambos 28, y al ser una base de datos en blanco y negro el valor de depht es 1. 
+
+Las imágenes son matrices de píxeles que van de cero a 255 y que para la red neuronal se normalizan para que sus valores oscilen entre cero y uno. 
+
+
+#### Convolución
+
+En las redes convolucionales todas las neuronas de la capa de entrada (los píxeles de las imágenes) no se conectan con todas las neuronas de la capa oculta del primer nivel como lo hacen las redes clásicas del tipo perceptrón multicapa o las redes que conocemos de forma genérica como redes densamente conectadas. Las conexiones se realizan por pequeñas zonas de la capa de entrada.
 
 ![Conexión de las neuronas de la capa de entrada con la capa oculta](imagenes/capitulo1/conexion_neuronas_convolucional.png){#fig-conexion-neuronas-convolucional}
 
-Veamos un ejemplo para la base de datos de los dígitos del 1 a 9. Vamos a conectar cada neurona de la capa oculta con una región de 5 x 5 neurona, es decir, con 25 neuronas de la capa de entrada, que podemos denominarla ventana. Esta ventana va a ir recorriendo todo el espacio de entrada de 28 x 28 empezando por arriba y desplazándose de izquierda a derecha y de arriba abajo. Suponemos que los desplazamientos de la ventana son de un paso (un pixel) aunque este es un parámetro de la red que podemos modificar (en la programación lo llamaremos stride). Para conectar la capa de entrada con la de salida utilizaremos una matriz de pesos (W) de tamaño 3 x 3 que recibe el nombre de filtro (filter) y el valor del sesgo. Para obtener el valor de cada neurona de la capa oculta realizaremos el producto escalar entre el filtro y la ventana de la capa de entrada. Utilizamos el mismo filtro para obtener todas las neuronas de la capa oculta, es decir en todos los productos escalares siempre utilizamos la misma matriz, el mismo filtro. Se definen matemáticamente estos productos escalares a través de la siguiente expresión: \[177\]
+
+Veamos un ejemplo para la base de datos de los dígitos del 1 a 9. Vamos a conectar cada neurona de la capa oculta con una región de 5 x 5 neurona, es decir, con 25 neuronas de la capa de entrada, que podemos denominarla ventana. Esta ventana va a ir recorriendo todo el espacio de entrada de 28 x 28 empezando por arriba y desplazándose de izquierda a derecha y de arriba abajo. Suponemos que los desplazamientos de la ventana son de un paso (un pixel) aunque este es un parámetro de la red que podemos modificar (en la programación lo llamaremos stride). 
+
+Para conectar la capa de entrada con la de salida utilizaremos una matriz de pesos (W) de tamaño 3 x 3 que recibe el nombre de filtro (filter) y el valor del sesgo. Para obtener el valor de cada neurona de la capa oculta realizaremos el producto escalar entre el filtro y la ventana de la capa de entrada. Utilizamos el mismo filtro para obtener todas las neuronas de la capa oculta, es decir en todos los productos escalares siempre utilizamos la misma matriz, el mismo filtro. 
+
+
+Se definen matemáticamente estos productos escalares a través de la siguiente expresión:
+
+$$
+Y=X * W \rightarrow Y[i, j]=\sum_{k_1=-\infty}^{+\infty} \sum_{k_2=-\infty}^{+\infty} X\left[i-k_1, j-k_2\right] W\left[k_1, k_2\right]
+
+$$ 
+![Convolución](imagenes/capitulo1/producto_convolucion.png){#fig-producto_convolucion}
+
 
 Como en este tipo de red un filtro sólo nos permite revelar una característica muy concreta de la imagen, lo que se propone es usar varios filtros simultáneamente, uno para cada característica que queramos detectar. Una forma visual de representarlo (si suponemos que queremos aplicar 32 filtros) es como se muestra a continuación:
 
 ![Primera capa de la red convolucional con 32 filtros](imagenes/capitulo1/primera_capa_convolucional.png){#fig-primera-capa-convolucional}
 
-Al resultado de la aplicación de los diferentes filtros se les suele aplicar la función de activación denominada RELU y que ya se comentó en la introducción. Una interesante fuente de información es la documentación del software gratuito GIMP donde expone diferentes efectos que se producen en las imágenes al aplicar diversas convoluciones. Un ejmplo claro y didáctico lo podemos obtener de la docuemntación del software libre de dibujo y tratamiento de imágenes denominado GIMP (https://docs.gimp.org/2.6/es/plug-in-convmatrix.html). Algunos de estos efectos nos ayudan a entender la operación de los filtros en las redes convolucionales y cómo afectan a las imágenes, en concreto, el ejemplo que presenta lo realiza sobre la figura del Taj Mahal El filtro enfocar lo que consigue es afinar los rasgos, los contornos lo que nos permite agudizar los objetos de la imagen. Toma el valor central de la matriz de cinco por cinco lo multiplica por cinco y le resta el valor de los cuatro vecinos. Al final hace una media, lo que mejora la resolución del pixel central porque elimina el ruido o perturbaciones que tiene de sus pixeles vecinos. El filtro enfocar (Sharpen)
 
-Lo contario al filtro enfocar lo obtenemos a través de la matriz siguiente, difuminando la imagen al ser estos píxeles mezclados o combinados con los pixeles cercanos. Promedia todos los píxeles vecinos a un pixel dado lo que implica que se obtienen bordes borrosos. Filtro desenfocar
+Al resultado de la aplicación de los diferentes filtros se les suele aplicar la función de activación denominada RELU y que ya se comentó en la introducción. 
 
-Filtro Detectar bordes (Edge Detect) Este efecto se consigue mejorando los límites o las aristas de la imagen. En cada píxel se elimina su vecino inmediatamente anterior en horizontal y en vertical. Se eliminan las similitudes vecinas y quedan los bordes resaltados. Al pixel central se le suman los cuatro píxeles vecinos y lo que queda al final es una medida de cómo de diferente es un píxel frente a sus vecinos. En el ejemplo, al hacer esto da un valor de cero de ahí que se observen tantas zonas oscuras.
+Una interesante fuente de información es la documentación del software gratuito GIMP donde expone diferentes efectos que se producen en las imágenes al aplicar diversas convoluciones. 
 
-Filtro Repujado (Emboss) En este filto se observa que la matriz es simétrica y lo que intenta a través del diseño del filtro es mejorar los píxeles centrales y de derecha abajo restándole los anteriores. Se obtiene lo que en fotografía se conoce como un claro oscuro. Trata de mejorar las partes que tienen mayor relevancia.
 
-### Pooling
+Un ejmplo claro y didáctico lo podemos obtener de la docuemntación del software libre de dibujo y tratamiento de imágenes denominado GIMP (https://docs.gimp.org/2.6/es/plug-in-convmatrix.html). Algunos de estos efectos nos ayudan a entender la operación de los filtros en las redes convolucionales y cómo afectan a las imágenes, en concreto, el ejemplo que presenta lo realiza sobre la figura del Taj Mahal.
 
-Con la operación de pooling se trata de condensar la información de la capa convolucional. A este procedimiento también se le conoce como submuestreo. Es simplemente una operación en la que reducimos los parámetros de la red. Se aplica normalmente a través de dos operaciones: max-pooling y mean-pooling, que también es conocido como average-pooling. Tal y como se observa en la imagen siguiente, desde la capa de convolución se genera una nueva capa aplicando la operación a todas las agrupaciones, donde previamente hemos elegido el tamaño de la región; en la figura siguiente es de tamaño 2, con lo que pasamos de un espacio de 24 x 24 neuronas a la mitad, 12 x 12 en la capa de pooling.
+El filtro enfocar lo que consigue es afinar los rasgos, los contornos lo que nos permite agudizar los objetos de la imagen. Toma el valor central de la matriz de cinco por cinco lo multiplica por cinco y le resta el valor de los cuatro vecinos. Al final hace una media, lo que mejora la resolución del pixel central porque elimina el ruido o perturbaciones que tiene de sus pixeles vecinos.
 
-Figura 71. etapa de pooling de tamaño 2 x 2
+**El filtro enfocar (Sharpen)**
 
-![etapa de pooling de tamaño 2 x 2](imagenes/capitulo1/pooling.png){#fig-pooling}
+
+
+![Filtro Enfocar](imagenes/capitulo1/filtro_enfocar.png){#fig-filtro_enfocar}
+
+
+Lo contario al filtro enfocar lo obtenemos a través de la matriz siguiente, difuminando la imagen al ser estos píxeles mezclados o combinados con los pixeles cercanos. Promedia todos los píxeles vecinos a un pixel dado lo que implica que se obtienen bordes borrosos. 
+
+
+**Filtro desenfocar**
+
+![Filtro DesEnfocar](imagenes/capitulo1/filtro_desenfocar.png){#fig-filtro_desenfocar}
+
+
+**Filtro Detectar bordes (Edge Detect)** 
+
+
+Este efecto se consigue mejorando los límites o las aristas de la imagen. En cada píxel se elimina su vecino inmediatamente anterior en horizontal y en vertical. Se eliminan las similitudes vecinas y quedan los bordes resaltados. Al pixel central se le suman los cuatro píxeles vecinos y lo que queda al final es una medida de cómo de diferente es un píxel frente a sus vecinos. En el ejemplo, al hacer esto da un valor de cero de ahí que se observen tantas zonas oscuras.
+
+![Filtro Detectar Bordes](imagenes/capitulo1/filtro_bordes.png){#fig-filtro_bordes}
+
+**Filtro Repujado (Emboss)**
+
+En este filto se observa que la matriz es simétrica y lo que intenta a través del diseño del filtro es mejorar los píxeles centrales y de derecha abajo restándole los anteriores. Se obtiene lo que en fotografía se conoce como un claro oscuro. Trata de mejorar las partes que tienen mayor relevancia.
+
+![Filtro Emboss](imagenes/capitulo1/filtro_emboss.png){#fig-filtro_emboss}
+
+
+
+#### Pooling
+
+Con la operación de **pooling** se trata de condensar la información de la capa convolucional. A este procedimiento también se le conoce como **submuestreo**. 
+
+Es simplemente una operación en la que reducimos los parámetros de la red. Se aplica normalmente a través de dos operaciones: **max-pooling** y **mean-pooling**, que también es conocido como average-pooling. Tal y como se observa en la imagen siguiente, desde la capa de convolución se genera una nueva capa aplicando la operación a todas las agrupaciones, donde previamente hemos elegido el tamaño de la región; en la figura siguiente es de tamaño 2, con lo que pasamos de un espacio de 24 x 24 neuronas a la mitad, 12 x 12 en la capa de pooling.
+
+
+![Etapa de pooling de tamaño 2 x 2](imagenes/capitulo1/pooling.png){#fig-pooling}
 
 Vamos a estudiar el pooling suponiendo que tenemos una imagen de 5 x 5 píxeles y que queremos efectuar una agrupación max-pooling. Es la más utilizada, ya que obtiene buenos resultados. Observamos los valores de la matriz y se escoge el valor máximo de los cuatro bloques de matrices de dos por dos. Max Pooling
 
@@ -52,38 +127,302 @@ La transformación max-pooling presenta un tipo de invarianza local: pequeños c
 
 ![Average Pooling](imagenes/capitulo1/average_pooling.png){#fig-average-pooling}
 
-Fuente: Torres. J. (2020)
+![Mantenimiento del pooling con la transformación](imagenes/capitulo1/transformacion_pooling.png){#fig-transformacion-pooling}
 
-### Padding
 
-Para explicar el concepto del Padding vamos a suponer que tenemos una imagen de 5 x 5 píxeles, es decir 25 neuronas en la capa de entrada, y que elegimos, para realizar la convolución, una ventana de 3 x 3. El número de neuronas de la capa oculta resultará ser de nueve. Enumeramos los píxeles de la imagen de forma natural del 1 al 25 para que resulte más sencillo de entender.
 
-![mantenimiento del pooling con la transformación](imagenes/capitulo1/transformacion_pooling.png){#fig-transformacion-pooling}
+#### Padding
 
-Pero si queremos obtener un tensor de salida que tenga las mismas dimensiones que la entrada podemos rellenar la matriz de ceros antes de deslizar la ventana por ella. Vemos la figura siguiente donde ya se ha rellenado de valores cero y obtenemos, después de deslizar la ventana de 3 x3 de izquierda a derecha y de arriba abajo, las veinticinco matrices de la figura nº 71
+Para explicar el concepto del **Padding** vamos a suponer que tenemos una imagen de 5 x 5 píxeles, es decir 25 neuronas en la capa de entrada, y que elegimos, para realizar la convolución, una ventana de 3 x 3. El número de neuronas de la capa oculta resultará ser de nueve. Enumeramos los píxeles de la imagen de forma natural del 1 al 25 para que resulte más sencillo de entender.
+
+
 
 ![Operación de convolución con una ventana de 3 x 3](imagenes/capitulo1/sin_padding.png){#fig-sin-padding}
 
-Figura nº 74. imagen con relleno de ceros
+Pero si queremos obtener un tensor de salida que tenga las mismas dimensiones que la entrada podemos rellenar la matriz de ceros antes de deslizar la ventana por ella. Vemos la figura siguiente donde ya se ha rellenado de valores cero y obtenemos, después de deslizar la ventana de 3 x3 de izquierda a derecha y de arriba abajo, las veinticinco matrices de la figura nº 71
 
 ![Imagen con relleno de ceros](imagenes/capitulo1/relleno_ceros.png){#fig-relleno-ceros}
 
-Cuando utilizamos el programa keras disponemos de dos opciones para llevar a cabo esta operación de padding: "same" y "valid". Si utilizamos "valid" implica no hacer padding y el método "same" obliga a que la salida tenga la misma dimensión que la entrada.
 
 ![Operación de convolución con ventana 3 x 3 y padding](imagenes/capitulo1/con_padding.png){#fig-con-padding}
 
-### Stride
+#### Stride
 
-Hasta ahora, la forma de recorrer la matriz a través de la ventana se realiza desplazándola de un solo paso, pero podemos cambiar este hiperparámetro conocido como stride. Al aumentar el paso se decrementa la información que pasará a la capa posterior. A continuación, se muestra el resultado de las cuatro matrices que obtenemos con un stride de valor 3.
+Hasta ahora, la forma de recorrer la matriz a través de la ventana se realiza desplazándola de **un solo paso**, pero podemos cambiar este hiperparámetro conocido como **stride**. Al aumentar el paso se decrementa la información que pasará a la capa posterior. A continuación, se muestra el resultado de las cuatro matrices que obtenemos con un stride de valor 3.
 
 ![Operación de convolución con una ventana de 3 x 3 y stride 2](imagenes/capitulo1/con_stride2.png){#fig-con-stride2}
 
-Finalmente, para resumir, una red convolucional contiene los siguientes elementos: • Entrada: Son el número de pixeles de la imagen. Serán alto, ancho y profundidad. Tenemos un solo color (escala de grises) o tres: rojo, verde y azul. • Capa de convolución: procesará la salida de neuronas que están conectadas en «regiones locales» de entrada (es decir pixeles cercanos), calculando el producto escalar entre sus pesos (valor de pixel) y una pequeña región a la que están conectados. En este epígrafe se presentan las imágenes con 32 filtros, pero puede realizarse con la cantidad que deseemos. • «Capa RELU» Se aplicará la función de activación en los elementos de la matriz. • POOL (agrupar) o Submuestreo: Se procede normalmente a una reducción en las dimensiones alto y ancho, pero se mantiene la profundidad. • CAPA tradicional. Se finalizará con la red de neuronas feedforward (Perceptrón multicapa que se denomina normalmente como red densamente conectada) que vinculará con la última capa de subsampling y finalizará con la cantidad de neuronas que queremos clasificar. En el gráfico siguiente se muestran todas las fases de una red neuronal convolucional.
 
-![Operación de convolución completa](imagenes/capitulo1/convolucion_completa.png){#fig-convolucion-completa} Fuente: Raschka y Mirjalili (2019)
+Finalmente, para resumir, una **red convolucional** contiene los siguientes elementos: 
 
-### Redes convolucionales con nombre propio
+- **Entrada**: Son el número de pixeles de la imagen. Serán alto, ancho y profundidad. Tenemos un solo color (escala de grises) o tres: rojo, verde y azul.
+- **Capa de convolución**: procesará la salida de neuronas que están conectadas en «regiones locales» de entrada (es decir pixeles cercanos), calculando el producto escalar entre sus pesos (valor de pixel) y una pequeña región a la que están conectados. En este epígrafe se presentan las imágenes con 32 filtros, pero puede realizarse con la cantidad que deseemos.
+- **Capa RELU** Se aplicará la función de activación en los elementos de la matriz.
+- **Pooling** (agrupar) o Submuestreo: Se procede normalmente a una reducción en las dimensiones alto y ancho, pero se mantiene la profundidad. 
+- **Capa tradicional**. Se finalizará con la red de neuronas feedforward (Perceptrón multicapa que se denomina normalmente como red densamente conectada) que vinculará con la última capa de subsampling y finalizará con la cantidad de neuronas que queremos clasificar. En el gráfico siguiente se muestran todas las fases de una red neuronal convolucional.
 
-Existen en la actualidad muchas arquitecturas de redes neuronales convolucionales que ya están preparadas, probadas, disponibles e incorporadas en el software de muchos programas como Keras y Tensorflow. Vamos a comentar algunos de estos modelos, bien por ser los primeros, o por sus excelentes resultados en concursos como el ILSVRC (Large Scale Visual Recognition Challenge). Estas estructuras merecen atención dado que son excelentes para estudiarlas e incorporarlas por su notable éxito. El ILSVRC fue un concurso celebrado de 2011 a 2016 de donde nacieron las principales aportaciones efectuadas en las redes convolucionales. Este concurso fue diseñado para estimular la innovación en el campo de la visión computacional. Actualmente se desarrollan este tipo de concursos a través de la plataforma web: https://www.kaggle.com/ Para ver más prototipos de redes convolucionales y los últimos avances y consejos sobre las redes convolucionales se puede consultar el siguiente artículo "Recent Advances in Convolutional Neural Networks" de Jiuxiang. G. et al. (2019) Los cinco modelos más destacados hasta el año 2017 son los siguientes: LeNet-5, Alexnet, GoogLeNet, VGG y Restnet. 1. LeNet-5. Este modelo de Yann LeCun de los años 90 consiguió excelentes resultados en la lectura de códigos postales consta de imágenes de entrada de 32 x 32 píxeles seguida de dos etapas de convolución -- pooling, una capa densamente conectada y una capa softmax final que nos permite conocer los números o las imágenes. 2. AlexNet. Fue la arquitectura estrella a partir del año 2010 en el ILSVRC y popularizada en el documento de 2012 de Alex Krizhevsky, et al. titulado"Clasificación de ImageNet con redes neuronales convolucionales profundas". Podemos resumir los aspectos clave de la arquitectura relevantes en los modelos modernos de la siguiente manera: • Empleo de la función de activación ReLU después de capas convolucionales y softmax para la capa de salida. • Uso de la agrupación máxima en lugar de la agrupación media. • Utilización de la regularización de Dropout entre las capas totalmente conectadas. • Patrón de capa convolucional alimentada directamente a otra capa convolucional. • Uso del aumento de datos (Data Aumentation,) 3. VGG. Este prototipo fue desarrollado por un grupo de investigación de Geometría Visual en Oxford. Obtuvo el segundo puesto en la competición del año 2014 del ILSVRC. Las aportaciones principales de la investigación se pueden encontrar en el documento titulado " Redes convolucionales muy profundas para el reconocimiento de imágenes a gran escala " desarrollado por Karen Simonyan y Andrew Zisserman. Este modelo contribuyó a demostrar que la profundidad de la red es una componente crítica para alcanzar unos buenos resultados. Otra diferencia importante con los modelos anteriores y que actualmente es muy utilizada es el uso de un gran número de filtros y de tamaño reducido. Estas redes emplean ejemplos de dos, tres e incluso cuatro capas convolucionales apiladas antes de usar una capa de agrupación máxima. En esta arquitectura el número de filtros aumenta con la profundidad del modelo. El modelo comienza con 64 y aumenta a través de los filtros de 128, 256 y 512 al final de la parte de extracción de características del modelo. Los investigadores evaluaron varias variantes de la arquitectura si bien en los programas sólo se hace referencia a dos de ellas que son las que aportan un mayor rendimiento y que son nombradas por las capas que tienen: VGG-16 y VGG-19. 4. GoogLeNet. GoogLeNet fue desarrolado por investigadores de Google Research. de Google, que con su módulo denominado de inception reduce drásticamente los parámetros de la red (10 veces menos que AlexNet) y de ella han derivado varias versiones como la Inception-v4. Esta arquitectura ganó la competición en el año 2014 y su éxito se debió a que la red era mucho más profunda (muchas más capas) y como ya se ha indicado introdujeron en el modelo las subredes llamadas inception. Las aportaciones principales en el uso de capas convolucionales fueron propuestos en el documento de 2015 por Christian Szegedy, et al. titulado " Profundizando con las convoluciones ". Estos autores introducen una arquitectura llamada "inicio" y un modelo específico denominado GoogLenet. El módulo inicio es un bloque de capas convolucionales paralelas con filtros de diferentes tamaños y una capa de agrupación máxima de 3 × 3, cuyos resultados se concatenan. Otra decisión de diseño fundamental en el modelo inicial fue la conexión de la salida en diferentes puntos del modelo que lograron realizar con la creación de pequeñas redes de salida desde la red principal y que fueron entrenadas para hacer una predicción. La intención era proporcionar una señal de error adicional de la tarea de clasificación en diferentes puntos del modelo profundo para abordar el problema de los gradientes de fuga. 5. Red Residual o ResNet. Esta arquitectura gano la competición de 2015 y fue creada por el grupo de investigación de Microsoft. Se puede ampliar la información en He, et al. en su documento de 2016 titulado " Aprendizaje profundo residual para el reconocimiento de la imagen ". Esta red es extremadamente profunda con 152 capas, confirmando al pasar los años que las redes son cada vez más profundas, más capas, pero con menos parámetros que estimar. La cuestión clave del diseño de esta red es la incorporación de la idea de bloques residuales que hacen uso de conexiones directa. Un bloque residual, según los autores, "es un patrón de dos capas convolucionales con activación ReLU donde la salida del bloque se combina con la entrada al bloque, por ejemplo, la conexión de acceso directo" Otra clave, en este caso para el entrenamiento de la red tan profunda es lo que llamaron skip connections que implica que la señal con la que se alimenta una capa también se agregue a una capa que se encuentre más adelante. Resumiendo, las tres principales aportaciones de este modelo son: • Empleo de conexiones de acceso directo. • Desarrollo y repetición de los bloques residuales. • Modelos muy profundos (152 capas) Aunque se encuentran otros modelos que también son muy populares con 34, 50 y 101 capas. Una buena parte de los modelos comentados se incluyen en la librería de Keras y se pueden encontrar en la siguiente dirección de internet: https://keras.io/api/applications/ Según los autores del programa Keras: "Las aplicaciones Keras son modelos de aprendizaje profundo que están disponibles junto con pesos preentrenados. Estos modelos se pueden usar para predicción, extracción de características y ajustes. Los pesos se descargan automáticamente cuando se crea una instancia de un modelo. Se almacenan en \~ / .keras / models /. Tras la creación de instancias, los modelos se construirán de acuerdo con el formato de datos de imagen establecido en su archivo de configuración de Keras en \~ / .keras / keras.json. Por ejemplo, si ha configurado image_data_format = channel_last, cualquier modelo cargado desde este repositorio se construirá de acuerdo con la convención de formato de datos TensorFlow,"Altura-Ancho-Profundidad".
+![Operación de convolución completa](imagenes/capitulo1/convolucion_completa.png){#fig-convolucion-completa} 
 
-![Modelos preentrenados en Keras](imagenes/capitulo1/modelos_entrenados.png){#fig-modelos-entrenados} Fuente : https://keras.io/api/applications/
+
+#### Redes convolucionales con nombre propio
+
+Existen en la actualidad muchas arquitecturas de redes neuronales convolucionales que ya están preparadas, probadas, disponibles e incorporadas en el software de muchos programas como Keras y Tensorflow.
+
+Vamos a comentar algunos de estos modelos, bien por ser los primeros, o por sus excelentes resultados en concursos como el ILSVRC (Large Scale Visual Recognition Challenge). 
+
+Estas estructuras merecen atención dado que son excelentes para estudiarlas e incorporarlas por su notable éxito. El ILSVRC fue un concurso celebrado de 2011 a 2016 de donde nacieron las principales aportaciones efectuadas en las redes convolucionales. Este concurso fue diseñado para estimular la innovación en el campo de la visión computacional. Actualmente se desarrollan este tipo de concursos a través de la plataforma web: https://www.kaggle.com/ Para ver más prototipos de redes convolucionales y los últimos avances y consejos sobre las redes convolucionales se puede consultar el siguiente artículo "Recent Advances in Convolutional Neural Networks" de Jiuxiang. G. et al. (2019) 
+
+Los cinco modelos más destacados hasta el año 2017 son los siguientes: LeNet-5, Alexnet, GoogLeNet, VGG y Restnet. 
+
+- **LeNet-5**. Este modelo de Yann LeCun de los años 90 consiguió excelentes resultados en la lectura de códigos postales consta de imágenes de entrada de 32 x 32 píxeles seguida de dos etapas de convolución -- pooling, una capa densamente conectada y una capa softmax final que nos permite conocer los números o las imágenes. 
+
+- **AlexNet**. Fue la arquitectura estrella a partir del año 2010 en el ILSVRC y popularizada en el documento de 2012 de Alex Krizhevsky, et al. titulado"Clasificación de ImageNet con redes neuronales convolucionales profundas". Podemos resumir los aspectos clave de la arquitectura relevantes en los modelos modernos de la siguiente manera: • Empleo de la función de activación ReLU después de capas convolucionales y softmax para la capa de salida. • Uso de la agrupación máxima en lugar de la agrupación media. • Utilización de la regularización de Dropout entre las capas totalmente conectadas. • Patrón de capa convolucional alimentada directamente a otra capa convolucional. • Uso del aumento de datos (Data Aumentation,) 
+
+- **VGG**. Este prototipo fue desarrollado por un grupo de investigación de Geometría Visual en Oxford. Obtuvo el segundo puesto en la competición del año 2014 del ILSVRC. Las aportaciones principales de la investigación se pueden encontrar en el documento titulado " Redes convolucionales muy profundas para el reconocimiento de imágenes a gran escala " desarrollado por Karen Simonyan y Andrew Zisserman. Este modelo contribuyó a demostrar que la profundidad de la red es una componente crítica para alcanzar unos buenos resultados. Otra diferencia importante con los modelos anteriores y que actualmente es muy utilizada es el uso de un gran número de filtros y de tamaño reducido. Estas redes emplean ejemplos de dos, tres e incluso cuatro capas convolucionales apiladas antes de usar una capa de agrupación máxima. En esta arquitectura el número de filtros aumenta con la profundidad del modelo. El modelo comienza con 64 y aumenta a través de los filtros de 128, 256 y 512 al final de la parte de extracción de características del modelo. Los investigadores evaluaron varias variantes de la arquitectura si bien en los programas sólo se hace referencia a dos de ellas que son las que aportan un mayor rendimiento y que son nombradas por las capas que tienen: VGG-16 y VGG-19. 
+
+- **GoogLeNet**. GoogLeNet fue desarrolado por investigadores de Google Research. de Google, que con su módulo denominado de inception reduce drásticamente los parámetros de la red (10 veces menos que AlexNet) y de ella han derivado varias versiones como la Inception-v4. Esta arquitectura ganó la competición en el año 2014 y su éxito se debió a que la red era mucho más profunda (muchas más capas) y como ya se ha indicado introdujeron en el modelo las subredes llamadas inception. Las aportaciones principales en el uso de capas convolucionales fueron propuestos en el documento de 2015 por Christian Szegedy, et al. titulado " Profundizando con las convoluciones ". Estos autores introducen una arquitectura llamada "inicio" y un modelo específico denominado GoogLenet. El módulo inicio es un bloque de capas convolucionales paralelas con filtros de diferentes tamaños y una capa de agrupación máxima de 3 × 3, cuyos resultados se concatenan. Otra decisión de diseño fundamental en el modelo inicial fue la conexión de la salida en diferentes puntos del modelo que lograron realizar con la creación de pequeñas redes de salida desde la red principal y que fueron entrenadas para hacer una predicción. La intención era proporcionar una señal de error adicional de la tarea de clasificación en diferentes puntos del modelo profundo para abordar el problema de los gradientes de fuga. 
+
+- **Red Residual o ResNet**. Esta arquitectura gano la competición de 2015 y fue creada por el grupo de investigación de Microsoft. Se puede ampliar la información en He, et al. en su documento de 2016 titulado " Aprendizaje profundo residual para el reconocimiento de la imagen ". Esta red es extremadamente profunda con 152 capas, confirmando al pasar los años que las redes son cada vez más profundas, más capas, pero con menos parámetros que estimar. La cuestión clave del diseño de esta red es la incorporación de la idea de bloques residuales que hacen uso de conexiones directa. Un bloque residual, según los autores, "es un patrón de dos capas convolucionales con activación ReLU donde la salida del bloque se combina con la entrada al bloque, por ejemplo, la conexión de acceso directo" Otra clave, en este caso para el entrenamiento de la red tan profunda es lo que llamaron skip connections que implica que la señal con la que se alimenta una capa también se agregue a una capa que se encuentre más adelante. 
+Resumiendo, las tres principales aportaciones de este modelo son:
+  - Empleo de conexiones de acceso directo.
+  - Desarrollo y repetición de los bloques residuales.
+  - Modelos muy profundos (152 capas) Aunque se encuentran otros modelos que también son muy populares con 34, 50 y 101 capas.
+  
+
+Una buena parte de los modelos comentados se incluyen en la librería de Keras y se pueden encontrar en la siguiente dirección de internet: https://keras.io/api/applications/ Según los autores del programa Keras: "Las aplicaciones Keras son modelos de aprendizaje profundo que están disponibles junto con pesos preentrenados. Estos modelos se pueden usar para predicción, extracción de características y ajustes. Los pesos se descargan automáticamente cuando se crea una instancia de un modelo. Se almacenan en \~ / .keras / models /. Tras la creación de instancias, los modelos se construirán de acuerdo con el formato de datos de imagen establecido en su archivo de configuración de Keras en \~ / .keras / keras.json. Por ejemplo, si ha configurado image_data_format = channel_last, cualquier modelo cargado desde este repositorio se construirá de acuerdo con la convención de formato de datos TensorFlow,"Altura-Ancho-Profundidad".
+
+![Modelos preentrenados en Keras](imagenes/capitulo1/modelos_entrenados.png){#fig-modelos-entrenados}
+
+### Clasificación de textos
+
+Las redes convolucionales son actualmente utilizadas para diferentes propósitos: tratamiento de imágenes (visión por computador, extracción de características, segmentación, etc.), generación y clasificación de texto (o audio), predicción de series temporales, etc. En este caso, veremos en detalle un ejemplo de clasificación de texto.
+
+Se presenta a continuación una aplicación práctica de clasificación de texto multiclase a partir de redes Convolucionales de una dimensión. Para ello, se utiliza una bbdd referida a las reclamaciones de los usuarios ante una entidad bancaria en función del tipo de producto.
+
+En primer lugar, se importan las librerías a utililizar y se le el fichero:
+
+``` python
+import tensorflow as tf
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import re
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, confusion_matrix
+import warnings
+warnings.filterwarnings('ignore')
+```
+
+El fichero de trabajo contiene una serie de reclamaciones que no vienen acompañadas con su texto asociado. Se considera que lo más adecuado es excluir tales instancias del dataset de partida.
+
+``` python
+datos = pd.read_csv('C:/DEEP LEARNING/consumer_complaints.csv')
+datos = datos[['product', 'consumer_complaint_narrative']] # variables de
+interés
+datos =
+datos.dropna(subset=['product','consumer_complaint_narrative']).reset_index
+(drop=True) # registros con texto no informado son eliminados de la muestra
+print('Tamaño de los datos:', datos.shape)
+Tamaño de los datos: (66806, 2)
+sns.countplot(y='product', data=datos, order =
+datos['product'].value_counts().index)
+plt.xlabel('Reclamaciones'), plt.ylabel('Producto')
+plt.show()
+```
+
+
+Como puede verse, se parte de once tipos de productos diferentes; si bien, para varios de ellos el número de reclamaciones no es considerado significativo por el área legal de la entidad. Por ello, y en base a la similitud de los productos, se agrupan las cuatro categorías con un menor número reclamaciones en 
+
+- Prepaid card: se incluye en la categoría de "Credit card" 
+- Payday loan: se incluye en la categoría "Bank account or service" 
+- Money transfers y Other financial service: forman un grupo conjunto denominado "Money transfers and Other financial service"
+
+
+``` python
+# agrupaciones
+datos['product'] = np.where(datos['product']=='Payday loan', 'Bank account
+or service', datos['product']) # préstamos
+datos['product'] = np.where(datos['product']=='Prepaid card', 'Credit
+card', datos['product']) # créditos
+tipo_producto = ['Money transfers','Other financial service'] # otros
+servicios financieros
+datos['product'] = np.where(datos['product'].isin(tipo_producto), 'Money
+transfers and Other', datos['product'])
+sns.countplot(y='product', data=datos, order =
+datos['product'].value_counts().index)
+plt.xlabel('Reclamaciones'), plt.ylabel('Producto')
+plt.show()
+```
+
+De esta forma, el número de grupos ha sido distribuido de una forma más equitativa. A modo de ejemplo, se muestra una de las reclamaciones:
+
+``` python
+def plot_reclamaciones(df, elemento):
+    df = df.loc[elemento].to_list()
+    return df
+print('Producto:', plot_reclamaciones(datos, 100)[0])
+print('Reclamacion:', plot_reclamaciones(datos, 100)[1])
+```
+
+Como puede verse, la reclamación 101 del dataset está asociada a un préstamo al consumo. Sin embargo, lo verdaderamente interesante del texto de ejemplo es la necesidad de realizar un preprocesado a los textos puesto que algunos símbolos, caracteres o, incluso palabras, no son relevantes para que la red sea capaz de interpretar el contenido del mismo. Por tanto, se lleva a cabo lo siguiente: 
+
+- Conversión del texto a minúsculas 
+- Exclusión del texto el contenido cifrado (XXXX) 
+- Eliminación de caracteres extraños 
+- Para poder hacer este preprocesado de textos se hace uso del paquete re de Python.
+
+
+``` python
+def preprocesado(reclamacion):
+    reclamacion = reclamacion.lower() # texto en minúsculas
+    reclamacion = reclamacion.replace('x','') # cambio X por espacio
+    reclamacion = re.compile('[/(){}\[\]\|@,;]').sub('', reclamacion) # símbolos extraños (1)
+    reclamacion = re.compile('[^0-9a-z #+_]').sub('', reclamacion) # símbolos extraños (2)
+    return reclamacion
+datos['consumer_complaint_narrative'] = datos['consumer_complaint_narrative'].apply(preprocesado) # aplicación de la función
+```
+
+Se presenta de nuevo el ejemplo anterior para ver el resultado del procesamiento de textos realizado.
+
+``` python
+print('Producto:', plot_reclamaciones(datos, 100)[0])
+print('Reclamacion:', plot_reclamaciones(datos, 100)[1])
+```
+
+``` python
+seed=123
+tf.random.set_seed(seed)
+np.random.seed(seed)
+X_texto = datos['consumer_complaint_narrative']
+Y_label = pd.get_dummies(datos['product']).values # las categorías son
+convertidas a variable dummy
+X_train_text, X_test_text, Y_train, Y_test =
+train_test_split(X_texto,Y_label, test_size = 0.2, random_state = seed)
+print('Entrenamiento:', X_train_text.shape)
+print('Test:', X_train_text.shape)
+```
+
+
+Antes de definir la arquitectura de la red, se lleva a cabo la conversión del texto a variables numéricas que es el input que puede leer la red. Para ello, se realiza: 
+
+- La vectorización del texto asociado a las reclamaciones. 
+- El truncamiento y rellenado de las secuencias de entrada para igualar la longitud en la modelización.
+
+
+``` python
+MAX_NB_WORDS = 25000 # frecuencia de palabras
+MAX_SEQUENCE_LENGTH = 200 # número de palabras en cada reclamacion
+EMBEDDING_DIM = 150 # dimensión del embedding
+
+tokenizer = tf.keras.preprocessing.text.Tokenizer(num_words=MAX_NB_WORDS,
+filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
+tokenizer.fit_on_texts(X_train_text.values)
+word_index = tokenizer.word_index
+print('Tokens:', len(word_index))
+
+X_train = tokenizer.texts_to_sequences(X_train_text.values)
+X_train = tf.keras.preprocessing.sequence.pad_sequences(X_train,
+maxlen=MAX_SEQUENCE_LENGTH)
+print('Datos de entrada:', X_train.shape)
+```
+
+
+Por último, se crea la red neuronal siguiendo el método funcional. La red tiene las siguientes capas: 
+- Entrada: de 200 neuronas pues corresponde con la longitud de las secuencias 
+- Embedding: de dimensión 200 y toma como input el número máximo de palabras (25.000) 
+- Convolucional: de 64 neuronas 
+- MaxPooling: 
+- Densa: de 32 neuronas y con función de activación "relu" 
+- Salida: capa densa con 8 neuronas (número de categorías del target) y función de activación "softmax"
+
+
+``` python
+# capa de entrada
+inputs = tf.keras.Input(shape=(X_train.shape[1],))
+embedding = tf.keras.layers.Embedding(input_dim=MAX_NB_WORDS,
+output_dim=EMBEDDING_DIM)(inputs)
+capa_conv = tf.keras.layers.Conv1D(filters=64,
+kernel_size=3,
+padding='valid',
+activation='relu')(embedding)
+max_pooling = tf.keras.layers.GlobalMaxPooling1D()(capa_conv)
+capa_densa = tf.keras.layers.Dense(units=32,
+activation='relu',
+kernel_regularizer=tf.keras.regularizers.l2(0.01))(max_pooling)
+out = tf.keras.layers.Dense(units=Y_train.shape[1],
+activation='softmax')(capa_densa)
+modelo = tf.keras.Model(inputs=inputs, outputs=out)
+```
+
+El summary nos muestra el número de parámetros por capa y el número de parámetros total. Puede verse que el alto número de parámetros viene, principalmente, por la capa de Embedding.
+
+``` python
+modelo.summary()
+```
+
+La métrica utilizada para evaluar el desempeño es el accuracy y, como es un problema de clasificación multiclase, como función de pérdida categorical_crossentropy. Por su parte, se emplea Adam para la utilización del algoritmo de propagación del error hacia atrás (parámetros por defecto).
+
+``` python
+modelo.compile(loss='categorical_crossentropy', optimizer='adam',
+metrics=['accuracy'])
+```
+
+<<<
+Para el proceso de entrenamiento de la red destacar: 
+ 
+- Un máximo de 10 épocas y actualización de los pesos cada 128 muestras 
+- Reserva del 20% del dataset para ser usado como validación 
+- Uso de parada temprana para recoger el mejor modelo posible en el proceso iterativo
+
+
+``` python
+epochs = 10
+batch_size = 128
+history = modelo.fit(X_train, Y_train,
+epochs=epochs,
+batch_size=batch_size,
+validation_split=0.2,
+
+callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_loss',
+```
+
+Una vez realizado el entrenamiento, se visualiza el proceso para conocer su convergencia
+
+``` python
+# construcción de un data.frame
+df_train=pd.DataFrame(history.history)
+df_train['epochs']=history.epoch
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+ax1.plot(df_train['epochs'], df_train['loss'], label='train_loss')
+ax1.plot(df_train['epochs'], df_train['val_loss'], label='val_loss')
+ax2.plot(df_train['epochs'], df_train['accuracy'], label='train_acc')
+ax2.plot(df_train['epochs'], df_train['val_accuracy'], label='val_acc')
+ax1.legend()
+ax2.legend()
+plt.show()
+```
+
+Finalmente, se estima la bondad de ajuste con la muestra de test. Para ello, como esta muestra hace referencia a la puesta en producción del modelo, es necesario crear las secuencias de este nuevo dataset en función de la tokenización del modelo.
+
+``` python
+X_test = tokenizer.texts_to_sequences(X_test_text)
+X_test = tf.keras.preprocessing.sequence.pad_sequences(X_test,
+maxlen=MAX_SEQUENCE_LENGTH)
+```
+
+Y ahora ya sí, se realizan las predicciones y se evaluar el performance del modelo creado en la muestra de test.
+
+``` python
+# uso de argmax para pasar de probabilidad a estimación final
+Y_test_pred = np.argmax(modelo.predict(X_test), axis=1) # predicción de la
+etiqueta
+Y_test_label = np.argmax(Y_test, axis=1) # obtención de las etiquetas sin
+dummy
+print('accuracy - test:', np.round(accuracy_score(Y_test_label,
+Y_test_pred),5))
+sns.heatmap(confusion_matrix(Y_test_pred, Y_test_label), annot = True,
+fmt='.0f') # matriz de confusión
+plt.title('Matriz de confusión - test')
+plt.show()
+```

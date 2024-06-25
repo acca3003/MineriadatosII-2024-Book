@@ -22,6 +22,10 @@ http://www.sc.ehu.es/ccwbayes/docencia/mmcc/docs/temageneticos.pdf
 
 https://sci2s.ugr.es/sites/default/files/files/Teaching/GraduatesCourses/Bioinformatica/Tema%2006%20-%20AGs%20I.pdf
 
+Libros de Algoritmos Genéticos
+
+
+
 Individuo o Cromosoma Compuesto de Genes Codificación de genes (Binaria, Entera, Real)
 
 ## Introducción
@@ -46,13 +50,12 @@ De forma esquemática un algoritmo genético es una **función matemática** que
 
 No es posible la aplicación en toda clase de problemas de los algoritmos genéticos. Para que estos puedan aplicarse, los problemas deben cumplir las siguientes condiciones:
 
--   El **espacio de búsqueda** [^capitulo3-1] debe estar acotado, por tanto ser **finito**.
+-   El **espacio de búsqueda** [^Recordemos que cualquier método de Data Mining se puede asimilar como una búsqueda en el espacio solución, es decir, el espacio formado por todas las posibles soluciones de un problema] debe estar acotado, por tanto ser **finito**.
 
 -   Es necesario poseer una **función** de aptitud, que denominaremos **fitness**, que evalúe cada solución (individuo) indicándonos de forma cuantitativa cuán buena o mala es una solución concreta.
 
 -   Las **soluciones** deben ser **codificables** en un lenguaje comprensible para un **ordenador**, y si es posible de la forma más **compacta** y abreviada posible.
 
-[^capitulo3-1]: **Recordemos que cualquier método de Data Mining se puede asimilar como una búsqueda en el espacio solución, es decir, el espacio formado por todas las posibles soluciones de un problema**
 
 Habitualmente, la segunda condición es la más complicada de conseguir, para ciertos problemas es trivial la función de fitness (por ejemplo, en el caso de la búsqueda del máximo de una función) no obstante, en la vida real a veces es muy complicada de obtener y, habitualmente, se realizan conjeturas evaluándose los algoritmos con varias funciones de fitness.
 
@@ -84,7 +87,7 @@ A continuación, se explican los conceptos básicos de los algoritmos genéticos
 
 ### Codificación de los datos
 
-Cada **individuo o cromosoma** está formado por unos cuantos **genes**. Para nuestro caso vamos a establecer que los indiduos tienen un único cromosoma con una cierta cantida de genes. Estos genes los consideramos como la cantidad mínima de información que se puede transferir. Los genes se pueden agrupar en **características o rasgos** que nos podrían ayudar en la resolución de ciertos problemas. 
+Cada **individuo o cromosoma** está formado por unos cuantos **genes**. Para nuestro caso vamos a establecer que los indiduos tienen un único cromosoma con una cierta cantidad de genes. Estos genes los consideramos como la cantidad mínima de información que se puede transferir. Los genes se pueden agrupar en **características o rasgos** que nos podrían ayudar en la resolución de ciertos problemas. 
 
 Estos individuos con sus genes los tenemos que representar de forma que podamos codificar esa información.
 
@@ -106,41 +109,62 @@ Los principales métodos de representación son:
 
 El primer paso para conseguir que un ordenador procese unos **datos** es conseguir **representarlos** de una forma apropiada. En primer término, para codificar los datos, es necesario separar las posibles configuraciones posibles del dominio del problema en un **conjunto** de **estados** **finito**.
 
-Una vez obtenida esta clasificación el objetivo es representar cada **estado** de **forma** **unívoca** con una cadena de caracteres (compuesta en la mayoría de casos por unos y ceros).
+Una vez obtenida esta clasificación el objetivo es representar cada **estado** de **forma** **unívoca** con una cadena (compuesta en la mayoría de casos por unos y ceros).
 
-A pesar de que cada estado puede codificarse con alfabetos de diferente cardinalidad[^capitulo3-2], uno de los resultados fundamentales de la teoría de algoritmos genéticos es el **teorema del esquema** de Holland [@holland1975], que afirma que la codificación **óptima** es aquella en la que los algoritmos tienen un alfabeto de cardinalidad, es decir el uso del **alfabeto** **binario**.
+A pesar de que cada estado puede codificarse con alfabetos de diferente cardinalidad[^La longitud de las cadenas que representen los posibles estados no es necesario que sea fija, representaciones como la de Kitano para representar operaciones matemáticas son un ejemplo de esto], uno de los resultados fundamentales de la teoría de algoritmos genéticos es el **Teorema del Esquema** de Holland [@holland1975], que afirma que la codificación **óptima** es aquella en la que los algoritmos tienen un alfabeto de cardinalidad, es decir el uso del **alfabeto** **binario**.
 
-[^capitulo3-2]: La longitud de las cadenas que representen los posibles estados no es necesario que sea fija, representaciones como la de Kitano para representar operaciones matemáticas son un ejemplo de esto
 
-El enunciado del **teorema** del **esquema** es el siguiente: «*Esquemas cortos, de bajo orden y aptitud superior al promedio reciben un incremento exponencial de representantes en generaciones subsecuentes de un Algoritmo Genético.*»
+El enunciado del **Teorema del Esquema** es el siguiente: *Esquemas cortos, de bajo orden y aptitud superior al promedio reciben un incremento exponencial de representantes en generaciones subsecuentes de un Algoritmo Genético.*
 
 Una de las ventajas de usar un alfabeto binario para la construcción de configuraciones de estados es la sencillez de los operadores utilizados para la modificación de estas. En el caso de que el alfabeto sea binario, los operadores se denominan, lógicamente, **operadores** **binarios**. Es importante destacar que variables que estén próximas en el espacio del problema deben preferiblemente estarlo en la codificación ya que la proximidad entre ellas condiciona un elemento determinante en la mutación y reproducibilidad de éstas. Es decir, dos estados que en nuestro espacio de estados del universo del problema que están consecutivos deberían estarlo en la representación de los datos, esto es útil para que cuando haya mutaciones los saltos se den entre estados consecutivos. En términos generales cumplir esta premisa mejora experimentalmente los resultados obtenidos con algoritmos genéticos.
 
 En la práctica el factor que condiciona en mayor grado el fracaso o el **éxito** de la aplicación de algoritmos genéticos a un problema dado es una **codificación** **acorde** con los **datos**.
 
-Otra opción muy común es establecer a cada uno de los posibles casos un **número** **natural** y luego codificar ese número en binario natural, de esta forma minimizamos el problema que surge al concatenar múltiples variables independientes en el que su representación binaria diera lugar a numerosos huecos que produjeran soluciones no válidas. Por ejemplo, tenemos 3 variables, las dos primeras tienen 3 posibles estados y la última dos, el número posible de estados es 3+3+2 = 8, combinando las 3 variables podemos codificar todo con 3 bits en comparación con los 2+2+1 = 5 bits necesarios que utilizaríamos en el caso de realizar el procedimiento anterior. En este ejemplo no sólo ahorraríamos espacio sino que además evitaríamos que se produjeran individuos cuya solución no es factible.
+Otra opción muy común es establecer a cada uno de los posibles casos un **número** **natural** y luego codificar ese número en binario natural, de esta forma minimizamos el problema que surge al concatenar múltiples variables independientes en el que su representación binaria diera lugar a numerosos huecos que produjeran soluciones no válidas. 
 
 ### Algoritmo
 
 Un algoritmo genético implementado en **pseudo código** podría ser el siguiente:
 
-`Generar de forma aleatoria una población inicial aleatoria.`
+```pseudocode
+#| label: alg-genetico
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
 
-`Cada individuo/cromosoma tiene sus propios genes.`
 
-`Mientras (condición de terminación es falsa).`
+\floatname{algorithm}{Algoritmo}
 
-`   Evaluar el fitness de cada uno de los individuos.`
+\begin{algorithm}
+\caption{Quicksort}
+\begin{algorithmic}
+\Procedure{Quicksort}{$A, p, r$}
+  \If{$p < r$}
+    \State $q = $ \Call{Partition}{$A, p, r$}
+    \State \Call{Quicksort}{$A, p, q - 1$}
+    \State \Call{Quicksort}{$A, q + 1, r$}
+  \EndIf
+\EndProcedure
+\Procedure{Partition}{$A, p, r$}
+ 
 
-`   Selección de los individuos con mejor fitness.`
+      \State $i = i + 1$
+      \State exchange
 
-`   Recombinación de los individuos.`
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
-`   Mutación de los indiviudos.`
+```
 
-`   Evaluar la Población.`
 
-Un posible esquema que puede representar una posible implementación de algoritmos genéticos se muestra en la figura \ref{fig-esquema-genetico} .
+
+
+Un posible diagrama de flujo que puede representar una posible implementación de algoritmos genéticos se muestra en la figura \ref{fig-esquema-genetico} .
 
 ![Esquema de implementación de un algoritmo genético](imagenes/capitulo3/esquema_genetico.png){#fig-esquema-genetico}
 
@@ -214,9 +238,9 @@ Los **tipos** de **mutación** más conocidos son:
 
 
 
--   **Mutación de gen**[^capitulo3-4]: existe una única probabilidad de que se produzca una mutación de algún bit. De producirse, el algoritmo toma aleatoriamente un bit, y lo invierte.
+-   **Mutación de gen**: existe una única probabilidad de que se produzca una mutación de algún gen De producirse, el algoritmo toma aleatoriamente un gen, y lo invierte.
 
--   **Mutación multigen:** cada bit tiene una probabilidad de mutarse o no, que es calculada en cada pasada del operador de mutación multibit.
+-   **Mutación multigen:** cada gen tiene una probabilidad de mutarse o no, que es calculada en cada pasada del operador de mutación multigen.
 
 -   **Mutación de intercambio:** Se intercambia el contenido de dos genes aleatoriamente.
 
@@ -235,18 +259,20 @@ Los **tipos** de **mutación** más conocidos son:
 Mutación
 :::
 
+Estos ejemplos de **mutaciones** han sido ilustradas usando una representación binaria de los datos, en caso de tener una representación **entera** al hacer la mutación no cambiaríamos de 0 a 1 o viceversa, sino que se elegiría al azar un entero de los posibles valores que tenemos para ese gen. En el caso de una representación **real** se podría pensar en al mutación de un gen como la selección de un número real entre unos valores dados mediante una **distribución uniforme** o incluso una **distribución normal**. Para profundizar en operadores sobre disintos tipos de representaciones puedes consultar [@
+Eiben2015]
 
 **Condición de finalización**
 
 Una vez que se ha generado la nueva población se evalúa la misma y se selecciona a aquel individuo o aquellos que por su fitness se consideran los más aptos.
+Podemos tener definido un umbral del valor de fitness que queremos alcanzar o simplemente definir el número de iteraciones que queremos que se realicen.
 
 ### Otros Operadores
 
 Los operadores descritos anteriormente suelen ser operadores **generalistas** (aplicables y de hecho aplicados a todo tipo de problemas), sin embargo, para ciertos contextos suele ser más recomendable el uso de operadores específicos para realizar un recorrido por el espacio de solución más acorde a la solución buscada.
 
-**Modificadores de la longitud de los individuos**. En ocasiones las soluciones no son una combinación de todas las variables de entrada, en estas ocasiones los individuos deberán tener una longitud variable[^capitulo3-5]. Lógicamente, en este tipo de casos, es necesario modificar la longitud de los individuos, para ello haremos uso de los operadores añadir y quitar, que añadirán o quitarán a un individuo un trozo de su carga génica (es decir, un trozo de información).
+**Modificadores de la longitud de los individuos**. En ocasiones las soluciones no son una combinación de todas las variables de entrada, en estas ocasiones los individuos deberán tener una longitud variable[^En muchas ocasiones, se realizan estudios de minería de datos sobre todos los datos existentes, encontrándose en ellos variables espúreas, es decir, variables que no aportan nada de información para el problema evaluado]. Lógicamente, en este tipo de casos, es necesario modificar la longitud de los individuos, para ello haremos uso de los operadores añadir y quitar, que añadirán o quitarán a un individuo un trozo de su carga génica (es decir, un trozo de información).
 
-[^capitulo3-5]: En muchas ocasiones, se realizan estudios de minería de datos sobre todos los datos existentes, encontrándose en ellos variables espúreas, es decir, variables que no aportan nada de información para el problema evaluado
 
 ### Parámetros necesarios al aplicar Algoritmos Genéticos
 
@@ -260,29 +286,42 @@ Cualquier algoritmo genético necesita ciertos parámetros que deben fijarse ant
 
 **Probabilidad de ocurrencia de una mutación:** En toda ejecución de un algoritmo genético hay que decidir con qué frecuencia se va a aplicar la mutación. Se debe de añadir algún parámetro adicional que indique con qué frecuencia se va a aplicar dentro de cada gen del cromosoma. La frecuencia de aplicación de cada operador estará en función del problema; teniendo en cuenta los efectos de cada operador, tendrá que aplicarse con cierta frecuencia o no. Generalmente, la mutación y otros operadores que generen diversidad se suelen aplicar con poca frecuencia; la recombinación se suele aplicar con frecuencia alta.
 
+Cada implementación de algoritmo tendrá sus propios parámetros que permitirán personalizar la ejecución de nuestro problema concreto.
+
 ::: {.callout-important title="Recordad"}
-Los algoritmos genéticos es uno de los enfoques más originales en data mining. Su sencillez, combinada con su flexibilidad les proporciona una robustez que les hace adecuados a infinidad de problemas. No obstante, su simplicidad y sobre todo independencia del problema hace que sean algoritmos poco específicos. Recorriendo este capítulo hemos visto los numerosos parámetros y métodos aplicables a los algoritmos genéticos que nos ayudan a realizar una adaptación de los algoritmos genéticos más concreta a un problema. En definitiva, la implementación de esquemas evolutivos tal y como se describen en biología podemos afirmar que funciona.
+Los algoritmos genéticos es uno de los **enfoques más originales** en data mining. Su sencillez, combinada con su flexibilidad les proporciona una **robustez** que les hace adecuados a infinidad de problemas. No obstante, su **simplicidad** y sobre todo independencia del problema hace que sean algoritmos poco específicos. Recorriendo este capítulo hemos visto los numerosos parámetros y métodos aplicables a los algoritmos genéticos que nos ayudan a realizar una adaptación de los algoritmos genéticos más concreta a un problema. En definitiva, la implementación de esquemas evolutivos tal y como se describen en biología podemos afirmar que funciona.
 :::
 
 
 
 ## Casos de uso
 
+Para los **Algoritmos genéticos** tenemos 3 grandes grupos de casos de uso:
+
+- **Optimización de Funciones**
+  - Podemos buscar máximo o mínimos de funciones.
+  
+- **Optimización Cominatorial**
+  - TSP (Travel Salesman Problem) Problema del viajante
+  - VRP (Vechicule Routing Problem) Problema de rutas de vehículos
+
+- **Optimización Machine Learning**
+  - Hiperparámetros
+  - Selección de variables
+  - Network Architecture
+
+Vamos a ver cómo se podrían abordar algunos de estos casos de uso:
+
 ### Selección de Variable
-### Entrenamiento de Red Neuronal
-### Arquitecura de Red Neuronal
 
-### Algoritmos genéticos con R
 
-**Selección de variables**
+El objetivo del ejemplo es ver cómo podemos usar un algoritmo genético para hacer una **selección de variables**, quedándonos sólo con unas pocas.
 
-El objetivo del ejemplo es ver cómo podemos usar un algoritmo genético para hacer una selección de variables, quedándonos sólo con unas pocas.
-
-Para ver que estamos acertados en la selección de variables vamos a tomar el ejemplo del **dataset** de **Iris**, que es un problema de **clasificación** con **3 clases**, cuenta con **150 muestras** y **4 variables** explicativas. Como queremos usarlo para selección de variables lo que vamos a realizar es meter de forma **sintética** **10 variables más**, que siguen una **distribución normal** (0,1) y veremos el comportamiento del algoritmo a ver si realmente aparecen las variables originales como parte de las más importantes.
+Supongamos que tenemos un **dataset** que es un problema de **clasificación** con **3 clases**, cuenta con **1500 muestras** y **14 variables** explicativas. 
 
 Tendremos que, para el algoritmo genético, nuestro cromosoma o individuo será un **vector** de tamaño 14 (**14 genes**), que representa las **14 variables** del dataset que hemos preparado.
 
-En la imagen @fig-poblacion mostramosla población en una iteración N.
+En la imagen @fig-poblacion mostramosla población de 100 individuos en una iteración N.
 
 ![Población en iteración N](imagenes/capitulo3/poblacion.png){#fig-poblacion}
 
@@ -292,7 +331,7 @@ Cuando estamos trabajando con selección de variables, el objetivo es conseguir 
 
 Nuestra función fitness deberá seguir estos **pasos**:
 
-\- Recibe una **variable** llamada **indices** que tiene el tamaño del numero de variables (el tamaño del cromosoma) que hay en el dataframe (en nuestro caso 14) de datos.
+\- Recibe una **variable** que tiene el tamaño del numero de variables (el tamaño del cromosoma) que hay en el dataframe (en nuestro caso 14) de datos.
 
 -   Los valores son **1** si esa variable se va a **usar** y **0** si **no** se va a **usar**.
 
@@ -306,7 +345,7 @@ Nuestra función fitness deberá seguir estos **pasos**:
 
 \- Verificamos cuantos hemos fallado y lo dividimos por el número de muestras para ver el **porcentaje** de **fallos**
 
-\- Devolvemos el **porcentaje de fallos**. El resultado de la ejecución del algoritmo evolutivo (rbga.bin())) nos dará un objeto del que tendremos que obtener que variables son las que queremos usar.
+\- Devolvemos el **porcentaje de fallos**. El resultado de la ejecución del algoritmo evolutivo nos dará un objeto del que tendremos que obtener que variables son las que queremos usar.
 
 @fig-poblacion_final
 
@@ -314,103 +353,14 @@ Nuestra función fitness deberá seguir estos **pasos**:
 
 Una vez que nuestro algoritmo pare, deberíamos tener la población que mejor se ha adaptado según el fitness que habíamos definido.
 
-En nuestro caso estarán las 100 mejores combinaciones de variables, que dan el menor error al clasificar. De esta manera si para cada variable contamos cuantas veces ha salido en cada elemento de la población, sabremos cuantas veces se ha usado en las combinaciones de variables de esta última iteración (que es la mejor hasta ese momento). Con lo cual podremos saber cuales han sido las **variables** **más** **usadas** en la población final.
+En nuestro caso estarán por ejemplo las 100 mejores combinaciones de variables, que dan el menor error al clasificar. De esta manera si para cada variable contamos cuantas veces ha salido en cada elemento de la población, sabremos cuantas veces se ha usado en las combinaciones de variables de esta última iteración (que es la mejor hasta ese momento). Con lo cual podremos saber cuales han sido las **variables** **más** **usadas** en la población final.
 
 El objeto **modelo_evolutivo**, que nos devuelve rbga.bin, tiene una variable **population** de dimensiones tamaño_población x numero_variables , en nuestro caso de 100x14, que tiene la información de la población de la **última iteración del algoritmo**, que en un principio debería ser la mejor. Este population contiene para cada fila (elemento en la población), 0 o 1 en la posición que corresponde a cada variable.
 
 Para ver cuales son las variables que más se han usado tenemos que sumar por columnas y ese dato nos dará para cada columna (corresponde con una variable) la cantidad de veces que se ha usado en esta población. Una vez tenemos estos datos ya podemos quedarnos con el número de variables que deseemos cogiendo las que más alto valor tienen.
 
-Algunos de los **parámetros** que tenemos que definir y que algunos pueden afectar al rendimiento:
 
--   **size:** Número de genes, en nuestro caso, número de variables
 
--   **popsize:** Tamaño de la población con la que se trabaja en cada iteración. Cuanto más alto sea este valor, más tiempo tardará la ejecución. En este caso vamos a usar 100 elementos en la población, es decir, en cada iteración habrá 100 combinaciones de variables.
-
--   **iters:** Número de iteraciones del algoritmo. Va a depender del problema pero seguramente entre 50 y 100 tendríamos una buena solución. Cuanto mayor sea esta variable, mayor será el tiempo de ejecución.
-
--   **zeroToOneRatio:** Con esta variable le indicamos al algoritmo cual es el ratio de ceros frente a unos cuando se generan elementos de la población, es decir, más o menos nos tiene que dar una idea de cuantas variables se van a usar a la vez (las que tienen unos). Podríamos estimar que si tenemos 14 variables y queremos reducir a tener alrededor de 4, deberíamos intentar en cada iteración tener un rango parecido a ese. La forma de conseguirlo sería poner un valor a esta variable de 1, es decir, cada 1 cero hay 1 uno. Lo que más o menos nos dejaría alrededor de 7 variables con 1. Como esto se genera de forma aleatoria, más o menos estaremos en un rango de variables útil parecido a lo que queremos.
-
--   **verbose:** Esta variable si la ponemos a TRUE se encargará de sacarnos información de la evolución del algoritmo. La recomendación es dejarla a FALSE ya que incrementa mucho el tiempo de ejecución.
-
-|                                                |
-|:-----------------------------------------------|
-| \`\`\`r                                        |
-| {{< codigo/geneticos/seleccion_variables.R >}} |
-| \`\`\`                                         |
-
-``` r
-library(genalg) library(MASS)
-```
-
-``` r
-data(iris) set.seed(999) # Alas variables reales del dataset, les añadimos 10 variables más ficiticas (normal 0,1) # Ponemos estas variables al principio X <- cbind(scale(iris[,1:4]),matrix(rnorm(10*150), 150, 10)) Y <- iris[,5]
-```
-
-``` r
-iris.evaluate <- function(indices) {
-```
-
-``` r
-result = 1 # Tiene que haber al menos 2 variables if (sum(indices) > 2) {
-```
-
-``` r
-# Creamos un modelo de clasificación con LDA usando sólo las variables que vienen
-# marcadas en la variablindices con valor 1
-# El LDA tiene el valor $posterior que devuelve la probabilidad de cada clase (tenemos tres clases en Y)
-# Podríamos usar el valor de $class y así tendríamos directamente la clase.
-modelo_lda <- lda(X[,indices==1], Y, CV=TRUE)$posterior
-
-# Cogemos la probabilidad más alta apply(modelo_lda, 1,function(x)which(x == max(x))), para cada fila (150 muestras)
-# Comprobamos cuantos hemos fallado y lo dividimos por el tamaño de Y (150 muestras)
-# El objetivo es que sea mínimo este número de fallos
-result = sum(Y != dimnames(modelo_lda)[[2]][apply(modelo_lda, 1,function(x)which(x == max(x)))]) / length(Y)}
-```
-
-``` r
-result }
-```
-
-``` r
-Ejecutamos el algoritmo evolutivo
-```
-
-``` r
-system.time({ modelo_evolutivo <- rbga.bin(size=14, mutationChance=0.05, zeroToOneRatio=1,evalFunc=iris.evaluate, verbose=FALSE, iters = 50, popSize = 100) }) ## user system elapsed ## 17.05 0.72 22.03
-```
-
-``` r
-Veamos como ha quedado el resultado de la población segúnla gráfica que nos da cuantas veces aparece cada variable en la población final. library(ggplot2)
-```
-
-``` r
-Mostramos cual es el que ha aparecido más veces en la última iteración
-```
-
-``` r
-uso_variables <- colSums(modelo_evolutivo$population)
-```
-
-``` r
-Visualizamos cuanto se ha usado cada variable en esta última población
-```
-
-``` r
-Construimos un dataframe con los datos
-```
-
-``` r
-datos <- data.frame(variables=c(1:14),uso=uso_variables)
-```
-
-``` r
-ggplot(datos,aes(x=variables,y=uso, fill=uso)) + geom_bar(stat="identity") + theme_minimal()
-```
-
-``` r
-Obtenemos ahora cuales son las variables con los valores más altos. Primero vemos las suma de las columnas, que nos dará los valores de cuantas veces aparece cada variable, y luego hacemos una función que nos dice cuales son las variables más usadas pasándole como parámetro el vector de uso_variables y luego cuantas variables queremos quedarnos. # Creamos una función que nos da de un vector los índices de posición # donde están las X variables más usadas # Le pasamos como parámetro el vector y cuantas variables queremos que devuelva
-
-```
 
 @fig-frecuencia_variables
 
@@ -418,27 +368,106 @@ Imagen \ref{fig-frecuencia_variables}
 
 ![Frecuencia de las Variables](imagenes/capitulo3/frecuencia_variables.png){#fig-frecuencia_variables}
 
-``` r
-posicion_maximos <- function(datos, cuantos) { variables <- NULL if( cuantos>0) { for( i in 1:cuantos ) { variables[i] <- which.max(datos) datos[variables[i]] <- 0 }
-```
 
-``` r
-} variables
-```
+### Entrenamiento de Red Neuronal
 
-``` r
-}
-```
+Otro de los casos de uso sobre los que se podría trabajar con un **Algoritmo Genético** es el entrenamiento de una Red Neuronal. La forma estandard de entrenar una Red Neuronal es lo que se denomina el Backpropagation, que mediante el uso de las estrategias del **Descenso del Gradiente** se consigue optimizar los parámetros de la Red Neuronal.
 
-``` r
-Obtenemos ahora cuales son las 6 variables más usados
-```
+Cuando entrenamos una Red Neuronal, lo que conseguimos es obtener una serie de valores de los **pesos** de la Red Neuronal. Estos pesos combinados con las funciones de activación serán los que nos darán el resultado de salida a partir de los datos de entrada.
 
-``` r
-posicion_maximos(uso_variables, 6) ## [1] 2 4 1 3 8 13 
-```
+Supongamos que tenemos una **Red Neuronal** con **500** parámetros distribuidos en las diferentes capas ocultas del mismo.
 
-### Algoritmos genéticos en Python
+Tendremos que, para el algoritmo genético, nuestro cromosoma o individuo será un **vector** de tamaño 500 (**500 genes**), que representan los **500 valores** de los pesos de la Red Neuronal. En este caso los valores del vector tendrán una **representación real**.
+
+A cada uno de estos posibles valores reales lo deberemos acotar en un rango de valores, que podría ser *(-2.0 , 2.0 ) de forma que cuando cuando se generen los valores aleatorios de una población, cada dato deberá partir de este rango.
+
+En la imagen @fig-poblacion mostramos la población de 100 individuos en una iteración N.
+
+![Población en iteración N](imagenes/capitulo3/entrenamiento_red_poblacion.png){#fig-poblacion_entrenamiento_red}
+
+**Función Fitness** (Evaluación)
+
+Cuando estamos trabajando con el Entrenamiento de una Red Neuronal, el objetivo es conseguir la red neuronal que mejor valor de la **función de pérdida** de la red neuronal tenga.
+
+Nuestra función fitness deberá seguir estos **pasos**:
+
+\- Recibe una **variable** que tiene el tamaño del numero de pesos en la red neuronal (el tamaño del cromosoma), en nuestro caso 500.
+
+- Los valores serán un número real
+
+\- Se cogen estos pesos y se asignan a la Red Neuronal.
+
+- Una vez tenemos la red neuronal, pasamos nuestros datos de entrenamiento y evaluamos el modelo obteniendo el valor de la función de pérdida.
+
+\- Devolvemos el **valor de la función de pérdida**.
+
+
+@fig-poblacion_final
+
+![Población Final](imagenes/capitulo3/entrenamiento_red_poblacion_final.png){#fig-poblacion_final_entrenamiento_red fig-align="center"}
+
+
+Una vez que nuestro algoritmo pare, deberíamos tener la población que mejor se ha adaptado según el fitness que habíamos definido.
+
+Seleccionamos aquella que menor valor de función de pérdida nos haya dado.
+
+
+
+
+### Arquitecura de RedNeuronal
+
+Siguiendo con las redes neuronales, otro de los casos de uso sobre los que se podría trabajar con un **Algoritmo Genético** es la **Arquitectura de Red** de la Red Neuronal. En el sentido de poder definir cuantos nodos por cada capa oculta podemos tener, para conseguir una buena Red Neuronal. En ese caso estamos pensando en una red neuronal usada para datasets clásicos de datos y no de imágenes.
+
+
+
+Cuando entrenamos una Red Neuronal, lo que conseguimos es obtener una serie de valores de los **pesos** de la Red Neuronal. Estos pesos combinados con las funciones de activación serán los que nos darán el resultado de salida a partir de los datos de entrada.
+
+Supongamos que tenemos una **Red Neuronal** con **500** parámetros distribuidos en las diferentes capas ocultas del mismo.
+
+Tendremos que, para el algoritmo genético, nuestro cromosoma o individuo será un **vector** de tamaño 500 (**500 genes**), que representan los **500 valores** de los pesos de la Red Neuronal. En este caso los valores del vector tendrán una **representación real**.
+
+A cada uno de estos posibles valores reales lo deberemos acotar en un rango de valores, que podría ser *(-2.0 , 2.0 ) de forma que cuando cuando se generen los valores aleatorios de una población, cada dato deberá partir de este rango.
+
+En la imagen @fig-poblacion mostramos la población de 100 individuos en una iteración N.
+
+![Población en iteración N](imagenes/capitulo3/entrenamiento_red_poblacion.png){#fig-poblacion_entrenamiento_red}
+
+**Función Fitness** (Evaluación)
+
+Cuando estamos trabajando con el Entrenamiento de una Red Neuronal, el objetivo es conseguir la red neuronal que mejor valor de la **función de pérdida** de la red neuronal tenga.
+
+Nuestra función fitness deberá seguir estos **pasos**:
+
+\- Recibe una **variable** que tiene el tamaño del numero de pesos en la red neuronal (el tamaño del cromosoma), en nuestro caso 500.
+
+- Los valores serán un número real
+
+\- Se cogen estos pesos y se asignan a la Red Neuronal.
+
+- Una vez tenemos la red neuronal, pasamos nuestros datos de entrenamiento y evaluamos el modelo obteniendo el valor de la función de pérdida.
+
+\- Devolvemos el **valor de la función de pérdida**.
+
+
+@fig-poblacion_final
+
+![Población Final](imagenes/capitulo3/entrenamiento_red_poblacion_final.png){#fig-poblacion_final_entrenamiento_red fig-align="center"}
+
+
+Una vez que nuestro algoritmo pare, deberíamos tener la población que mejor se ha adaptado según el fitness que habíamos definido.
+
+Seleccionamos aquella que menor valor de función de pérdida nos haya dado.
+
+
+## Algoritmos genéticos con R
+### Paquetes para usar en R
+### Selección de variables
+### Entrenamiento de Red Neuronal
+
+## Algoritmos genéticos en Python
+### Paquetes para usar en Python
+### Optimiación de funciones
+### Entrenamiento de Red Neuronal
 
 ``` python
 import os import pandas as pd import numpy as np import matplotlib.pyplot as plt import seaborn as sns
@@ -517,3 +546,4 @@ pred=cart_algoritmo_gen.predict(x_test)
 confusion_matrix(y_test, pred) \# Matriz de confusión
 
 array(\[\[173, 37\], \[ 46, 44\]\], dtype=int64)
+

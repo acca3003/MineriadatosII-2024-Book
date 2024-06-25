@@ -12,12 +12,7 @@ Es decir, nos encontraremos un agente que realizará una acción $a_t$ en el tie
 
 El agente volverá a examinar el nuevo estado del entorno $S_{t+1}$ y la nueva recompensa recibida $r_{t+1}$ y volverá a tomar la decisión de realizar una nueva acción $a_{t+1}$.
 
-```{r echo=FALSE, fig.align='center', fig.cap="Esquema Aprendizaje por Refuerzo - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl-diagrama.png' )
-
-```
-
+![Esquema Aprendizaje por Refuerzo - Fuente: Propia](imagenes/capitulo1/rl-diagrama.png){#fig-rl_diagrama}
 
 ### Formalismo Matemático
 
@@ -196,12 +191,7 @@ Pasemos a ver una clasificación de los tipos de algoritmos para resolver los pr
 
 Desde OpenAI (<https://spinningup.openai.com/en/latest/spinningup/rl_intro2.html#citations-below>) obtenemos la siguiente taxonomía de algoritmos de RL que nos servirá como guía para entender como clasificar los algoritmos:
 
-```{r echo=FALSE, fig.align='center', fig.cap="Esquema Aprendizaje por Refuerzo - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_algorithms.png' )
-
-
-```
+![Modelos Reinforcement Learning](imagenes/capitulo1/rl_algorithms.png){#fig-rl_algorithms}
 
 La primera gran separación se hace sobre si los algoritmos siguen un modelo definido (model-baed) o no (modelo-free).
 
@@ -247,12 +237,7 @@ El nombre de **Q** viende de **Quality** (calidad), por que nos da la calidad de
 
 En este caso tenemos que internamente nuestra **Q-función (**$Q(s,a)$**)** es una **Q-tabla**, de forma que cada fila corresponde a un estado, y cada columna a una de las posibles acciones.
 
-```{r echo=FALSE, fig.align='center', fig.cap="Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_qlearning.png' )
-
-
-```
+![Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python](imagenes/capitulo1/rl_qlearning.png)
 
 Es decir, esta tabla va a contener la información de **recompensa total esperada** para cada valor de estado y acción. Cuando nosotros realizamos el **entrenamiento** de la Q-función, nosotros conseguimos una función que **optimice** esta **Q-tabla**.
 
@@ -298,12 +283,7 @@ $$
 
 **Pseudo código Q-Learning**
 
-```{r echo=FALSE, fig.align='center', fig.cap="Algoritmo Q-Learning - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_algoritmo_qlearning.png' )
-
-
-```
+![Algoritmo Q-Learning - Fuente: Propia](imagenes/capitulo1/rl_algoritmo_qlearning.png){#fig-rl_algoritmo_qlearning}
 
 ### DQN (Deep Q-Learning)
 
@@ -317,12 +297,7 @@ Para realizar este trabajo una de las posibles opciones es usar **redes neuronal
 
 Fue el equipo de **Deepmind** en 2013 (<https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf>), en su artítulo **"Human-level control through deep reinforcementlearning"**, los primeros que decidieron atacar los problemas de alta dimensionalidad de **estados/acciones** mediante el uso de **Redes Neuronales Profundas**. La forma de probar su código fue mediante la implementación de **agentes** que fueran capaces de aprender a jugar a los clásicos **juegos de Atari 2600**. De forma que el agente, recibiendo la información de entrada de los pixels que hay en cada momento en pantalla y el marcador del juego, eran capaces de sobrepasar el rendimiento de algoritmos actuales que hacían ese trabajo. En estte caso usaron la misma red neuronal, con la misma arquitectura e hiperparámetros para los 49 juegos con los que se probaron.
 
-```{r echo=FALSE, fig.align='center', fig.cap="Deep Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_qlearning.png' )
-
-
-```
+![Deep Q-Learning - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/](imagenes/capitulo1/rl_dqlearning.png){#fig-rl_dqlearning}
 
 Con nuestro algoritmo de **Q-Learning** teníamos una función $Q(s,a)$ que implementábamos con un tabla y nos daba para cada **estado** y cada **acción** cual era el valor de **Q** (Quality) de la recompensa esperada. Ahora, con **Deep Q-Learning** nos encontramos que vamos a tener una red neuronal que será la encargada de para cada **estado** obtener el valor de **Q** para cada posible **acción**.
 
@@ -335,12 +310,7 @@ Básicamente para realizar el trabajo usaremos 2 redes neuronales que tendrán l
 -   **DQN** que será la red de predicción, y que será la que entrenaremos para minimizar el valor del error $(R+\gamma argmax_{a'}Q(s',a',w')-Q(s,a,w))^2$
 -   **DQN_Target** que será la red que calculará $R+\gamma argmax_a'Q(s',a',w')$
 
-```{r echo=FALSE, fig.align='center', fig.cap="Arquitectura Redes DQN - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/", fig.margin=TRUE, out.width = "50%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_arquitectura_redes.png' )
-
-
-```
+![Arquitectura Redes DQN - Fuente: https://www.analyticsvidhya.com/blog/2019/04/introduction-deep-q-learning-python/](imagenes/capitulo1/rl_arquitectura_redes.png){#fig-rl_rl_arquitectura_redes}
 
 **Experience Replay**
 
@@ -362,12 +332,7 @@ El mecanismo del **Experience Replay** nos va a permitir entrenar nuestra red **
 
 **Pseudo-código Deep Q-Learning**
 
-```{r echo=FALSE, fig.align='center', fig.cap="Algoritmo Deep Q-Learning - Fuente: Propia", fig.margin=TRUE, out.width = "100%"}
-
-knitr::include_graphics( 'imagenes/capitulo1/reinforcement_learning/rl_algoritmo_dqn.png' )
-
-
-```
+![Algoritmo Deep Q-Learning - Fuente: Propia](imagenes/capitulo1/rl_algoritmo_dqn.png){#fig-rl_algoritmo_dqn}
 
 **Variantes de Deep Q-Learning**
 

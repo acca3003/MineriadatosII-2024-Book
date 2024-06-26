@@ -22,10 +22,10 @@ book:
     - capitulo3.qmd # Genéticos
     - capitulo4.qmd # Lógica Difusa
     #- references.qmd
-  appendices:
-    - anexo1.qmd
+  #appendices:
+  #  - anexo1.qmd
 
-bibliography: references.bib
+#bibliography: references.bib
 
 filters:
   - pseudocode

@@ -1,6 +1,3 @@
-### Forecasting en series de tiempo
-
-### Clasificación y generación de textos
 
 ## Redes Recurrentes
 
@@ -39,11 +36,11 @@ En el timestep inicial, la neurona recurrente recibe el estado oculto $h_t$ inic
 
 ![RED recurrente. Paso 2](imagenes/capitulo1/redes_recurrentes/red_recurrente_paso2.png)
 
-En esta nueva iteración vemos como la información previa hasta el timestep $t+2$ se almacena en el hidden state $h_{t+2}$. Este $h_{t+2}$ se pasará de vuelta a la neurona recurrente junto con la entrada $x_{t+2}$ para hacer una nuea iteración, y asi sucesivamente.
+En esta nueva iteración, vemos como la información previa hasta el timestep $t+2$ se almacena en el hidden state $h_{t+2}$. Este $h_{t+2}$ se pasará de vuelta a la neurona recurrente junto con la entrada $x_{t+2}$ para hacer una nueva iteración, y así sucesivamente.
 
-**Nota:** Dado que $h_0$ se inicializa a cero, se puede obviar ese valor y cambiar la notación anterior para usar $h_{t-1}$ donde antes usabamos $h_t$ para hacer más hincapié en que se trata de información proveniente del pasado.
+**Nota:** Dado que $h_0$ se inicializa a cero, se puede obviar ese valor y cambiar la notación anterior para usar $h_{t-1}$ donde antes usábamos $h_t$ para hacer más hincapié en que se trata de información proveniente del pasado.
 
-Veamos matemáticamente como la información se conserva a lo largo del tiempo:
+Veamos matemáticamente cómo la información se conserva a lo largo del tiempo:
 
 ![Red recurrente](imagenes/capitulo1/redes_recurrentes/red_recurrente.png)
 
@@ -67,13 +64,13 @@ Y precisamente esta “memoria interna” es lo que hace de este tipo de redes m
 
 Proporcionar modelos con memoria y permitirles modelar la evolución temporal de las señales es un factor clave en muchas tareas de clasificación y traducción de secuencias en las que los RNN sobresalen, como la traducción automática, el modelado del lenguaje o el reconocimiento de voz, entre muchas otras áreas.
 
-Para ilustrar el concepto de “memoria” de una RNN, imaginemos que tenemos una red neuronal como las vistas en capítulos anteriores, le pasamos la palabra “neurona” como entrada y esta red procesa la palabra carácter a carácter. En el momento en que alcanza el carácter “r”, ya se ha olvidado de “n”, “e” y “u”, lo que hace que sea casi imposible para la red neuronal predecir qué letra vendrá después. Pero en cambio, una RNN permite recordar precisamente esto. Conceptualmente, la RNN tiene como entradas el presente y el pasado reciente. Esto es importante porque la secuencia de datos contiene información crucial para saber lo que viene a continuación.
+Para ilustrar el concepto de “memoria” de una RNN, imaginemos que tenemos una red neuronal como las vistas en capítulos anteriores, le pasamos la palabra “neurona” como entrada y esta red procesa la palabra carácter a carácter. En el momento en que alcanza el carácter “r”, ya se ha olvidado de “n”, “e” y “u”, lo que hace que sea casi imposible para la red neuronal predecir qué letra vendrá después. Pero, en cambio, una RNN permite recordar precisamente esto. Conceptualmente, la RNN tiene como entradas el presente y el pasado reciente. Esto es importante porque la secuencia de datos contiene información crucial para saber lo que viene a continuación.
 
 ### Redes recurrentes clásicas: Elman y Jordan
 
 Existen diferentes planteamientos de redes recurrentes. Las primeras redes recurrentes consideradas clásicas y que todavía gozan de cierta popularidad por sus aplicaciones son las redes de Elman y de Jordan.
 
-En las redes de Elman, las entradas de estas neuronas, se toman desde las salidas de las neuronas de una de las capas ocultas, y sus salidas se conectan de nuevo en las entradas de esta misma capa, lo que proporciona una especie de memoria sobre el estado anterior de dicha capa. El esquema es como en la Figura 78, donde X es la entrada, S la salida y el nodo amarillo es la neurona de la capa de contexto.
+En las redes de Elman, las entradas de estas neuronas se toman desde las salidas de las neuronas de una de las capas ocultas, y sus salidas se conectan de nuevo en las entradas de esta misma capa, lo que proporciona una especie de memoria sobre el estado anterior de dicha capa. El esquema es como en la Figura 78, donde X es la entrada, S la salida y el nodo amarillo es la neurona de la capa de contexto.
 
 ![Red neuronal de Elman](imagenes/capitulo1/redes_recurrentes/red_neuronal_elman.png)
 
@@ -97,15 +94,15 @@ De ahí surgieron las redes LSTM, diseñadas para abordar el problema de la desa
 
 ### Red Long-Short Term Memory (LSTM)
 
-Las redes Long-Short Term Memory(LSTM) son una extensión de las redes neuronales recurrentes, que básicamente amplían su memoria para aprender de experiencias importantes que han pasado hace mucho tiempo. Las LSTM permiten a las RNN recordar sus entradas durante un largo período de tiempo. Esto se debe a que LSTM contiene su información en la memoria, que puede considerarse similar a la memoria de un ordenador, en el sentido de que una neurona de una LSTM puede leer, escribir y borrar información de su memoria.
+Las redes Long-Short Term Memory(LSTM) son una extensión de las redes neuronales recurrentes que básicamente amplían su memoria para aprender de experiencias importantes que han pasado hace mucho tiempo. Las LSTM permiten a las RNN recordar sus entradas durante un largo período de tiempo. Esto se debe a que LSTM contiene su información en la memoria, que puede considerarse similar a la memoria de un ordenador, en el sentido de que una neurona de una LSTM puede leer, escribir y borrar información de su memoria.
 
 Esta memoria se puede ver como una “celda de estado”, donde la celda decide si almacenar o eliminar información dentro (abriendo la puerta o no para almacenar), en función de la importancia que asigna a la información que está recibiendo. La asignación de importancia se decide a través de los pesos. Esto lo podemos ver como que aprende con el tiempo qué información es importante y cuál no.
 
 En una neurona LSTM hay tres puertas a estas “celdas” que controlan el flujo de información: puerta de entrada (input gate), puerta de olvidar (forget gate) y puerta de salida (output gate). Estas puertas determinan si se permite o no una nueva entrada, se elimina la información porque no es importante o se deja que afecte a la salida en el paso de tiempo actual.
 
-La puerta de entrada controla cuando la información nueva puede entrar en la memoria. La puerta del olvido controla cuando se olvida una parte de la información, lo que permite a la celda recordar datos nuevos. Por último, la puerta de salida controla cuando se utiliza en el resultado de la celda la información que está contenida en la celda. Las celdas pueden contener ponderaciones, que nos sirven para controlar a cada puerta.
+La puerta de entrada controla cuándo la información nueva puede entrar en la memoria. La puerta del olvido controla cuándo se olvida una parte de la información, lo que permite a la celda recordar datos nuevos. Por último, la puerta de salida controla cuándo se utiliza en el resultado de la celda la información que está contenida en la celda. Las celdas pueden contener ponderaciones, que nos sirven para controlar a cada puerta.
 
-Las puertas en una LSTM son análogas a una forma sigmoide, lo que significa que van de 0 a 1 en la forma que hemos visto en capítulos anteriores. El hecho de que sean análogas a una función de activación sigmoidcomo, permite incorporarlas (matemáticamente hablando) al proceso de Backpropagation.
+Las puertas en una LSTM son análogas a una forma sigmoide, lo que significa que van de 0 a 1 en la forma que hemos visto en capítulos anteriores. El hecho de que sean análogas a una función de activación sigmoide permite incorporarlas (matemáticamente hablando) al proceso de Backpropagation.
 
 Veamos una representación gráfica:
 
@@ -131,7 +128,7 @@ La red GRU (Gated Recurrent Unit) constituye un enfoque más reciente que las LS
 
 Esta arquitectura incluye dos puertas: una puerta de actualización y una puerta de reset. La puerta de actualización indica cuánto del contenido de las celdas anteriores hay que mantener. La puerta de reset define cómo incorporar la nueva entrada con los contenidos anteriores de la celda. Una red GRU puede ser una RNN estándar simplemente estableciendo la puerta de reset a 1 y la puerta de actualización a 0.
 
-Para ampliar información de la GRU se puede consultar el documento escrito por Junyoung Chung et al. (2014) titulado “Evaluación empírica de redes neuronales recurrentes cerradas en modelo secuencial “
+Para ampliar información sobre las redes GRU se puede consultar el documento escrito por Junyoung Chung et al. (2014) titulado “Evaluación empírica de redes neuronales recurrentes cerradas en modelo secuencial “
 
 GRU es similar a LSTM, pero tiene menos puertas de control. Además, se basa únicamente en un estado oculto para la transferencia de memoria entre unidades recurrentes, por lo que no hay un estado de celda separado. Analicemos este diagrama simplificado de GRU en detalle (pesos y sesgos no mostrados).
 
@@ -143,7 +140,7 @@ GRU es similar a LSTM, pero tiene menos puertas de control. Además, se basa ún
 
 6–7–8 Candidato para el estado oculto: después de reiniciar un estado oculto anterior en el paso dos, las salidas se combinan con nuevas entradas ($x_t$), multiplicándolas por sus respectivos pesos y añadiendo sesgos antes de pasar a través de una función de activación tanh (paso seis). Luego, el candidato para el estado oculto se multiplica por los resultados de una puerta de actualización (paso siete) y se añade al $h_{t-1}$ previamente modificado para formar el nuevo estado oculto $h_t$.
 
-A continuación veremos como trabajar con estos modelos en la práctica. Las librerias que utilizaremos serán las siguientes:
+A continuación veremos como trabajar con estos modelos en la práctica. Las librerías que utilizaremos serán las siguientes:
 
 ``` python
 

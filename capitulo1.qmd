@@ -15,5 +15,3 @@
 {{< include arquitecturas_preentrenadas.qmd >}}
 
 {{< include reinforcement_learning.qmd >}}
-
-

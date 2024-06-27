@@ -3,16 +3,16 @@ project:
 
 book:
   title: "Módulo 8. Minería de Datos II"
-  subtitle: "Curso Modular Big Data y Data Science Aplicados a la Economía y a la Administración y Dirección de Empresas"
+  #subtitle: "Curso Modular Big Data y Data Science Aplicados a la Economía y a la Administración y Dirección de Empresas"
   author:
     - "Pablo Sánchez Cabrera"
     - "Ángel Rodríguez Chicote"
     - "Alfonso Carabantes Álamo"
-  date: "2024"
+  date: "Julio 2024"
   
   output-file: "MineriaDatosII-2024"
   # portada en html
-  cover-image: imagenes/portada.png 
+  cover-image: imagenes/portadacompleta.png 
 
   
   chapters:
@@ -21,7 +21,7 @@ book:
     - capitulo2.qmd # Bayes Análisis causal
     - capitulo3.qmd # Genéticos
     - capitulo4.qmd # Lógica Difusa
-    - references.qmd
+    #- references.qmd
   #appendices:
   #  - anexo1.qmd
 
@@ -36,8 +36,9 @@ format:
     highlight-style: tango
     include-in-header: 
       text: |
-        % Para el pseudocodigo
+        
         <script>
+        'Para el pseudocodigo
         MathJax = {
           loader: {
             load: ['[tex]/boldsymbol']

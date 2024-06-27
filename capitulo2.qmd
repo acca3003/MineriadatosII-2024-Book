@@ -1331,3 +1331,6 @@ sentence = "I love Python"
 predicted_tags = post_tag(model, sentence.split(), word2idx, tag2idx)
 print(f"Post-tagging de la oración: {predicted_tags}")
 ```
+
+
+{{< include inferencia_causal.qmd >}}

@@ -1,0 +1,647 @@
+
+---
+  execute:
+    eval: false
+  code-block-bg: true
+  code-block-border-color: red
+  code-block-border-left: "#31BAE9"
+  code-line-numbers: true
+  code-block-font-size: 14
+---
+
+``` python
+# Librerias necesarias
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+
+from graphviz import Source
+from scipy.stats import norm
+from sklearn.mixture import GaussianMixture
+from graphviz import Digraph
+from IPython.display import display
+
+
+from xgboost import XGBRegressor, XGBClassifier
+import seaborn as sns
+
+# from causalml.inference.meta import XGBTLearner, MLPTLearner
+from causalml.inference.meta import BaseSRegressor, BaseTRegressor, BaseXRegressor, BaseRRegressor
+from causalml.inference.meta import BaseSClassifier, BaseTClassifier, BaseXClassifier, BaseRClassifier
+from causalml.inference.meta import LRSRegressor
+from causalml.match import NearestNeighborMatch, MatchOptimizer, create_table_one
+from causalml.propensity import ElasticNetPropensityModel
+from causalml.dataset import *
+from causalml.metrics import *
+
+
+# imports from package
+import logging
+from sklearn.dummy import DummyRegressor
+from sklearn.metrics import mean_squared_error as mse
+from sklearn.metrics import mean_absolute_error as mae
+import statsmodels.api as sm
+from copy import deepcopy
+```
+
+# Inferencia Causal
+
+Establecer relaciones causales es esencial no solamente para entender el mundo que nos rodea, sino también para actuar en él. Las decisiones muchas veces giran en torno a preguntas causales: ¿cuál fue el impacto de alguna política sobre el resultado que se buscaba? ¿Nuestra acción hizo aumentar las ventas?. A menudo queremos responder a preguntas del tipo: ¿qué pasa con el resultado si implemento A versus si no implemento A, es decir, si cambia el valor de la variable "A"? Para responder ese tipo de **preguntas que comparan escenarios contrafácticos** aparece la inferencia causal, ya que los modelos estadísticos y de machine learning no estiman relaciones causales, sino que predicen en base a correlaciones, y pueden ser engañosos a la hora de responder este tipo de preguntas.
+
+
+¿Por qué nuestras mentes estarían tan "cableadas" para pensar en relaciones causales por encima de las meramente correlacionales? Una buena razón sería que _las correlaciones que son causales son más estables en el tiempo y ante cambios en el entorno_.
+
+
+## Correlación no implica causalidad
+
+![xkcd: correlación](https://github.com/institutohumai/causalidad/blob/main/1_IntroyResultadosPotenciales/imgs/xkcd_correlation.png?raw=1){fig-align="center"}
+
+A menudo se suelen confundir la causalidad con la correlación, lo que nos puede llevar a un gran error.
+Si entramos a [este famoso sitio web](https://www.tylervigen.com/spurious-correlations) podremos disfrutar rápidamente de algunos gráficos muy cómicos, que parecen sugerir una relación fáctica entre variables realmente diferentes. Por ejemplo, este gráfico muestra simultáneamente la cantidad anual de bebes que fueron llamados como Stevie versus la cotización de Amazon:
+
+![Relaciones ](https://tylervigen.com/spurious/correlation/image/5883_popularity-of-the-first-name-stevie_correlates-with_amazoncoms-stock-price-amzn.svg){fig-align="center"}
+
+Estos ejemplos de _correlaciones espurias_ nos muestran que dos variables pueden aparecer asociadas, incluso cuando lo más plausible es que no tengan absolutamente nada que ver.
+
+También es muy conocida la [_Docena del Datasaurio_](https://www.autodesk.com/research/publications/same-stats-different-graphs), creada por Albert Cairo:
+
+
+![Docena del Datasaurio](https://github.com/institutohumai/causalidad/blob/main/1_IntroyResultadosPotenciales/imgs/datasaur.gif?raw=1){fig-align="center"}
+
+Estos conjuntos de datos sintéticos tienen la peculiaridad de tener los mismos valores de los principales estadísticos sumarios: promedios, desviaciones estándar y el _coeficiente de correlación de Pearson_.
+
+Estos ejemplos se usan típicamente para enfatizar la importancia de visualizar nuestros datos antes de realizar análisis. También sirven para enfatizar que la correlación presente en los datos puede ser altamente _no lineal_, por lo cual una medida como la correlación de Pearson, que mide correlación _lineal_, puede resultar engañosa.
+
+Detrás de todas estas nociones de correlación hay un concepto fundamental, que es el de la **dependencia probabilística**. Dadas dos variables aleatorias $X, Y$, decimos que son **probabilísticamente independientes** si su distribución de probabilidad conjunta se factoriza como $p(X, Y) = p(X) p(Y)$. Equivalentemente, condicionar sobre una de las dos variables no afecta la distribución de valores de la otra:
+
+$$ p(X | Y=y) = p(X) $$
+$$ p(Y | X=x) = p(Y) $$
+
+Vamos a usar una notación especial para esta situación de independencia entre $X$ e $Y$:
+
+$$\newcommand{\indep}{\perp \!\!\! \perp} X \indep Y$$
+
+También usaremos el concepto de **independencia condicional**: $X$ es independiente de $Y$ _dado_ $Z$ (escribimos $X \perp \!\!\! \perp Y | Z$) si $p(X, Y | Z) = p(X | Z) p(Y | Z)$.
+
+Esta dependencia probabilistica nos permite definir **correlación** de una manera formal. Diremos que **dos variables $X$, $Y$ están correlacionadas en alguna medida siempre que $p(X, Y) \neq p(X) p(Y)$**.
+
+En el fondo, todo análisis de inferencia estadística asume que nuestros datos son muestras extraídas de una distribución de probabilidad conjunta $p(X_1, X_2, \dots)$ (donde las $X_i$ son nuestras variables aleatorias). Esta distribución de probabilidad viene a ser nuestro modelo del "mundo real", y nuestro objetivo será estimar, a través de los datos, ciertas características de esa distribución. Para poder pasar de inferencia estadística a inferencia causal, es indispensable añadir una **nueva capa de modelización**, que **codifica explícitamente nuestras hipótesis sobre las relaciones causales entre las variables presentes**.
+
+Hemos dicho que correlación no implica causalidad, pero por el contrario, **si veo correlación, es más probable que haya causalidad que si no observo nada**. De hecho el filósofo Hans Reichenbach formuló a mediados del Siglo XX el [_Principio de la Causa Común_](https://plato.stanford.edu/entries/physics-Rpcc/), según el cual dadas dos variables correlacionadas, o bien una es causa de la otra, o bien al revés, o bien ambas tienen una causa común. Es decir que la correlación es nuestra herramienta para detectar causalidad, y lo que debemos hacer es poder _identificar_ cuándo correlación _sí_ implica causalidad.
+
+
+## Los mundos contrafácticos
+
+Una forma de entender la causalidad tiene que ver con entender preguntas del tipo "¿Qué habría pasado si...?", que son el ejemplo más paradigmático del **pensamiento contrafáctico**. Muchas veces se dice que no tiene sentido preguntarse por contrafácticos, dado que es imposible saber lo que habría pasado. En verdad, esto no es del todo correcto: es verdad que en la amplia mayoría de las situaciones no tenemos herramientas para saber con certeza qué habría pasado, pero cada vez que hacemos una afirmación causal del estilo "salí con paraguas porque estaba lloviendo", estamos afirmando que tenemos confianza sobre qué habríamos hecho si no hubiera estado lloviendo y todos los demás aspectos del mundo se hubieran mantenido constantes (en particular, confiamos en que _no_ habríamos salido con paraguas en tal caso).
+
+
+
+### Causalidad en un mundo ideal
+
+Veamos un ejemplo para aclarar:
+
+Supongamos que tras una herida grave, y estamos pensando si ir o no al hospital. Queremos saber _si una visita al hospital tendrá un efecto positivo sobre nuestra salud_.
+
+La pregunta es: _¿lo que sucede si voy al hospital será mejor a lo que sucede si no voy al hospital?_. Queremos comparar los resultado obtenidos tras ir / no ir al hospital. Pero claro, para comparar entre dos resultados, debemos poder observarlos. En la vida real, está claro que si tomas una opción, no has podido tomar la otra, pero en nuestro caso, imaginemos por un momento que podemos observar ambos escenarios.
+
+Definiremos la variable aleatoria aleatoria $Y_i$ como un indicador de salud. Esta variable puede variar en función de si vamos o no vamos al hospital, es decir, en función del **tratamiento**, que llamaremos $T_i$:
+
+* Tratamiento del individuo $i$     
+
+$$
+    T_i=
+    \begin{cases}
+      1 & \text{si fue al hospital} \\
+      0 & \text{si no fue al hospital}
+    \end{cases}
+$$
+
+
+* Resultado observado para el individuo $i$    
+
+$$ Y_i= \text{indicador de salud} $$
+
+
+* Resultados potenciales para el individuo i
+
+
+$$   Y_i(T_i) =
+    \begin{cases}
+      Y_i(1)  & \text{resultado potencial de ir al hospital} \\
+      Y_i(0)  & \text{resultado potencial de no ir al hospital}
+    \end{cases}
+$$
+
+
+
+Una vez hemos observado el valor de la variable $Y_i$ tras ir (y tras no ir) al hospital, podemos definir el efecto individual de tratamiento (**ITE**) como la diferencia en el resultado de salud cuando vamos al hospital y el resultado de salud cuando no vamos al hospital:
+
+$$
+ ITE_{i} =  \underbrace{Y_{i}(T_{i} = 1)}_{\substack{\text{ Resultado observado} \\ \text{tras ir al hospital}}}
+- \underbrace{Y_{i}(T_{i} = 0)}_{\substack{\text{ Resultado observado} \\ \text{tras NO ir al hospital}}} = Y(1) - Y(0)
+$$
+
+Si podemos observar realizaciones de las variables aleatorias $Y$, $T$ y calcular el $ITE$ para ellas, podremos estimar la distribución del $ITE$, o algunos de sus momentos, como la media o la varianza. En particular, a la media de los ITE la llamamos efecto medio de tratamiento (**ATE**, por _Average Treatment Effect_).
+
+
+$$
+ ATE = \mathbb{E}[ITE]
+$$
+
+**NOTA:**: para hacer esta comparación, debemos mantener constante todo el resto de las circunstancias. Necesitamos una dimensión paralela, donde lo único que cambia es el hecho de ir o no ir al hospital. Si cambiasemos alguna otra variable, y luego observamos otro resultado, no podemos asegurarnos de que haya sido el hecho de ir al hospital y no el de otra variable el responsable del resultado que observamos.
+
+Dado el ejemplo, parece facil estimar el efecto de un tratamiento, pero recordemos que en la vida real sólo un resultado potencial se realiza. O vamos al hospital ($T_i = 1$), o no vamos ($T_i = 0$). Para una misma persona, bajo las exactas mismas circunstancias, sólo tendremos un resultado observado, por lo tanto, **no podremos acceder al ITE**, y en consecuencia, **tampoco podemos calcular el ATE**. ¡Nos faltan datos!
+
+### Mecanismo de comparación
+
+Imaginemos que tenemos una muestra de $N$ individuos. Para cada individuo en una circunstancia dada, observamos una realización de la variable aleatoria $Y_i$ (el estado de salud) y una realización de la variable $T_i$ (si fue o no fue al hospital).
+
+* Idealmente, querríamos ver el ATE, pero como solo podemos ver un caso para cada individuo, esto es imposible.
+* Debemos cambiar un poco nuestra pregunta, tratar de aproximarnos al ATE de otra manera. Si tenemos $N$ individuos donde algunos fueron al hospital y otros no, ¿por qué no comparamos la salud promedio entre quienes fueron y quienes no fueron al hospital?
+
+
+> _Los siguientes datos están tomados de Angrist y Pischke (2008)_
+
+Los datos de la National Health Interview Survey (NHIS) de Estados Unidos tienen dos preguntas que podemos usar como muestras de nuestras variables de interés:
+1. Durante los últimos 12 meses, ¿el encuestado pasó una noche en el hospital? $\rightarrow T_i$
+2. ¿Diría que su salud es excelente, muy buena, buena, regular o mala? $\rightarrow Y_i$ (asignando 1 a "excelente" y 5 a "mala")
+
+Comparemos los dos resultados **observados** con los que contamos. Calculemos la salud promedio para los que fueron al hospital, y para quienes no fueron, y calculemos la diferencia.
+
+| $T_i$ (grupo)           | $N$ (tamaño de muestra) | $\widehat{E[Y_i \mid T=t]}$ (salud promedio del grupo) | Desvío est. |
+|-------------------------|-------------------------|--------------------------------------------------------|-------------|
+| 1 (fue al hospital)     | 7774                    | 2.79                                                   | 0.014       |
+| 0 (no fue al hospital)  | 90049                   | 2.07                                                   | 0.003       |
+
+En este caso tenemos:
+
+$$
+  \underbrace{\widehat{\mathbb{E}[Y_i | T_i=1]}}_{\substack{\text{ Salud (resultado observado) promedio} \\ \text{en los que fueron al hospital}}}  - \underbrace{\widehat{\mathbb{E}[Y_i | T = 0]}}_{\substack{\text{Salud (resultado observado) promedio} \\ \text{en los que  NO fueron al hospital}}}  = \quad 2.79 - 2.07 \quad = \quad \underbrace{0.72}_{\substack{\text{Diferencia promedio} \\ \text{en el indicador de mala salud}}}
+$$
+
+
+En promedio, la salud de los que fueron al hospital es ¡peor! que la salud de los que no fueron al hospital... ¿qué es lo que puede estar pasando?¿Podemos decir que ir al hospital causa un peor estado de salud?
+
+
+Probablemente, lo que sucede es que la condición de salud previa de las personas que pasan una noche en el hospital es peor que la de aquellos que no fueron. Es posible que haber ido al hospital haya mejorado el estado de salud de la persona, pero no lo suficiente como para que su estado de salud sea igual o mejor a aquellos que no tuvieron que ir al hospital porque estaban sanos.
+
+Entonces, "ir al hospital" está reflejando no solamente la atención médica recibida en el hospital, sino también la condición de salud previa que hizo que esas personas fueran al hospital.
+
+Gráficamente, sería algo así:
+
+![Grafo causal](imagenes/capitulo2/inferencia_causal/grafo.png)
+
+### Confusores y sesgos
+
+Decimos que la "condición de salud previa" es un **confusor**: Una variable que está correlacionada tanto con el tratamiento $T_i$ (ir al hospital) como con el resultado $Y_i$ (el estado de salud posterior). Si no tomamos en cuenta este confusor, confundimos el efecto de la visita al hospital con el confusor. Decimos que cuando comparamos la salud promedio observada entre quienes fueron al hospital y quienes no, además del **efecto causal** de la visita al hospital, tenemos un **sesgo de selección**: las personas que "se autoseleccionan" para ir a hospital son distintas de las que no van.
+
+Comparar al grupo de personas que va al hospital con el grupo de personas que no va no sirve para responder nuestra pregunta contrafáctica: ¿una persona que sí fue, está mejor que si no hubiera ido?. Dado que no estamos cumpliendo con la comparación _ceteris paribus_: las circunstancias de un grupo (condición mala de salud previa), no son iguales a las del otro (condiciones buenas de salud previa), el grupo de personas que no va al hospital no es un buen contrafáctico de las personas que sí van al hospital
+
+
+_La diferencia de medias entre los resultados observados de grupos tratados y no tratados a veces se la llama "diferencia asociacional"_.
+
+- ATE: $\mathbb{E}[Y(1) - Y(0)] = \mathbb{E}[Y(1)] - \mathbb{E}[Y(0)]$
+- Diferencia asociacional: $\mathbb{E}[(Y|T=1)] - \mathbb{E}[(Y|T=0)]$
+
+
+
+
+### Alcance de la pregunta causal
+
+Antes de seguir, notemos algunos aspectos sobre el alcance de nuestra pregunta causal. Nos preguntamos si determinado tratamiento genera determinado resultado. Esto es:
+1. Queremos encontrar los efectos de ir al hospital sobre la salud, pero no todas las causas del estado de salud.
+2. Vamos a comparar los efectos de ser tratado respecto de no ser tratado.
+3. Para que tenga sentido la pregunta y podamos identificar un efecto causal, debe haber **exposición potencial**: todos los individuos deben poder estar potencialmente expuestos a todos los tratamientos, dejando el resto de las circunstancias constantes (sin perder la noción de _ceteris paribus_). Sólo así hay resultados potenciales para comparar. $→$  Para saber si es posible identificar un efecto causal, podemos preguntarnos si existe un "experimento ideal" que nos permita comparar esos efectos potenciales. Las estrategias de identificación causal tratan de emular ese experimento ideal, de construir un buen contrafáctico.
+
+¿Cómo podriamos hacer una buena comparación?
+
+
+Para hacer una buena comparación, es fundamental el supuesto de independencia:
+
+> $$\renewcommand{\indep}{\perp \!\!\! \perp} Y_i(0) \indep T$$
+> $$ Y_i(1) \indep T$$
+
+Es decir,
+
+* la probabilidad de que el individuo $i$ obtenga cierto resultado _si se le fuera a administrar el tratamiento_ no cambian al saber si el tratamiento le fue asignado o no.
+* la probabilidad de que el individuo $i$ obtenga cierto resultado _si no se le fuera a administrar el tratamiento_ no cambian al saber si el tratamiento le fue asignado o no.
+
+En otras palabras esto codifica un _balanceo de características_: la población que resulta tratada y la que no resulta tratada tienen las mismas características en lo relativo a la obtención de un resultado u otro (un valor u otro de $Y_i$).
+
+Podemos **reformular el supuesto de independencia** como un **supuesto de no confusión**: asumimos que no hay variables confusoras.
+
+
+
+#### Caso experimental
+
+En este caso, el diseño nos permite garantizar que no hay variables confusoras. Incluso si antes de aleatorizar el tratamiento hubiera confusores, **al aleatorizar hacemos que esas variables dejen de determinar si alguien recibe o no el tratamiento** y por lo tanto dejan de ser confusoras.
+
+- La forma en que se garantiza el supuesto de independencia es a través de la **asignación aleatoria**: dada la población elegible, esta es asignada aleatoriamente a dos grupos: control y tratamiento.
+- Si la muestra es lo suficientemente grande, el grupo tratado y el de control serán similares en sus covariables, gracias a la Ley de los Grandes Números (aunque puede haber fluctuaciones). Para tener una mayor confianza, podemos chequear el balanceo en covariables _observables_ luego de realizar la asignación.
+
+El experimento ideal sería poder hacer una asignación aleatoria en dos etapas:
+  1. Sortear muestra de elegibles. Asegura validez externa, los elegibles son representativos de la población de interés.
+  2. Asignar a tratamiento y control. Asegura validez interna.
+Este es el procedimiento que se realiza tanto en los **ensayos aleatorizados controlados** (RCTs en inglés), que se realizan por ejemplo para medir el efecto clínico de tratamientos médicos.
+
+#### Caso observacional
+
+En el caso observacional vamos a asumir en general la existencia de variables confusoras, por las cuales tendremos que controlar. Entonces reemplazamos el supuesto de independencia/no-confusión por el
+
+> **_Supuesto de no-confusión condicional_**:
+>
+> $$ Y(0) \indep T \mid W$$
+> $$ Y(1) \indep T \mid W$$
+>
+
+donde $W$ es algún conjunto de variables observadas por el cual vamos a controlar (por ejemplo, que incluiremos como variables regresoras en una regresión lineal). A este conjunto lo llamamos **conjunto de variables de control** o **conjunto de ajuste**.
+
+
+## Simulación
+
+A continuación simularemos unos datos y estimaremos las relaciones entre ellos con el objetivo de identificar el efecto causal.
+
+
+La siguiente simulación nos permitirá:
+
+
+*   Ver el sesgo que se produce al omitir confusores o variables relevantes
+*   Ver posibles caminos para identificar correctamente el efecto causal: experimentar o controlar por dichos confusores
+
+
+### Ejemplo: _¿es fumar perjudicial para la salud?_
+
+Supongamos que queremos ver el efecto del cigarrillo en la salud.
+
+Lo que nos permite la simulación es jugar a que conocemos el _verdadero_ proceso generador de datos, que se compone de las siguientes variables:
+
+
+Variable respuesta:
+  - $salud_i$: indicador de salud entre 0 y 100, donde 100 es mejor salud
+  
+Covariables:
+
+  - $edad_i$: se relaciona negativamente con la salud (empeora la salud al envejecer).
+  - $cigarrillos_i$: cantidad de cigarrillos fumados por semana. Se relaciona negativamente con la salud (empeora la salud al fumar). En esta población los, jóvenes fuman más.  
+  - $fumar_i$: para mantenernos en el marco del tratamiento binario del que venimos hablando (tratados versus no tratados) usaremos esta variable en vez de usar $cigarrillos$. Pero tranquilamente podríamos usar la variable continua (¡pueden probarlo!). Vamos a decir que la persona es "tratada" (fuma mucho) si fuma más que la media.  Será la variable de interés, cuyo efecto causal sobre la salud queremos estimar.
+
+Proceso generador de datos ("modelo verdadero"):
+$$
+salud_i = 100  - 10  \; fumar_i - edad_i +  u_i
+$$
+
+
+$$
+cigarrillos_i = 50 -  0.5  \; edad_i + \alpha_i
+$$
+
+$$
+fumar_i = 1 ⇔ cigarrillos_i > E(cigarrillos_i)
+$$
+
+
+Con las siguientes distribuciones:
+
+$$ u_i \sim \mathcal{N}(0,\,1)\ $$
+$$ \alpha_i \sim exp(1) $$
+$$ edad_i \sim \mathcal{N}(40,\,10)\  $$
+
+
+
+En este ejemplo de juguete conocemos la verdad respecto del efecto de fumar en la salud. Vemos que la salud depende de los cigarrillos y de la edad, que para aquellos que fuman mucho cae 10 puntos el índice de salud en promedio y que el índice de salud se reduce en 1 punto con cada año que pasa. Notar que $u_i$ es un error aleatorio. La relación entre las covariables y el resultado no es determinística, hay algo de aleatoriedad de persona a persona.
+
+En esta simulación vamos a generar algunos datos, que es con lo que nos enfrentaremos en la realidad: tendremos unas cuantas mediciones del índice de salud, de la edad y de los cigarrillos consumidos para cada persona. Veremos si a partir de esos datos podemos recuperar el efecto causal de fumar sobre el índice de salud, que sabemos que es **-10**.
+
+Simularemos una población de 10000 individuos:
+
+``` python
+np.random.seed(9)
+def simular_poblacion(N = 10000):
+    # variables
+    edad = np.random.normal(40, 10, size = N)
+    cigarrillos = 50 -0.5 * edad + np.random.exponential(scale = 1, size = N)
+    fumar = np.array([1 if i > np.mean(cigarrillos) else 0 for i in cigarrillos])
+    salud = 100 - 10 * fumar  - edad + np.random.normal(size = N)
+
+    data = pd.DataFrame(np.array([salud, edad, cigarrillos, fumar]).transpose())
+    data.columns = ['salud', 'edad', 'cigarrillos', 'fumar']
+    return data
+
+data = simular_poblacion(N = 10000)
+data.head()
+```
+
+``` python
+# Graficamos las series para tener una idea de la distribución de los datos
+fig, axs = plt.subplots(2, 3, figsize=(10, 10))
+fig.tight_layout()
+
+sns.histplot(data=data, x="edad", kde=True, ax=axs[0, 0])
+sns.histplot(data=data, x="fumar", kde=False, ax=axs[0, 1])
+sns.histplot(data=data, x="salud", kde=True, ax=axs[0, 2])
+sns.scatterplot(data=data, x="salud", y="edad", hue = "fumar",ax=axs[1, 0])
+sns.scatterplot(data=data, x="salud", y="fumar", hue = "fumar", ax=axs[1, 1])
+sns.scatterplot(data=data, x="edad", y="fumar", hue = "fumar", ax=axs[1, 2])
+
+plt.show()
+```
+
+![Análisis exploratorio](imagenes/capitulo2/inferencia_causal/scaterplor.png)
+
+
+A simple vista, podemos ver 3 patrones:
+- Los fumadores suelen ser jóvenes.
+- Los jóvenes tienen mejor salud.
+- Los fumadores tienen mejor salud.
+
+
+Ahora que ya hemos hecho un análisis exploratorio, vamos a modelizar los datos:
+
+- _Modelo "mal especificado"_: Se nos ocurre estimar una regresión lineal sin incluir edad como covariable, es decir: $$salud_i = \beta_0 + \beta_1  \; fumar_i + u_i$$
+
+``` python
+X = data[['fumar']]
+y = data['salud']
+
+reg = LinearRegression().fit(X, y)
+print(f"Valor estimado de beta_1 (efecto de fumar): {reg.coef_[0]}")
+```
+
+> Valor estimado de beta_1 (efecto de fumar): 5.556894920031017
+
+Con nuestro modelo no identificamos bien el efecto causal: el $\beta_1$ estimado es 5,5. Pareciera que fumar es bueno para la salud y como conocemos el modelo verdadero, sabemos que no es así. ¿Cómo se explica que el efecto de fumar en la salud parezca positivo?
+
+- _Modelo "bien especificado"_. Se nos ocurre estimar una regresión lineal incluyendo edad como covariable. Es decir, el siguiente modelo: $$salud_i = \beta_0 + \beta_1  \; fumar_i + \beta_2  \; edad_i +  u_i$$
+
+``` python
+X = data[['fumar', 'edad']]
+y = data['salud']
+
+reg = LinearRegression().fit(X, y)
+print(f"Valor estimado de beta_1 (efecto de fumar)  : {reg.coef_[0]}")
+print(f"Valor estimado de beta_2 (efecto de la edad): {reg.coef_[1]}")
+```
+
+> Valor estimado de beta_1 (efecto de fumar)  : -9.978120034464466
+> Valor estimado de beta_2 (efecto de la edad): -0.9999012930995471
+
+En este caso hemos obtenido una estimación del efecto de fumar muy acertada. Lo que estaba ocurriendo era que la edad era una variable de confusión y no podiamos estimar el efecto de fumar. Ahora que hemos controlado por la edad, hemos capturado correctamente el efecto de fumar.
+
+Supongamos que no contamos con la variable edad. Sin embargo, podemos diseñar un experimento: distribuir aleatoriamente a un grupo de 10000 personas entre fumadores y no fumadores.  
+
+``` python
+# Asignamos aleatoriamente quién será fumador y quién no
+data["fumar_exp"] = np.round(np.random.binomial(1, 0.5, len(data)))
+
+# Dado el consumo de cigarrillos, calculamos el índice de salud
+data["salud_exp"] = 100 - 10 * data.fumar_exp  - data.edad + np.random.normal(size = len(data))
+
+# Graficamos
+sns.histplot(data=data, x="edad",  hue="fumar_exp").set_title("Distribución de la edad por fumar")
+```
+
+
+![Distribución edad](imagenes/capitulo2/inferencia_causal/distribucion_edad.png)
+
+Como podemos observar, al elegir aleatoriamente a los individuos entre fumadores y no fumadores, ambos grupos poseen unas edades similares, por lo que ahora, la edad no tendrá correlación con la variable fumar.
+
+``` python
+X = data[['fumar_exp']]
+y = data['salud_exp']
+
+reg = LinearRegression().fit(X, y)
+print(f"Valor estimado de beta_1 (efecto de fumar_exp)  : {reg.coef_[0]}")
+```
+
+> Valor estimado de beta_1 (efecto de fumar_exp)  : -9.926418032387838
+
+_Volvimos a recuperar el efecto causal_ usando unicamente la variable fumar en nuestro modelo, ya que pudimos controlar el efecto de la edad.
+
+Lo que nos ha ocurrido en el experimento cuando hemos obtenido valores de $\beta_1$ tan opuestos, se llama paradoja de Simpson, una de las más conoidas en el mundo causal.
+
+
+### Paradoja de Simpson
+
+La Paradoja de Simpson es “una paradoja en la cual una tendencia que aparece en varios grupos de datos desaparece cuando estos grupos se combinan y en su lugar aparece la tendencia contraria para los datos agregados”. Esta paradoja “desaparece cuando se analizan las relaciones causales presentes”. O dicho de otra forma: cuando la asociación entre dos variables cambia completamente cuando se tiene en cuenta (se controla) el efecto de una tercera variable que no se había tenido en cuenta.
+
+Veamos un caso real: [la Universidad de California, Berkeley, fue demandada por un caso de discriminación contra las mujeres](https://www.science.org/doi/abs/10.1126/science.187.4175.398).
+
+
+|                | Solicitudes | Admisiones |
+|----------------|-------------|------------|
+| **Hombres**    | 8442        | **44%**    |
+| **Mujeres**    | 4321        | 35%        |
+
+
+con estos datos, se acusó a la universidad de favorecer el acceso a hombres frente a mujeres, ya que se observaba una diferencia de casi un 10% en los porcentajes de admisión de ambos grupos.
+Pero con los mismos datos de admisiones, solo que añadiendo la variable _Departamento_, se podía apreciar algo totalmente distinto:
+
+| Departamento | Solicitudes de Hombres | Admisiones de Hombres (%) | Solicitudes de Mujeres | Admisiones de Mujeres (%) |
+|--------------|------------------------|---------------------------|------------------------|---------------------------|
+| A            | 685                    | 62%                       | 108                    | **82%**                   |
+| B            | 560                    | 63%                       | 25                     | **68%**                   |
+| C            | 325                    | **37%**                   | 593                    | 34%                       |
+| D            | 417                    | 33%                       | 375                    | **35%**                   |
+| E            | 191                    | **28%**                   | 393                    | 24%                       |
+| F            | 272                    | 6%                        | 341                    | **7%**                    |
+
+Los datos en una y otra tabla son exactamente los mismos, provienen de la misma fuente. Y sin embargo, dependiendo de cómo dividas esos datos, pueden sacarse conclusiones completamente opuestas. De ahí lo importantante que es saber qué variables pueden afectar en nuestro análisis, en este caso, el tener en cuenta el tipo de solicitudes.
+
+Javier Álvarez Liébana tiene un gran [hilo en X](https://x.com/DadosdeLaplace/status/1420295550436532225), donde habla sobre la paradoja de Simpson.
+
+Por cosas como esta, es por lo que se dice que las estadísticas, como las armas, las carga el diablo.
+
+#### Conclusiones de la simulación
+
+* La edad es una variable **confusora**: es relevante para el resultado _y además_ está correlacionada con la variable de tratamiento. Si la omitimos, no podemos identificar correctamente el efecto causal de fumar en la salud. Aparece un **sesgo** y pareciera que fumar se asocia a tener una mayor salud. Se "confunde" el efecto propio de fumar en la salud con el hecho de que los fumadores en general son jóvenes y los jóvenes tienen mejor salud. pero no podemos saber qué parte de la diferencia en la salud promedio de fumadores y no fumadores es efectivamente atribuible al tratamiento (a fumar) y qué parte es atribuible al confusor (a que los fumadores son jóvenes).
+
+
+> _Las variables confusoras son aquellas que correlacionan tanto con el tratamiento como con el resultado. Esto hace que los no tratados no sean un buen contrafáctico para los tratados. Porque si los tratados tienen una característica más allá del tratamiento que los diferencia de los no tratados, y esa característica puede influir sobre la variable de resultado, no tenemos forma de distinguir que es el tratamiento y no esta otra variable la causa de los resultados diferentes que observemos. Si no controlamos por ella, la confundiremos con el tratamiento._
+
+
+* Al experimentar, rompemos la relación de fumar con la edad. Los tratados y no tratados pasan a tener edades que en promedio son similares entre sí. Si ninguno fumara, en promedio los tratados y los no tratados tendrían la misma salud: el resultado potencial de no recibir tratamiento (de no fumar) es el mismo, se cumple el supuesto de independencia.
+
+* Controlar por la edad permite separar los efectos parciales de fumar y de la edad en la salud. Le "quita" a la variable $fumar$ la parte que afecta a la salud a través de la edad. O, lo que es lo mismo, permite comparar fumadores versus no fumadores entre grupos de la misma edad. Condicional en la edad, el resultado potencial de recibir tratamiento (de no fumar) es el mismo, se cumple el supuesto de independencia.
+
+# Identificar versus estimar
+
+Es importante distinguir entre algunos conceptos:
+
+- **Estimando y estimador**. El _estimando_ es la cantidad que queremos estimar, que en casos paramétricos suele ser alguno de los parámetros poblacionales (por ejemplo $\beta_1$). En cambio, el _estimador_ es una función de los datos (es decir un _estadístico_) que nos permite aproximarnos al valor real (por ejemplo $\hat{\beta}_1$, el valor calculado por cuadrados mínimos, estima $\beta_1$).
+
+Hay dos tipos de estimandos:
+- **Estimando causal**: es un estimando que involucra contrafácticos y por lo tanto no es inmediatamente calculable (involucra "datos faltantes" imposibles de medir). El que venimos viendo fundamentalmente es el ATE, $\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)]$
+- **Estimando estadístico**: es un estimando que no involucra contrafácticos y por lo tanto puede ser estimado a partir de los datos sobre lo que realmente ocurrió.
+
+Y esto es fundamental para distinguir claramente dos etapas del análisis causal:
+
+- **Identificación** es el proceso de utilizar hipótesis causales para transformar un estimando causal en un estimando estadístico equivalente.
+- **Estimación**: es el proceso de elegir y calcular un estimador para nuestro estimando elegido previamente.
+
+En nuestra simulación, al omitir la variable edad, la _estimación_ de $\beta_1$ sí capta correctamente la **correlación** entre tratamiento y resultado: en efecto, ¡los fumadores suelen tener mejor salud! Pero que no sería correcto darle a esa correlación una interpretación causal. Hay una parte de esa correlación que es espuria: se debe al hecho de que son los jóvenes los que fuman más, y a su vez los jóvenes tienen mejor salud. Confundimos el efecto de la edad en la salud con el efecto parcial que nos interesa realmente, el de fumar en sí. El error no está en la etapa de estimación per se, sino en la etapa de identificación: el _estimando_, aquello que nuestro método estadístico estima, no tiene una interretación causal, y por lo tanto tampoco la tiene nuestro estimador.
+
+
+
+---
+# CATE y Uplift
+
+El CATE (_Conditional Average Treatment Effect_) es el efecto promedio del tratamiento _condicional_ a ciertos valores de las covariables. Es el estimando causal principal a la hora de medir la **heterogeneidad del efecto**, es decir, ver cómo el efecto causal varía según el segmento de nuestra población que consideremos.
+
+$$
+CATE := \underbrace{\mathbb{E}[Y(1) - Y(0) \mid W=w]}_{\text{Efecto causal para los casos en que $W=w$}}
+$$
+
+
+El uplift en cambio, se enfoca más en la aplicación práctica de maximizar el impacto de una intervención, identificando y segmentando individuos que más probablemente cambiarán su comportamiento debido al tratamiento.
+
+$$
+uplift_i = P[Y_i \mid T_i = 1, W_i = w] - P[Y_i \mid T_i = 0, W_i = w]
+$$
+
+De esta formula, podemos llegar a que la esperanza del uplift es un estimador del CATE:
+
+$$\mathbb{E}(uplift) = \underbrace{\mathbb{E}[Y \mid T = 1, W = w]}_{\substack{\text{Resultado promedio en población} \\ \text{tratada y con $W=w$}}} - \underbrace{\mathbb{E}[Y \mid T = 0, W = w]}_{\substack{\text{Resultado promedio en población} \\ \text{no tratada y con $W=w$}}} = \widehat{CATE}$$
+
+
+Imaginemos que queremos hacer una campaña de email, pero solo podemos impactar a 1000 usuarios. Si tuviesemos sus uplifts, podriamos ordenar de mayor a menor y selecciónar los 1000 sujetos con mayor uplift para ser impactados por la campaña en lugar de hacerlo al azar:
+
+![](https://miro.medium.com/v2/resize:fit:828/format:webp/1*MAf0lmi2xCMF-2s0TupDBg.png)
+
+Esto es lo que se llama curva uplift, la cual nos muestra el impacto que nos generará añadir más gente al tratamiento (ser impactados por email).
+
+Para estimar el uplift tenemos varias opciones, pero las más conocidas son:
+
+- S-Learner: Se trata de un único modelo entrenado usando la variable tratamiento como una variable boolena. Entonces, durante la fase de inferencia, se fuerza la variable a 1 para predecir la probabilidad de exito con tratamiento, y entonces se fuerza a 0 para predecir la probabilidad de exito sin tratamiento. Ambas puntuaciones son calculadas para cada sujeto, sus diferencias nos dan una aproximación de los uplift scores.
+
+- T-Learner: Se trata de entrenar 2 modelos diferentes, donde un modelo entrenara con los datos para los sujetos con tratamiento y el otro modelo entrenara con los datos del grupo control. Ambos modelos se usan en la fase de inferencia, donde la diferencia de scores es una aproximación al uplift.
+
+- Arboles Uplift: Se trata de algoritmos basados en arboles cuyo criterio de separación se basa en diferencias en uplift. En cada paso, se separan los sujetos con la intención de aumentar la diferencia en los resultados obtenidos entre los grupos de control y tratamiento.
+Algunas de las distancias más populares son:
+
+Kullback-Leibler Divergence:
+$$KL(P, Q) = \sum_{k} p_k \log \left( \frac{p_k}{q_k} \right)
+$$
+
+Distancia Euclidea
+$$ED(P, Q) = \sum_{k} (p_k - q_k)^2
+$$
+
+Chi2 Divergence
+
+$$\chi^2(P, Q) = \sum_{k} \frac{(p_k - q_k)^2}{q_k}
+$$
+
+A modo de ejemplo, vamos a usar el mismo caso de los cigarrillos donde usamos una regresión lineal como S-Learner:
+
+``` python
+## ejemplificación numérica del método explicado arriba
+np.random.seed(9)
+def simular_poblacion(N = 10000):
+    # variables
+    edad = np.random.normal(40, 10, size = N)
+    cigarrillos = 50 -0.5 * edad + np.random.exponential(scale = 1, size = N)
+    fumar = np.array([1 if i > np.mean(cigarrillos) else 0 for i in cigarrillos])
+    salud = 100 - 10 * fumar  - edad + np.random.normal(size = N)
+
+    data = pd.DataFrame(np.array([salud, edad, cigarrillos, fumar]).transpose())
+    data.columns = ['salud', 'edad', 'cigarrillos', 'fumar']
+    return data
+
+N = 10000
+data = simular_poblacion()
+
+X = data[['edad', 'fumar']]
+y = data['salud']
+
+reg = LinearRegression().fit(X, y)
+
+# Estimación asistida por el modelo de regresión (Ecuación 3 arriba)
+W = data[['edad', "fumar"]] # dataframe con los valores de nuestro conjunto de ajuste
+diferencia_por_individuo = (reg.predict(W.assign(fumar=1))
+                           - reg.predict(W.assign(fumar=0)))
+
+print(f"Maximo valor de uplift:{diferencia_por_individuo.max()}")
+print(f"Minimo valor de uplift:{diferencia_por_individuo.min()}")
+```
+
+> Maximo valor de uplift:-9.978120034464453
+> Minimo valor de uplift:-9.978120034464467
+
+¿Qué es lo que está ocurriendo aqui?
+Pues que en la regresión logistica, el efecto de fumar es el mismo para todos los sujetos $\hat{\beta_1} = -9.978$, y por tanto, la estimación del CATE, también será de $-9.978$. Este no es un método útil para calcular uplifts.
+
+Además, en nuestro ejemplo, el fumar afectaba de igual manera a todos los sujetos, por lo que cualquier modelo para calcular los uplifts, tendera a darnos los mismos valores para todos los individuos.
+
+Como vemos, podemos obtener estimaciones de los parametros que hemos visto por nuestra cuenta usando las estrategias de S-Learner, haciendo las predicciones fijando el tratamiento, despues fijando el no tratamiento y comparar ambos resultados. También podriamos hacerlo con estrategias de T-Learner o arboles uplift, pero existen varias librerias enfocadas en el análisis causal, que nos facilitaran la vida. En nuestro caso, vamos a usar [CausalML](https://github.com/uber/causalml) desarrollada por Uber.
+
+# Ejemplo práctico
+
+``` python
+logger = logging.getLogger('causalml')
+logging.basicConfig(level=logging.INFO)
+
+# Generate synthetic data
+y, X, treatment, tau, b, e = synthetic_data(mode=1, n=10000, p=8, sigma=1.0)
+
+treatment = np.array(['treatment_a' if val==1 else 'control' for val in treatment])
+```
+
+Primeramente nos hemos generado unos datos sinteticos con los que trabajaremos. Ahora calcularemos una estimación del $ATE$
+
+``` python
+learner_s = BaseSRegressor(XGBRegressor(), control_name='control')
+ate_s, ate_s_lb, ate_s_ub = learner_s.estimate_ate(X=X, treatment=treatment, y=y, return_ci=True, bootstrap_ci=False)
+
+print(f"Estimacion del ATE (banda superior): {ate_s_ub}")
+print(f"Estimacion del ATE: {ate_s}")
+print(f"Estimacion del ATE (banda inferior): {ate_s_lb}")
+```
+> Estimacion del ATE (banda superior): [0.5563531]
+
+> Estimacion del ATE: [0.53164181]
+
+> Estimacion del ATE (banda inferior): [0.50693052]
+
+De este modo, rapidamente hemos obtenido una estimación del $ATE$ sin necesidad de hacer pasos intermedios. Ahora vamos a calcular una estimación del CATE:
+
+``` python
+
+learner_s = BaseSRegressor(XGBRegressor(), control_name='control')
+cate_s, cate_s_lb, cate_s_ub = learner_s.fit_predict(X=X, treatment=treatment, y=y, return_ci=True,
+                               n_bootstraps=100, bootstrap_size=5000)
+
+cate_s = [i[0] for i in cate_s]
+cate_s_lb = [i[0] for i in cate_s_lb]
+cate_s_ub = [i[0] for i in cate_s_ub]
+
+cate = pd.DataFrame({"CATE_banda_inferior":cate_s_lb, "CATE": cate_s, "CATE_banda_superior":cate_s_ub, "y":y, "w": treatment, "tau": tau, "CATE real": tau})
+cate.head()
+```
+
+![Estimacion CATE](imagenes/capitulo2/inferencia_causal/tabla_cate.png)
+
+``` python
+alpha=0.2
+bins=30
+plt.figure(figsize=(12,8))
+plt.hist(cate_s, alpha=alpha, bins=bins, label='S Learner')
+plt.hist(tau, alpha=alpha, bins=bins, label='Actual')
+
+plt.title('Distribution of CATE Predictions by S-Learner and Actual')
+plt.xlabel('Individual Treatment Effect (ITE/CATE)')
+plt.ylabel('# of Samples')
+_=plt.legend()
+```
+
+![Distribución CATE](imagenes/capitulo2/inferencia_causal/distribucion_cate.png)
+
+En la gráfica anterior vemos como está estimando correctamente el CATE. Y si quisiesemos obtener la curva uplift:
+
+``` python
+plot(cate[["CATE", "CATE real", "tau", "y", "w"]], outcome_col='y', treatment_col='w', treatment_effect_col='tau')
+```
+
+
+![Curva Uplift](imagenes/capitulo2/inferencia_causal/uplift_curve.png)

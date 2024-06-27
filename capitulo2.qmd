@@ -12,42 +12,42 @@
 
 ## Redes Bayesianas
 
-Al contrario de la Estadística tradicional, el aprendizaje bajo la Estadística Bayesiana tiene un enfoque probabilístico. Así, el razonamiento bayesiano supone que: 
+Al contrario de la Estadística tradicional, el aprendizaje bajo la Estadística Bayesiana tiene un enfoque probabilístico. Así, el razonamiento bayesiano supone que:
 
-- Las hipótesis están gobernadas por una distribución de probabilidad 
-- Las decisiones son tomadas de forma “óptima” a partir de las observaciones y dichas probabilidades En este proceso de aprendizaje, las instancias de entrenamiento pueden modificar la probabilidad de una hipótesis, de forma que su planteamiento es mucho menos restrictivo que las técnicas tradicionales (cumplimiento de hipótesis más deterministas). Por tanto, el conocimiento a priori es combinado con las observaciones de los datos con el fin de mejorar el eficiencia de las estimaciones.
+-   Las hipótesis están gobernadas por una distribución de probabilidad
+-   Las decisiones son tomadas de forma “óptima” a partir de las observaciones y dichas probabilidades En este proceso de aprendizaje, las instancias de entrenamiento pueden modificar la probabilidad de una hipótesis, de forma que su planteamiento es mucho menos restrictivo que las técnicas tradicionales (cumplimiento de hipótesis más deterministas). Por tanto, el conocimiento a priori es combinado con las observaciones de los datos con el fin de mejorar el eficiencia de las estimaciones.
 
-Como veremos más adelante, los modelos bayesianos son muy utilizados en todo tipo de investigaciones debido a que proporcionan muy buenos resultados tanto para problemas descriptivos como predictivos: 
+Como veremos más adelante, los modelos bayesianos son muy utilizados en todo tipo de investigaciones debido a que proporcionan muy buenos resultados tanto para problemas descriptivos como predictivos:
 
-- Método descriptivo: permite descubrir las relaciones de dependencia/independencia entre las diferentes variables 
-- Método predictivo: son utilizadas como métodos de clasificación. Entre las características de este tipo de técnicas se pueden citar: 
-- Permite realizar inferencias sobre los datos, lo que conlleva a inducir modelos probabilísticos 
-- Facilitar la interpretación de otros métodos en términos probabilísticos 
-- Se necesita conocer un elevado número de probabilidades 
-- Elevado coste computacional al realizar la actualización de las probabilidades
+-   Método descriptivo: permite descubrir las relaciones de dependencia/independencia entre las diferentes variables
+-   Método predictivo: son utilizadas como métodos de clasificación. Entre las características de este tipo de técnicas se pueden citar:
+-   Permite realizar inferencias sobre los datos, lo que conlleva a inducir modelos probabilísticos
+-   Facilitar la interpretación de otros métodos en términos probabilísticos
+-   Se necesita conocer un elevado número de probabilidades
+-   Elevado coste computacional al realizar la actualización de las probabilidades
 
-Antes de entrar en detalle en la estructura de los métodos bayesianos definir algunos conceptos: 
+Antes de entrar en detalle en la estructura de los métodos bayesianos definir algunos conceptos:
 
-- Arco: es un par ordenado (X, Y). En la representación gráfica, un arco (X,Y) viene dado por una flecha desde X hasta Y. 
-- Grafo dirigido: es un par G = (N, A) donde N es un conjunto de nodos y A un conjunto de arcos definidos sobre los nodos. 
-- Grafo no dirigido. Es un par G = (N,A) donde N es un conjunto de nodos y A un conjunto de arcos no orientados (es decir, pares noordenados (X,Y)) definidos sobre los nodos. Ciclo: es un camino no dirigido que empieza y termina en el mismo nodo X. 
-- Grafo acíclico: es un grafo que no contiene ciclos. 
-- Padre. X es un padre de Y si y sólo si existe un arco X -\> Y. Se dice también que Y es hijo de X. Al conjunto de los padres de X se representa como pa(X), y al de los hijos de X por S(X). 
-- Antepasado o ascendiente. X es un antepasado o ascendiente de Z si y sólo si existe un camino dirigido de X a Z. 
-- Descendiente. Z es un descendiente de X si y sólo si X es un antepasado de Z. Al conjunto de los descendientes de X lo denotaremos por de(X). - Variable proposicional es una variable aleatoria que toma un conjunto exhaustivo y excluyente de valores. La denotaremos con letras mayúsculas, por ejemplo X, y a un valor cualquiera de la variable con la misma letra en minúscula, x. 
-- Dos variables X e Y son independientes si se tiene que P(X/Y) = P(X). De esta definición se tiene una caracterización de la independencia que se puede utilizar como definición alternativa: X e Y son independientes sí y sólo sí P(X,Y) = P(X)·P(Y). 
-- Dos variables X e Y son independientes dado una tercera variable Z si se tiene que P(X/Y,Z) = P(X/Y). De esta definición se tiene una caracterización de la independencia que se puede utilizar como definición alternativa: X e Y son independientes dado Z sí y sólo sí P(X,Y/Z) = P(X/Z)·P(Y/Z). También se dice que Z separa condicionalmente a X e Y.
+-   Arco: es un par ordenado (X, Y). En la representación gráfica, un arco (X,Y) viene dado por una flecha desde X hasta Y.
+-   Grafo dirigido: es un par G = (N, A) donde N es un conjunto de nodos y A un conjunto de arcos definidos sobre los nodos.
+-   Grafo no dirigido. Es un par G = (N,A) donde N es un conjunto de nodos y A un conjunto de arcos no orientados (es decir, pares noordenados (X,Y)) definidos sobre los nodos. Ciclo: es un camino no dirigido que empieza y termina en el mismo nodo X.
+-   Grafo acíclico: es un grafo que no contiene ciclos.
+-   Padre. X es un padre de Y si y sólo si existe un arco X -\> Y. Se dice también que Y es hijo de X. Al conjunto de los padres de X se representa como pa(X), y al de los hijos de X por S(X).
+-   Antepasado o ascendiente. X es un antepasado o ascendiente de Z si y sólo si existe un camino dirigido de X a Z.
+-   Descendiente. Z es un descendiente de X si y sólo si X es un antepasado de Z. Al conjunto de los descendientes de X lo denotaremos por de(X). - Variable proposicional es una variable aleatoria que toma un conjunto exhaustivo y excluyente de valores. La denotaremos con letras mayúsculas, por ejemplo X, y a un valor cualquiera de la variable con la misma letra en minúscula, x.
+-   Dos variables X e Y son independientes si se tiene que P(X/Y) = P(X). De esta definición se tiene una caracterización de la independencia que se puede utilizar como definición alternativa: X e Y son independientes sí y sólo sí P(X,Y) = P(X)·P(Y).
+-   Dos variables X e Y son independientes dado una tercera variable Z si se tiene que P(X/Y,Z) = P(X/Y). De esta definición se tiene una caracterización de la independencia que se puede utilizar como definición alternativa: X e Y son independientes dado Z sí y sólo sí P(X,Y/Z) = P(X/Z)·P(Y/Z). También se dice que Z separa condicionalmente a X e Y.
 
 ### Modelo Naive Bayes: Hipótesis Map y Teorema de Bayes
 
 La inferencia bayesiana es el eje central de los métodos bayesianos. Bajo ella, las hipótesis son expresadas a partir de distribuciones de probabilidad formuladas según los datos observados, $p(\theta)$, donde $\theta$ son magnitudes desconocidas. La función verosimilitud, $p(y/\theta)$, contiene la información disponible en los datos en relación a los parámetros y es ésta la que se usa para actualizar la distribución a priori, $p(\theta)$). Finalmente, para llevar a cabo dicha actualización se emplea el Teorema de Bayes.
 
-Para entender el del **Teorema de Bayes** es necesario definir los siguientes conceptos: 
+Para entender el del **Teorema de Bayes** es necesario definir los siguientes conceptos:
 
-- P(h) es la probabilidad a priori de la hipótesis h. Esta probabilidad contiene la información de que dicha hipótesis sea cierta 
-- P(D) es la probabilidad a priori de D. Esta es la probabilidad de observar los datos D (sin tener en cuenta la hipótesis que ha de ser cumplida) 
-- P(h/D) es la probabilidad a posteriori de D, es decir, es la probabilidad de que la hipótesis h una vez los datos D son observados. 
-- P(D/h) es la probabilidad a posteriori de D, es decir, es la probabilidad de que los datos D sean observados una vez la hipótesis h sea correcta.
+-   P(h) es la probabilidad a priori de la hipótesis h. Esta probabilidad contiene la información de que dicha hipótesis sea cierta
+-   P(D) es la probabilidad a priori de D. Esta es la probabilidad de observar los datos D (sin tener en cuenta la hipótesis que ha de ser cumplida)
+-   P(h/D) es la probabilidad a posteriori de D, es decir, es la probabilidad de que la hipótesis h una vez los datos D son observados.
+-   P(D/h) es la probabilidad a posteriori de D, es decir, es la probabilidad de que los datos D sean observados una vez la hipótesis h sea correcta.
 
 Sabiendo que la probabilidad conjunta de un evento dado el otro es proporcional a la probabilidad conjunta de ambos ponderada por la probabilidad del evento condicionante, se tiene:
 
@@ -180,7 +180,6 @@ $$P(C \mid (A_1, A_2, \ldots, A_N)) = P(C) \cdot \prod_{i=1}^{N} P(A_i \mid C)$$
 <div>
 
 Como es de esperar, el supuesto que subyace este clasificador no es muy realista; si bien, alcanza muy buenos resultados por lo que su uso está muy extendido en la comunidad de científico de datos.
-
 
 ![Naive bayes](imagenes/capitulo2/naive_bayes.jpg){#fig-naivebayes}
 
@@ -403,7 +402,6 @@ Las redes bayesianas son métodos estadísticos que representan la incertidumbre
 
 Este tipo de métodos son una representación gráfica de dependencias para razonamiento probabilístico, en las que los nodos representan variables aleatorias y los arcos las relaciones de dependencia directa entre las variables.
 
-
 ![Topologia Bayesiana](imagenes/capitulo2/topologia_bayesiana.jpg){#fig-topologia_bayesinas}
 
 La ventaja de las redes bayesianas frente a otros métodos es la posibilidad de codificar las dependencias/independencias relevantes considerando no sólo las dependencias marginales sino también las dependencias condicionales entre un conjunto de variables.
@@ -481,10 +479,10 @@ Por tanto, \*la propiedad de independencia de las redes bayesianas hace que se r
 
 En una red bayesiana, se conoce como **inferencia probabilística** a la propagación del conocimiento a través de la misma una vez se tienen nuevos datos. Este proceso se lleva a cabo actualizando las probabilidades a posteriori en toda la estructura de la red mediante el Teorema de Bayes.
 
-Como es de imaginar, el proceso de inferencia es muy costoso computacionalmente de forma que, dependiendo de las necesidades, se emplean algoritmos exactos o aproximados: 
+Como es de imaginar, el proceso de inferencia es muy costoso computacionalmente de forma que, dependiendo de las necesidades, se emplean algoritmos exactos o aproximados:
 
-- Exactos: cuando puede calcularse la inferencia de forma exacta. El coste computacional necesario para la actualización de las probabilidades es viable 
-- Aproximados: se usan técnicas de muestreo que permita calcular de forma aproximada la inferencia. Usado cuando no es viable obtener la propagación exacta en un tiempo razonable
+-   Exactos: cuando puede calcularse la inferencia de forma exacta. El coste computacional necesario para la actualización de las probabilidades es viable
+-   Aproximados: se usan técnicas de muestreo que permita calcular de forma aproximada la inferencia. Usado cuando no es viable obtener la propagación exacta en un tiempo razonable
 
 ### Aprendizaje de las redes bayesianas
 
@@ -553,21 +551,15 @@ A día de hoy, existen muchos clasificadores de forma que se exponen brevemente 
 
 **Tan: Tree Augmented Naïve Bayes**
 
-En el modelo TAN todos los atributos tienen como padre a otro atributo como mucho, además de la clase en sí, de forma que cada atributo obtiene un arco aumentado apuntando a él.
-![Modelo TAN](imagenes/capitulo2/modelo_tan.jpg){#fig-modelo_tan}
-
+En el modelo TAN todos los atributos tienen como padre a otro atributo como mucho, además de la clase en sí, de forma que cada atributo obtiene un arco aumentado apuntando a él. ![Modelo TAN](imagenes/capitulo2/modelo_tan.jpg){#fig-modelo_tan}
 
 **Ban: Naïve Bayes aumentado**
 
-En este modelo se incorporan nuevos arcos entre todas las variables con la limitación de que no formen ciclos. Destacar la relevancia de este clasificador ya que su estructura es capaz de representar cualquier forma de red bayesiana.
-![Modelo BAN](imagenes/capitulo2/topologia_bayesiana.jpg){#fig-modelo_ban.jpg}
-
+En este modelo se incorporan nuevos arcos entre todas las variables con la limitación de que no formen ciclos. Destacar la relevancia de este clasificador ya que su estructura es capaz de representar cualquier forma de red bayesiana. ![Modelo BAN](imagenes/capitulo2/topologia_bayesiana.jpg){#fig-modelo_ban.jpg}
 
 **AODE: Average One-Dependence Estimators**
 
-Al igual que el algoritmo TAN, cada variable tiene como padre a la variable clase y como máximo a otro atributo. Sin embargo, la principal diferencia respecto al modelo anterior tiene lugar en la forma de obtener la predicción definitiva del modelo. Dicha predicción consiste en: - El algoritmo establece posibles estructuras de red compatibles con el problema y, en función de ésta, hace una predicción de la clase - La predicción final se obtiene como la media ponderada de las predicciones anteriores
-![Modelo AODE](imagenes/capitulo2/modelo_aode.png){#fig-modelo_aode.png}
-
+Al igual que el algoritmo TAN, cada variable tiene como padre a la variable clase y como máximo a otro atributo. Sin embargo, la principal diferencia respecto al modelo anterior tiene lugar en la forma de obtener la predicción definitiva del modelo. Dicha predicción consiste en: - El algoritmo establece posibles estructuras de red compatibles con el problema y, en función de ésta, hace una predicción de la clase - La predicción final se obtiene como la media ponderada de las predicciones anteriores ![Modelo AODE](imagenes/capitulo2/modelo_aode.png){#fig-modelo_aode.png}
 
 Una vez visto la parte teórica entramos en detalle a nivel práctico.
 
@@ -728,9 +720,7 @@ print(f'Accuracy (test) {round(accuracy_score(y_test, y_test_pred), 2)}')
 
 Una cadena de Markov es un sistema matemático que experimenta transiciones de un estado a otro de acuerdo con un conjunto dado de reglas probabilísticas. La siguiente imagen presenta una representación gráfica de una cadena de Markov.
 
-
 ![Cadena Markow](imagenes/capitulo2/cadena_markov.jpg){#fig-cadena_markov.jpg}
-
 
 Como puede verse, una cadena de Markov puede ser planteada como un gráfico dirigido en el que los nodos son los estados y los arcos contienen la probabilidad de pasar de un estado a otro.
 
@@ -743,7 +733,6 @@ $$P(x_i│x_0 … x_{i-1})= P(x_i│x_{i-1})$$
 La expresión anterior se conoce como **propiedad de Markov**.
 
 Es importante destacar que una cadena de Markov puede ser vista como una red bayesiana en la que cada nodo tiene una tabla de probabilidad correspondiente a $P(x_t│x_{t-1})$ y es a misma para todos los nodos salvo para el instante inicial.
-
 
 ![Cadena Markov](imagenes/capitulo2/cadena_markov2.jpg){#fig-topologia_cadena_markov2.jpg}
 
@@ -942,11 +931,11 @@ $$
 
 Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detalle estos cálculos matriciales:
 
-> **Imaginemos un cliente en un casino. Por cada apuesta gana 1€ con probabilidad de 0.3 o pierde 1€ con probabilidad de 0.7. Sabiendo que la apuesta ha sido iniciada con 2 € y que el cliente se retirará se retirará si pierde todo el dinero o bien lo duplica. Se pide:** 
+> **Imaginemos un cliente en un casino. Por cada apuesta gana 1€ con probabilidad de 0.3 o pierde 1€ con probabilidad de 0.7. Sabiendo que la apuesta ha sido iniciada con 2 € y que el cliente se retirará se retirará si pierde todo el dinero o bien lo duplica. Se pide:**
 
-- **Cuestión 1: Escribir la matriz de transición de una cadena de Markov** 
-- **Cuestión 2: Determinar el promedio de apuestas hasta que el juego termina** 
-- **Cuestión 3: Determinar la probabilidad de terminar el juego con 4€ o de marcharse de vacío**
+-   **Cuestión 1: Escribir la matriz de transición de una cadena de Markov**
+-   **Cuestión 2: Determinar el promedio de apuestas hasta que el juego termina**
+-   **Cuestión 3: Determinar la probabilidad de terminar el juego con 4€ o de marcharse de vacío**
 
 > Cuestión 1: Del enunciado se conoce que se tienen 5 posibles estados (0, 1, 2, 3, 4) siendo los estados 0 y 4 absorbentes (pierde todo o duplica la apuesta, respectivamente). Teniendo en cuenta los posibles movimientos y las probabilidades asociadas se tiene:
 >
@@ -1036,37 +1025,35 @@ Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detal
 
 ### Modelos Ocultos de Markov
 
-Los **Modelos Ocultos de Markov**, HMMs (por sus siglas en inglés) son una extensión de las cadenas de Markov y sirven para tratar tanto eventos observables (presentes en la cadena de entrada) como eventos ocultos que consideramos causales del modelo probabilístico. Los Modelos Ocultos de Markov son utilizados cuando se conocen las evidencias sobre un sistema pero no los estados tienen lugar de forma que buscan establecer la relación existente entre los estados visibles y los ocultos. Algunos ejemplos de uso de este tipo de modelos: 
+Los **Modelos Ocultos de Markov**, HMMs (por sus siglas en inglés) son una extensión de las cadenas de Markov y sirven para tratar tanto eventos observables (presentes en la cadena de entrada) como eventos ocultos que consideramos causales del modelo probabilístico. Los Modelos Ocultos de Markov son utilizados cuando se conocen las evidencias sobre un sistema pero no los estados tienen lugar de forma que buscan establecer la relación existente entre los estados visibles y los ocultos. Algunos ejemplos de uso de este tipo de modelos:
 
-- Separación de secuencias de nucleótidos por sus características biológicas (exón-intrón) 
-- Relacionar proteínas con sus funcionalidades 
-- Localización de genes en las células eucariotas 
-- Reconocimiento del habla 
-- Etiquetado de texto y traducción automática
+-   Separación de secuencias de nucleótidos por sus características biológicas (exón-intrón)
+-   Relacionar proteínas con sus funcionalidades
+-   Localización de genes en las células eucariotas
+-   Reconocimiento del habla
+-   Etiquetado de texto y traducción automática
 
-En un HMM, para cada instante de tiempo o posición t en una secuencia se tiene: 
+En un HMM, para cada instante de tiempo o posición t en una secuencia se tiene:
 
-- Una variable aleatoria $X_t$, con posibles estados $s_1, … ,s_n$ (no observables directamente) 
-- Otra variable aleatoria $E_t$, con posibles estados $v_1, … ,v_m$ (observaciones)
+-   Una variable aleatoria $X_t$, con posibles estados $s_1, … ,s_n$ (no observables directamente)
+-   Otra variable aleatoria $E_t$, con posibles estados $v_1, … ,v_m$ (observaciones)
 
-Para un buen funcionamiento de este tipo de modelos se asume dos propiedades: 
+Para un buen funcionamiento de este tipo de modelos se asume dos propiedades:
 
-- Propiedad de Markov: en cada posición, el estado solo depende del estado en la posición inmediatamente anterior: $P(X_t│Y, X_{t-1}) = P(X_t│X_{t-1})$ 
-- Indpendencia de las observaciones: en cada posición, la observación solo depende del estado en esa posición: $P(E_t│Y, X_t )=P(E_t│X_t)$
+-   Propiedad de Markov: en cada posición, el estado solo depende del estado en la posición inmediatamente anterior: $P(X_t│Y, X_{t-1}) = P(X_t│X_{t-1})$
+-   Indpendencia de las observaciones: en cada posición, la observación solo depende del estado en esa posición: $P(E_t│Y, X_t )=P(E_t│X_t)$
 
 De forma análoga a las cadenas de Markov, un HMM también puede ser expresado según una red bayesiana:
 
-
 ![HMM](imagenes/capitulo2/hhm.jpg){#fig-hhm.jpg}
-
 
 Así, cada nodo $X_t$ la misma tabla de probabilidad correspondiente a $P(X_t│X_{t-1})$ salvo en el instante anterior. Por el contrario, cada nodo $E_t$ tiene una única tabla de probabilidad correspondiente a $P(E_t│X_t)$.
 
-Además de los estados ocultos y observables comentados anteriormente, un Modelo Oculto de Markov consta también de otros elementos que son citados a continuación: 
+Además de los estados ocultos y observables comentados anteriormente, un Modelo Oculto de Markov consta también de otros elementos que son citados a continuación:
 
-- Respecto a los estados ocultos: 
-  - La matriz de probabilidades entre los estados, *A*, denominada matriz de transición. Así, $a_{ij}=P(X_t=s_j│X_{t-1}=s_i)$ es la probabilidad de pasar del estado si al estado $s_j$ Es importante destacar que el modelo probabilístico que describe la manera de transitar entre una posición y la siguiente no cambia a lo largo de la secuencia. 
-  - El vector de probabilidades a priori de cada estado, $\pi$, con $\pi_i=P(x_1=s_i)$ - Respecto a las observaciones: - La matriz de probabilidades de los observables, *B*, conocida como matriz de observación. Así, $b_{ij}=P(E_t=v_j│X_t=s_i)$ es la probabilidad de observar $v_j$ cuando el estado es $s_i$
+-   Respecto a los estados ocultos:
+    -   La matriz de probabilidades entre los estados, *A*, denominada matriz de transición. Así, $a_{ij}=P(X_t=s_j│X_{t-1}=s_i)$ es la probabilidad de pasar del estado si al estado $s_j$ Es importante destacar que el modelo probabilístico que describe la manera de transitar entre una posición y la siguiente no cambia a lo largo de la secuencia.
+    -   El vector de probabilidades a priori de cada estado, $\pi$, con $\pi_i=P(x_1=s_i)$ - Respecto a las observaciones: - La matriz de probabilidades de los observables, *B*, conocida como matriz de observación. Así, $b_{ij}=P(E_t=v_j│X_t=s_i)$ es la probabilidad de observar $v_j$ cuando el estado es $s_i$
 
 Es importante destacar que el modelo probabilístico que describe la emisión de la observación en cada estado no cambia a lo largo de la secuencia.
 
@@ -1114,7 +1101,6 @@ Dado una secuencia de observaciones $o_1 o_2 … o_t$, mediante un **Modelo Ocul
 A continuación, se presenta un ejemplo para explicar en detalle el proceso de obtención del **filtrado y de la explicación más verosímil en un Modelo Oculto de Markov**.
 
 **Suponga un trabajador en una plataforma de petróleo que no tiene contacto con el exterior en todo un año. Debido a su profesión, desconoce la situación meteorológica de cada día (si llueve o no), pero todas las mañanas siempre ve llegar al gerente a su oficina. El gerente unos días viene con paraguas y otros no. Imagine entonces que un sistema formado por dos estados ocultos (lluvia, no lluvia) y dos observaciones (paraguas, no paraguas) es utilizado para pronosticar el tiempo por el trabajador. La siguiente imagen muestra la estructura de un Modelo Oculto de Markov en formato de red.**
-
 
 ![Ejemplo HHM](imagenes/capitulo2/hhm_ejemplo.jpg){#fig-hhm_ejemplo.jpg}
 
@@ -1331,6 +1317,5 @@ sentence = "I love Python"
 predicted_tags = post_tag(model, sentence.split(), word2idx, tag2idx)
 print(f"Post-tagging de la oración: {predicted_tags}")
 ```
-
 
 {{< include inferencia_causal.qmd >}}

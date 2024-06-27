@@ -21,7 +21,7 @@ book:
     - capitulo2.qmd # Bayes Análisis causal
     - capitulo3.qmd # Genéticos
     - capitulo4.qmd # Lógica Difusa
-    #- references.qmd
+    - references.qmd
   #appendices:
   #  - anexo1.qmd
 
@@ -79,6 +79,7 @@ format:
         % Poner el texto adecuado por delante
         \renewcommand{\figurename}{Imagen}
         \renewcommand{\tablename}{Tabla}
+
         
 
         % Formatear el Capitulo, sección y subsección
@@ -124,7 +125,7 @@ format:
         \renewcommand{\figurename}{Imagen}
         % Activar líneas en cabecera y pie
         %\KOMAoptions{headsepline=true, headtopline=true footsepline=true,footbotline=true}
-        
+       
         
     include-after-body: 
       text: |
@@ -134,7 +135,8 @@ format:
     header-includes: |
       % Para seudocodigo
       \usepackage{algpseudocode}
-      
+
+        
       % Página portada
       \titlehead{\center{\includegraphics[]{imagenes/PortadaCompleta.png}}}
       %\title{\includegraphics[]{imagenes/organizadores_colaborador.png} }

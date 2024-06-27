@@ -1,60 +1,43 @@
-
-
-
-
 ### Forecasting en series de tiempo
 
 ### Clasificación y generación de textos
 
-
-
-
 ## Redes Recurrentes
 
-Las redes neuronales recurrentes son una clase de red que permiten incorporar el concepto de temporalidad, y también que la red tenga memoria, porque la información que introducimos en un momento dado en las neuronas de entrada es transformada, y continúa circulando por la red.
-Las redes neuronales recurrentes modelan secuencias. Estas secuencias son únicas y diferenciables respecto a otro tipo de datos: el orden es importante y los elementos de estas secuencias no son independientes unos de otros, tal y como ocurría en los otros planteamientos de redes neuronales como el perceptrón multicapa o las redes convolucionales que no son capaces de recordar información pasada y por lo tanto procesar nuevos eventos.
-Las redes neuronales recurrentes (Recurrent Neural Networks) no disponen de una estructura de capas, sino que permiten conexiones arbitrarias entre todas las neuronas, incluso creando ciclos.
-El permitir esta arquitectura de conexiones recurrentes, conlleva un aumento en el número de pasos o de parámetros ajustables de la red, lo que incrementa la capacidad de representación, pero también la complejidad del aprendizaje.
+Las redes neuronales recurrentes son una clase de red que permiten incorporar el concepto de temporalidad, y también que la red tenga memoria, porque la información que introducimos en un momento dado en las neuronas de entrada es transformada, y continúa circulando por la red. Las redes neuronales recurrentes modelan secuencias. Estas secuencias son únicas y diferenciables respecto a otro tipo de datos: el orden es importante y los elementos de estas secuencias no son independientes unos de otros, tal y como ocurría en los otros planteamientos de redes neuronales como el perceptrón multicapa o las redes convolucionales que no son capaces de recordar información pasada y por lo tanto procesar nuevos eventos. Las redes neuronales recurrentes (Recurrent Neural Networks) no disponen de una estructura de capas, sino que permiten conexiones arbitrarias entre todas las neuronas, incluso creando ciclos. El permitir esta arquitectura de conexiones recurrentes, conlleva un aumento en el número de pasos o de parámetros ajustables de la red, lo que incrementa la capacidad de representación, pero también la complejidad del aprendizaje.
 
 Hasta ahora hemos visto redes cuya función de activación solo actúa en una dirección, hacia delante, desde la capa de entrada hacia la capa de salida, es decir, que no recuerdan valores previos. Una red RNN es parecida, pero incluye conexiones que apuntan “hacia atrás”, una especie de retroalimentaciones entre las neuronas dentro de las capas.
 
-
-En el artículo de Karpathy (2015) “The unreasonable effectiveness of recurrent neural networks”
-(La eficacia razonable de las redes neuronales recurrentes) se describen cuatro diferentes
-opciones que se presentan según la secuencia de los datos de entrada y/o de salida.
+En el artículo de Karpathy (2015) “The unreasonable effectiveness of recurrent neural networks” (La eficacia razonable de las redes neuronales recurrentes) se describen cuatro diferentes opciones que se presentan según la secuencia de los datos de entrada y/o de salida.
 
 ![tipos de redes recurrentes](imagenes/capitulo1/redes_recurrentes/tipos_redes_recurrentes.jpg)
 
-
-- One-to-one: Teoricamente posible, pero si solo tenemos una entrada y una salida, no nos beneficiaremos de las LSTM. Mejor usar otro tipo de red.
-- Many-to-one: La entrada está en forma de secuencia y la salida tiene un tamaño fijo. En esta categoría entra el análisis de sentimientos.
-- One-to-many: En esta opción los datos entran en una forma estándar pero la salida es una secuencia. Ejemplos de este formato puede ser la catalogación de vídeos donde la entrada es una película y la salida una frase.
-- Many-to-many: Las salidas y las entradas son secuencias que pueden estar sincronizadas (clasificación de vídeos) o retrasadas (traducción de un idioma a otro).
+-   One-to-one: Teoricamente posible, pero si solo tenemos una entrada y una salida, no nos beneficiaremos de las LSTM. Mejor usar otro tipo de red.
+-   Many-to-one: La entrada está en forma de secuencia y la salida tiene un tamaño fijo. En esta categoría entra el análisis de sentimientos.
+-   One-to-many: En esta opción los datos entran en una forma estándar pero la salida es una secuencia. Ejemplos de este formato puede ser la catalogación de vídeos donde la entrada es una película y la salida una frase.
+-   Many-to-many: Las salidas y las entradas son secuencias que pueden estar sincronizadas (clasificación de vídeos) o retrasadas (traducción de un idioma a otro).
 
 ### Neurona recurrente o unidad recurrente
 
 Veamos como funciona una neurona recurrente, la cual recibe una entrada, produciendo una salida, y enviando esa salida a sí misma, como se muestra en la siguiente figura:
 
-![Neurona recurrente](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*9hkA9Wj8ckF33rM7KXWKIQ.png)
+![Neurona recurrente](imagenes/capitulo1/redes_recurrentes/neurona_recurrente.png)
 
 Una neurona recurrente procesará la información un número de veces prefijado de veces o timesteps. En cada timestep, esta neurona recurrente recibe la entrada de la capa anterior, así como su propia salida del instante de tiempo anterior para generar su salida $y$. Podemos representar visualmente esta pequeña red desplegada en el eje del tiempo como se muestra en la figura:
 
-![Neurona recurrente a lo largo del tiempo](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0BaBYOKeaiuqsB-iyPiyUw.png)
+![Neurona recurrente a lo largo del tiempo](imagenes/capitulo1/redes_recurrentes/neurona_recurrente_largo_tiempo.png)
 
-La secuencia la representamos por $X_{t-3} , X_{t-2} , X_{t-1} , X_t$ . En este caso el sub índice indica el orden de
-las instancias. El flujo de la información en pasos temporales adyacentes en la capa oculta va a permitir a la red disponer de un recuerdo de lo ocurrido en su pasado.
+La secuencia la representamos por $X_{t-3} , X_{t-2} , X_{t-1} , X_t$ . En este caso el sub índice indica el orden de las instancias. El flujo de la información en pasos temporales adyacentes en la capa oculta va a permitir a la red disponer de un recuerdo de lo ocurrido en su pasado.
 
 Siguiendo esta misma idea, una capa de neuronas recurrentes se puede implementar de tal manera que, en cada instante de tiempo, cada neurona recurrente recibe dos entradas, la entrada correspondiente de la capa anterior y a su vez la salida del instante anterior de la misma capa.
 
-
 Fijemonos más en detalle en la neurona recurrente para ver el proceso iterativo:
 
-![RED recurrente. Paso 1](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*6EazeM37LTXIh_xyOW4tHg.png)
+![RED recurrente. Paso 1](imagenes/capitulo1/redes_recurrentes/red_recurrente_paso1.png)
 
 En el timestep inicial, la neurona recurrente recibe el estado oculto $h_t$ inicializado a 0. El output de la neurona, el estado oculto $h_{t+1}$ es pasado de vuelta a la neurona junto con la entrada del siguiente timestep $x_{t+1}$
 
-![RED recurrente. Paso 2](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*2rIM1dp9cGq0nMP1Qvk1iw.png)
-
+![RED recurrente. Paso 2](imagenes/capitulo1/redes_recurrentes/red_recurrente_paso2.png)
 
 En esta nueva iteración vemos como la información previa hasta el timestep $t+2$ se almacena en el hidden state $h_{t+2}$. Este $h_{t+2}$ se pasará de vuelta a la neurona recurrente junto con la entrada $x_{t+2}$ para hacer una nuea iteración, y asi sucesivamente.
 
@@ -62,10 +45,9 @@ En esta nueva iteración vemos como la información previa hasta el timestep $t+
 
 Veamos matemáticamente como la información se conserva a lo largo del tiempo:
 
-![Red recurrente](https://miro.medium.com/max/2544/1*aIT6tmnk3qHpStkOX3gGcQ.png)
+![Red recurrente](imagenes/capitulo1/redes_recurrentes/red_recurrente.png)
 
-Dada la red recurrente de la imagen,
-La entrada de la capa oculta (la llamaremos $z_t$), se tiene que calcular a través de la suma de las multiplicaciones de las matrices ponderadas con los respectivos vectores y añadir el sesgo:
+Dada la red recurrente de la imagen, La entrada de la capa oculta (la llamaremos $z_t$), se tiene que calcular a través de la suma de las multiplicaciones de las matrices ponderadas con los respectivos vectores y añadir el sesgo:
 
 $$ z_t = W_x \cdot x_t + W_h \cdot h_{t-1} + b$$
 
@@ -77,15 +59,13 @@ Finalmente, la activación de las unidades de salida se calcula de la siguiente 
 
 $$y_t = f(W_y \cdot h_t + b_y)$$
 
-Observando esto, vemos el concepto de recurrencia y la memoria en las redes recurrentes: La salida $y_t$ depende del estado oculto $h_t$, pero a su vez, $h_t$ no solo depende de la entrada actual $x_t$, sino también de $h_{t-1}$. Es así como la información se conserva a lo largo del tiempo.  
-
+Observando esto, vemos el concepto de recurrencia y la memoria en las redes recurrentes: La salida $y_t$ depende del estado oculto $h_t$, pero a su vez, $h_t$ no solo depende de la entrada actual $x_t$, sino también de $h_{t-1}$. Es así como la información se conserva a lo largo del tiempo.
 
 Dado que la salida de una neurona recurrente en un instante de tiempo determinado es una función de entradas de los instantes de tiempo anteriores, se podría decir que una neurona recurrente tiene en cierta forma memoria. La parte de una red neuronal que preserva un estado a través del tiempo se suele llamar celda de memoria.
 
 Y precisamente esta “memoria interna” es lo que hace de este tipo de redes muy adecuadas para problemas de aprendizaje automático que involucran datos secuenciales. Gracias a su memoria interna, las RNN pueden recordar información relevante sobre la entrada que recibieron, lo que les permite ser más precisas en la predicción de lo que vendrá después manteniendo información de contexto a diferencia de los otros tipos de redes que hemos visto, que no pueden recordar acerca de lo que ha sucedido en el pasado, excepto lo reflejado en su entrenamiento a través de sus pesos.
 
 Proporcionar modelos con memoria y permitirles modelar la evolución temporal de las señales es un factor clave en muchas tareas de clasificación y traducción de secuencias en las que los RNN sobresalen, como la traducción automática, el modelado del lenguaje o el reconocimiento de voz, entre muchas otras áreas.
-
 
 Para ilustrar el concepto de “memoria” de una RNN, imaginemos que tenemos una red neuronal como las vistas en capítulos anteriores, le pasamos la palabra “neurona” como entrada y esta red procesa la palabra carácter a carácter. En el momento en que alcanza el carácter “r”, ya se ha olvidado de “n”, “e” y “u”, lo que hace que sea casi imposible para la red neuronal predecir qué letra vendrá después. Pero en cambio, una RNN permite recordar precisamente esto. Conceptualmente, la RNN tiene como entradas el presente y el pasado reciente. Esto es importante porque la secuencia de datos contiene información crucial para saber lo que viene a continuación.
 
@@ -95,11 +75,11 @@ Existen diferentes planteamientos de redes recurrentes. Las primeras redes recur
 
 En las redes de Elman, las entradas de estas neuronas, se toman desde las salidas de las neuronas de una de las capas ocultas, y sus salidas se conectan de nuevo en las entradas de esta misma capa, lo que proporciona una especie de memoria sobre el estado anterior de dicha capa. El esquema es como en la Figura 78, donde X es la entrada, S la salida y el nodo amarillo es la neurona de la capa de contexto.
 
-![Red neuronal de Elman](http://software-tecnico-libre.es/Images/nolang/2016/elman-neural-network.png)
+![Red neuronal de Elman](imagenes/capitulo1/redes_recurrentes/red_neuronal_elman.png)
 
 En las redes de Jordan, la diferencia está en que la entrada de las neuronas de la capa de contexto se toma desde la salida de la red:
 
-![Red neuronal de Jordan](http://software-tecnico-libre.es/Images/nolang/2016/jordan-neural-network.png)
+![Red neuronal de Jordan](imagenes/capitulo1/redes_recurrentes/red_neuronal_jordan.png)
 
 Precisamente por esta característica de memoria son apropiadas para modelar series temporales.
 
@@ -107,16 +87,15 @@ Precisamente por esta característica de memoria son apropiadas para modelar ser
 
 Las redes neuronales recurrentes (RNN) son especialmente adecuadas para trabajar con datos secuenciales y temporales, como series de tiempo, texto y señales. Sin embargo, presentan un problema conocido como el problema de la desaparición del gradiente (gradient vanishing). Veamos por qué ocurre este problema:
 
-- Backpropagation Through Time (BPTT): Las RNNs se entrenan utilizando una extensión de la retropropagación llamada "Backpropagation Through Time" (BPTT). Este proceso implica descomponer el gradiente del error con respecto a cada peso a través de todas las secuencias temporales.
+-   Backpropagation Through Time (BPTT): Las RNNs se entrenan utilizando una extensión de la retropropagación llamada "Backpropagation Through Time" (BPTT). Este proceso implica descomponer el gradiente del error con respecto a cada peso a través de todas las secuencias temporales.
 
-- Gradientes Muy Pequeños: Durante BPTT, los gradientes pueden volverse extremadamente pequeños debido a la multiplicación repetida de derivadas (que suelen ser números entre 0 y 1) a lo largo de muchas capas de tiempo. Este fenómeno se llama "vanishing gradients" (desaparición del gradiente).
+-   Gradientes Muy Pequeños: Durante BPTT, los gradientes pueden volverse extremadamente pequeños debido a la multiplicación repetida de derivadas (que suelen ser números entre 0 y 1) a lo largo de muchas capas de tiempo. Este fenómeno se llama "vanishing gradients" (desaparición del gradiente).
 
-- Efecto en el Entrenamiento: Cuando los gradientes se vuelven muy pequeños, las actualizaciones de los pesos son insignificantes, lo que hace que la red no pueda aprender de manera efectiva. Esto es especialmente problemático para las dependencias a largo plazo, donde las conexiones relevantes se pierden en las iteraciones temporales.
+-   Efecto en el Entrenamiento: Cuando los gradientes se vuelven muy pequeños, las actualizaciones de los pesos son insignificantes, lo que hace que la red no pueda aprender de manera efectiva. Esto es especialmente problemático para las dependencias a largo plazo, donde las conexiones relevantes se pierden en las iteraciones temporales.
 
 De ahí surgieron las redes LSTM, diseñadas para abordar el problema de la desaparición del gradiente.
 
 ### Red Long-Short Term Memory (LSTM)
-
 
 Las redes Long-Short Term Memory(LSTM) son una extensión de las redes neuronales recurrentes, que básicamente amplían su memoria para aprender de experiencias importantes que han pasado hace mucho tiempo. Las LSTM permiten a las RNN recordar sus entradas durante un largo período de tiempo. Esto se debe a que LSTM contiene su información en la memoria, que puede considerarse similar a la memoria de un ordenador, en el sentido de que una neurona de una LSTM puede leer, escribir y borrar información de su memoria.
 
@@ -124,67 +103,47 @@ Esta memoria se puede ver como una “celda de estado”, donde la celda decide 
 
 En una neurona LSTM hay tres puertas a estas “celdas” que controlan el flujo de información: puerta de entrada (input gate), puerta de olvidar (forget gate) y puerta de salida (output gate). Estas puertas determinan si se permite o no una nueva entrada, se elimina la información porque no es importante o se deja que afecte a la salida en el paso de tiempo actual.
 
-La puerta de entrada controla cuando la información nueva puede entrar en la memoria. La puerta
-del olvido controla cuando se olvida una parte de la información, lo que permite a la celda recordar
-datos nuevos. Por último, la puerta de salida controla cuando se utiliza en el resultado de la celda
-la información que está contenida en la celda. Las celdas pueden contener ponderaciones, que
-nos sirven para controlar a cada puerta.
+La puerta de entrada controla cuando la información nueva puede entrar en la memoria. La puerta del olvido controla cuando se olvida una parte de la información, lo que permite a la celda recordar datos nuevos. Por último, la puerta de salida controla cuando se utiliza en el resultado de la celda la información que está contenida en la celda. Las celdas pueden contener ponderaciones, que nos sirven para controlar a cada puerta.
 
 Las puertas en una LSTM son análogas a una forma sigmoide, lo que significa que van de 0 a 1 en la forma que hemos visto en capítulos anteriores. El hecho de que sean análogas a una función de activación sigmoidcomo, permite incorporarlas (matemáticamente hablando) al proceso de Backpropagation.
 
-
 Veamos una representación gráfica:
 
-![LSTM](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*Zrht4QBK5_hAxif17ED4ew.png)
+![LSTM](imagenes/capitulo1/redes_recurrentes/red_neuronal_ltsm.png)
 
 Los pasos serían los siguientes:
 
-1. Estado oculto y nuevos datos: El estado oculto del anterior timestep $h_{t-1}$ y el input del actual timestep $x_t$ son combinados antes de pasar por varias puertas.
+1.  Estado oculto y nuevos datos: El estado oculto del anterior timestep $h_{t-1}$ y el input del actual timestep $x_t$ son combinados antes de pasar por varias puertas.
 
-2. Puerta del olvido: Esta puerta controla qué información debe ser olvidada. Dado que la función sigmoide varía entre 0 y 1, establece qué valores en el estado de la celda deben ser descartados (multiplicados por 0), recordados (multiplicados por 1) o parcialmente recordados (multiplicados por algún valor entre 0 y 1).
+2.  Puerta del olvido: Esta puerta controla qué información debe ser olvidada. Dado que la función sigmoide varía entre 0 y 1, establece qué valores en el estado de la celda deben ser descartados (multiplicados por 0), recordados (multiplicados por 1) o parcialmente recordados (multiplicados por algún valor entre 0 y 1).
 
-3. Puerta de entrada: Ayuda a identificar elementos importantes que necesitan ser añadidos a la celda de estado. Nota que los resultados de la puerta de entrada se multiplican por el candidato del estado de la celda, añadiendo al estado de la celda solo la información considerada importante por la puerta de entrada.
+3.  Puerta de entrada: Ayuda a identificar elementos importantes que necesitan ser añadidos a la celda de estado. Nota que los resultados de la puerta de entrada se multiplican por el candidato del estado de la celda, añadiendo al estado de la celda solo la información considerada importante por la puerta de entrada.
 
-4. Actualizar el estado de la celda: primero, el estado de la celda anterior ($c_{t-1}$) se multiplica por los resultados de la puerta de olvido. Luego, añadimos nueva información de [puerta de entrada × candidato del estado de la celda] para obtener el último estado de la celda ($c_t$).
+4.  Actualizar el estado de la celda: primero, el estado de la celda anterior ($c_{t-1}$) se multiplica por los resultados de la puerta de olvido. Luego, añadimos nueva información de \[puerta de entrada × candidato del estado de la celda\] para obtener el último estado de la celda ($c_t$).
 
-5. Actualizar el estado oculto: la última parte es actualizar el estado oculto. El último estado de la celda ($c_t$) se pasa a través de la función de activación tanh y se multiplica por los resultados de la puerta de salida.
+5.  Actualizar el estado oculto: la última parte es actualizar el estado oculto. El último estado de la celda ($c_t$) se pasa a través de la función de activación tanh y se multiplica por los resultados de la puerta de salida.
 
 Finalmente, el último estado de la celda ($c_t$) y el estado oculto ($h_t$) regresan a la unidad recurrente, y el proceso se repite en el tiempo $t+1$. El bucle continúa hasta que llegamos al final de la secuencia.
 
-
 ### Red GRU
 
-La red GRU (Gated Recurrent Unit) constituye un enfoque más reciente que las LSTM y fue propuesto
-en el año 2014 por Cho et al. Estas redes tienen una arquitectura más sencilla, lo que implica que
-es más eficiente computacionalmente y el rendimiento es comparable con las LSTM.
+La red GRU (Gated Recurrent Unit) constituye un enfoque más reciente que las LSTM y fue propuesto en el año 2014 por Cho et al. Estas redes tienen una arquitectura más sencilla, lo que implica que es más eficiente computacionalmente y el rendimiento es comparable con las LSTM.
 
-Esta arquitectura incluye dos puertas: una puerta de actualización y una puerta de reset. La
-puerta de actualización indica cuánto del contenido de las celdas anteriores hay que mantener. La
-puerta de reset define cómo incorporar la nueva entrada con los contenidos anteriores de la
-celda. Una red GRU puede ser una RNN estándar simplemente estableciendo la puerta de reset
-a 1 y la puerta de actualización a 0.
+Esta arquitectura incluye dos puertas: una puerta de actualización y una puerta de reset. La puerta de actualización indica cuánto del contenido de las celdas anteriores hay que mantener. La puerta de reset define cómo incorporar la nueva entrada con los contenidos anteriores de la celda. Una red GRU puede ser una RNN estándar simplemente estableciendo la puerta de reset a 1 y la puerta de actualización a 0.
 
-Para ampliar información de la GRU se puede consultar el documento escrito por Junyoung Chung
-et al. (2014) titulado “Evaluación empírica de redes neuronales recurrentes cerradas en modelo
-secuencial “
-
+Para ampliar información de la GRU se puede consultar el documento escrito por Junyoung Chung et al. (2014) titulado “Evaluación empírica de redes neuronales recurrentes cerradas en modelo secuencial “
 
 GRU es similar a LSTM, pero tiene menos puertas de control. Además, se basa únicamente en un estado oculto para la transferencia de memoria entre unidades recurrentes, por lo que no hay un estado de celda separado. Analicemos este diagrama simplificado de GRU en detalle (pesos y sesgos no mostrados).
 
-
-![Red GRU](https://miro.medium.com/v2/resize:fit:828/format:webp/1*3a8HnDUlzhhKcSpQzOyiCQ.png)
-
+![Red GRU](imagenes/capitulo1/redes_recurrentes/red_neuronal_gru.png)
 
 1–2 Puerta de reset: el estado oculto anterior ($h_{t-1}$) y la entrada actual ($x_t$) se combinan (multiplicados por sus respectivos pesos y con el sesgo añadido) y se pasan a través de una puerta de reset. Dado que la función sigmoide varía entre 0 y 1, el primer paso establece qué valores deben ser descartados (0), recordados (1) o parcialmente retenidos (entre 0 y 1). El segundo paso reinicia el estado oculto anterior multiplicándolo con las salidas del primer paso.
 
 3–4–5 Puerta de actualización: el tercer paso puede parecer análogo al primer paso, pero ten en cuenta que los pesos y sesgos utilizados para escalar estos vectores son diferentes, proporcionando una salida sigmoide distinta. Entonces, después de pasar un vector combinado a través de una función sigmoide, lo restamos de un vector que contiene todos 1s (paso cuatro) y lo multiplicamos por el estado oculto anterior (paso cinco). Esa es una parte de la actualización del estado oculto con nueva información.
 
-
 6–7–8 Candidato para el estado oculto: después de reiniciar un estado oculto anterior en el paso dos, las salidas se combinan con nuevas entradas ($x_t$), multiplicándolas por sus respectivos pesos y añadiendo sesgos antes de pasar a través de una función de activación tanh (paso seis). Luego, el candidato para el estado oculto se multiplica por los resultados de una puerta de actualización (paso siete) y se añade al $h_{t-1}$ previamente modificado para formar el nuevo estado oculto $h_t$.
 
-
 A continuación veremos como trabajar con estos modelos en la práctica. Las librerias que utilizaremos serán las siguientes:
-
 
 ``` python
 
@@ -216,11 +175,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 ```
 
-
 ### Ejemplo: Predicción de series temporales
 
-Trabajaremos con los [datos abiertos del clima en Australia](https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package). En este caso, tenemos la temperatura minima y maxima diaria de varias ciudades. Nos crearermos la variable `MedTemp` como la mediana entrelas temperaturas máxima y minima e intentaremos predecir el valor de esta variable para el día siguiente.
-En nuestro caso, solo nos interesará hacer las predicciones para una única ciudad, Canberra, por lo que obviaremos el resto.
+Trabajaremos con los [datos abiertos del clima en Australia](https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package). En este caso, tenemos la temperatura minima y maxima diaria de varias ciudades. Nos crearermos la variable `MedTemp` como la mediana entrelas temperaturas máxima y minima e intentaremos predecir el valor de esta variable para el día siguiente. En nuestro caso, solo nos interesará hacer las predicciones para una única ciudad, Canberra, por lo que obviaremos el resto.
 
 ``` python
 # Set Pandas options to display more columns
@@ -282,7 +239,6 @@ fig.update_layout(
 fig.show()
 ```
 
-
 ![Serie temporal](imagenes/capitulo1/redes_recurrentes/serie_temporal.png)
 
 ``` python
@@ -306,7 +262,7 @@ def prep_data(datain, time_step):
 
 La función anterior nos ayudara a reestructurar los datos para cualquier número de timesteps. Por ejemplo, si uso 7 timesteps (uso una secuencia de 7 días para predecir la temperatura el proximo día), la transformación será así:
 
-![Transformación de datos](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*l5gBrwymD4RDCmy66pASyg.png)
+![Transformación de datos](imagenes/capitulo1/redes_recurrentes/transformacion_datos.png)
 
 Una vez tenemos esto, podemo crear nuestro modelo y entrenarlo:
 
@@ -392,7 +348,6 @@ print("MSE: ", mean_squared_error(y_test, pred_test))
 print("")
 ```
 
-
 ![Summary de la red RRN](imagenes/capitulo1/redes_recurrentes/summary_model_rrn.png)
 
 ``` python
@@ -433,7 +388,6 @@ fig.update_layout(title=dict(text="Median Daily Temperatures in Canberra",
 
 fig.show()
 ```
-
 
 ![Serie temporal con predicciones de la red RRN](imagenes/capitulo1/redes_recurrentes/serie_temporal_forecast_1.png)
 
@@ -511,9 +465,7 @@ print("MSE: ", mean_squared_error(y_test, pred_test_lstm))
 print("")
 ```
 
-
 ![Summary red LSTM](imagenes/capitulo1/redes_recurrentes/summary_model_lstm.png)
-
 
 ``` python
 fig = go.Figure()
@@ -563,7 +515,6 @@ fig.update_layout(
 fig.show()
 ```
 
-
 ![Serie temporal con predicciones](imagenes/capitulo1/redes_recurrentes/serie_temporal_forecast_2.png)
 
 Mirando los resultados, parece que nuestro modelo LSTM tiene un desempeño similar a nuestra RRN, ¿Cómo puede ser?¿Se suponia que la LSTM era más potente?
@@ -576,8 +527,7 @@ Podéis probar a variar las condiciones del problema para encontrar situaciones 
 
 ### Ejemplo: Análisis de sentimiento
 
-A continuación usaremos una red LSTM para clasificar como positivas o negativas las reviews de IMDB. Por simplicidad, no trabajaremos con las reviews directamente, sino que `Keras` nos ofrece la posibilidad de cargar las reviews preprocesadas donde cada una de ellas se codifica como una lista de índices de palabras (números enteros).
-Para mayor comodidad, las palabras se indexan por frecuencia global en el conjunto de datos, de modo que, por ejemplo, el entero "3" codifica la 3ª palabra más frecuente en los datos. Esto permite realizar rápidamente operaciones de filtrado como: "considerar sólo las 10.000 palabras más frecuentes, pero eliminar las 20 palabras más frecuentes". En este caso nosotros usaremos un vocabulario de 6000 palabras.
+A continuación usaremos una red LSTM para clasificar como positivas o negativas las reviews de IMDB. Por simplicidad, no trabajaremos con las reviews directamente, sino que `Keras` nos ofrece la posibilidad de cargar las reviews preprocesadas donde cada una de ellas se codifica como una lista de índices de palabras (números enteros). Para mayor comodidad, las palabras se indexan por frecuencia global en el conjunto de datos, de modo que, por ejemplo, el entero "3" codifica la 3ª palabra más frecuente en los datos. Esto permite realizar rápidamente operaciones de filtrado como: "considerar sólo las 10.000 palabras más frecuentes, pero eliminar las 20 palabras más frecuentes". En este caso nosotros usaremos un vocabulario de 6000 palabras.
 
 ``` python
 
@@ -603,7 +553,6 @@ print ([id2word.get (i, "  ") for i in X_train[0]])
 print (" - - - Label - - - ")
 print (y_train [0])
 ```
-
 
 ![Reviews](imagenes/capitulo1/redes_recurrentes/reviews.png)
 

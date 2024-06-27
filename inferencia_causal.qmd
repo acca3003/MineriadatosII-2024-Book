@@ -1,41 +1,4 @@
 
-``` python
-# Librerias necesarias
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from sklearn.linear_model import LinearRegression
-import statsmodels.api as sm
-
-from graphviz import Source
-from scipy.stats import norm
-from sklearn.mixture import GaussianMixture
-from graphviz import Digraph
-from IPython.display import display
-
-
-from xgboost import XGBRegressor, XGBClassifier
-import seaborn as sns
-
-# from causalml.inference.meta import XGBTLearner, MLPTLearner
-from causalml.inference.meta import BaseSRegressor, BaseTRegressor, BaseXRegressor, BaseRRegressor
-from causalml.inference.meta import BaseSClassifier, BaseTClassifier, BaseXClassifier, BaseRClassifier
-from causalml.inference.meta import LRSRegressor
-from causalml.match import NearestNeighborMatch, MatchOptimizer, create_table_one
-from causalml.propensity import ElasticNetPropensityModel
-from causalml.dataset import *
-from causalml.metrics import *
-
-
-# imports from package
-import logging
-from sklearn.dummy import DummyRegressor
-from sklearn.metrics import mean_squared_error as mse
-from sklearn.metrics import mean_absolute_error as mae
-import statsmodels.api as sm
-from copy import deepcopy
-```
-
 ## Inferencia Causal
 
 Establecer relaciones causales es esencial no solamente para entender el mundo que nos rodea, sino también para actuar en él. Las decisiones muchas veces giran en torno a preguntas causales: ¿cuál fue el impacto de alguna política sobre el resultado que se buscaba? ¿Nuestra acción hizo aumentar las ventas?. A menudo queremos responder a preguntas del tipo: ¿qué pasa con el resultado si implemento A versus si no implemento A, es decir, si cambia el valor de la variable "A"? Para responder ese tipo de **preguntas que comparan escenarios contrafácticos** aparece la inferencia causal, ya que los modelos estadísticos y de machine learning no estiman relaciones causales, sino que predicen en base a correlaciones, y pueden ser engañosos a la hora de responder este tipo de preguntas.
@@ -46,7 +9,7 @@ Establecer relaciones causales es esencial no solamente para entender el mundo q
 
 ![xkcd: correlación](imagenes/capitulo2/inferencia_causal/correlacion.png){fig-align="center"}
 
-A menudo se suelen confundir la causalidad con la correlación, lo que nos puede llevar a un gran error. Si entramos a [este famoso sitio web](https://www.tylervigen.com/spurious-correlations) podremos disfrutar rápidamente de algunos gráficos muy cómicos, que parecen sugerir una relación fáctica entre variables realmente diferentes. Por ejemplo, este gráfico muestra simultáneamente la cantidad anual de bebes que fueron llamados como Stevie versus la cotización de Amazon:
+A menudo se suelen confundir la causalidad con la correlación, lo que nos puede llevar a un gran error. Si entramos a [este famoso sitio web](https://www.tylervigen.com/spurious-correlations) podremos disfrutar rápidamente de algunos gráficos muy cómicos, que parecen sugerir una relación fáctica entre variables realmente diferentes. Por ejemplo, este gráfico muestra simultáneamente la cantidad anual de bebés que fueron llamados como Stevie versus la cotización de Amazon:
 
 ![Relaciones](imagenes/capitulo2/inferencia_causal/relaciones.png){fig-align="center"}
 
@@ -259,6 +222,45 @@ En este ejemplo de juguete conocemos la verdad respecto del efecto de fumar en l
 En esta simulación vamos a generar algunos datos, que es con lo que nos enfrentaremos en la realidad: tendremos unas cuantas mediciones del índice de salud, de la edad y de los cigarrillos consumidos para cada persona. Veremos si a partir de esos datos podemos recuperar el efecto causal de fumar sobre el índice de salud, que sabemos que es **-10**.
 
 Simularemos una población de 10000 individuos:
+
+
+``` python
+# Librerias necesarias
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+
+from graphviz import Source
+from scipy.stats import norm
+from sklearn.mixture import GaussianMixture
+from graphviz import Digraph
+from IPython.display import display
+
+
+from xgboost import XGBRegressor, XGBClassifier
+import seaborn as sns
+
+# from causalml.inference.meta import XGBTLearner, MLPTLearner
+from causalml.inference.meta import BaseSRegressor, BaseTRegressor, BaseXRegressor, BaseRRegressor
+from causalml.inference.meta import BaseSClassifier, BaseTClassifier, BaseXClassifier, BaseRClassifier
+from causalml.inference.meta import LRSRegressor
+from causalml.match import NearestNeighborMatch, MatchOptimizer, create_table_one
+from causalml.propensity import ElasticNetPropensityModel
+from causalml.dataset import *
+from causalml.metrics import *
+
+
+# imports from package
+import logging
+from sklearn.dummy import DummyRegressor
+from sklearn.metrics import mean_squared_error as mse
+from sklearn.metrics import mean_absolute_error as mae
+import statsmodels.api as sm
+from copy import deepcopy
+```
+
 
 ``` python
 np.random.seed(9)

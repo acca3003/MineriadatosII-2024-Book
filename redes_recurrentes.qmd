@@ -1,7 +1,646 @@
-## Redes Recurrentes
 
-## Redes recurrentes: Elman, Jordan, LSTM y GRU
+
+
 
 ### Forecasting en series de tiempo
 
 ### Clasificación y generación de textos
+
+
+
+
+## Redes Recurrentes
+
+Las redes neuronales recurrentes son una clase de red que permiten incorporar el concepto de temporalidad, y también que la red tenga memoria, porque la información que introducimos en un momento dado en las neuronas de entrada es transformada, y continúa circulando por la red.
+Las redes neuronales recurrentes modelan secuencias. Estas secuencias son únicas y diferenciables respecto a otro tipo de datos: el orden es importante y los elementos de estas secuencias no son independientes unos de otros, tal y como ocurría en los otros planteamientos de redes neuronales como el perceptrón multicapa o las redes convolucionales que no son capaces de recordar información pasada y por lo tanto procesar nuevos eventos.
+Las redes neuronales recurrentes (Recurrent Neural Networks) no disponen de una estructura de capas, sino que permiten conexiones arbitrarias entre todas las neuronas, incluso creando ciclos.
+El permitir esta arquitectura de conexiones recurrentes, conlleva un aumento en el número de pasos o de parámetros ajustables de la red, lo que incrementa la capacidad de representación, pero también la complejidad del aprendizaje.
+
+Hasta ahora hemos visto redes cuya función de activación solo actúa en una dirección, hacia delante, desde la capa de entrada hacia la capa de salida, es decir, que no recuerdan valores previos. Una red RNN es parecida, pero incluye conexiones que apuntan “hacia atrás”, una especie de retroalimentaciones entre las neuronas dentro de las capas.
+
+
+En el artículo de Karpathy (2015) “The unreasonable effectiveness of recurrent neural networks”
+(La eficacia razonable de las redes neuronales recurrentes) se describen cuatro diferentes
+opciones que se presentan según la secuencia de los datos de entrada y/o de salida.
+
+![tipos de redes recurrentes](imagenes/capitulo1/redes_recurrentes/tipos_redes_recurrentes.jpg)
+
+
+- One-to-one: Teoricamente posible, pero si solo tenemos una entrada y una salida, no nos beneficiaremos de las LSTM. Mejor usar otro tipo de red.
+- Many-to-one: La entrada está en forma de secuencia y la salida tiene un tamaño fijo. En esta categoría entra el análisis de sentimientos.
+- One-to-many: En esta opción los datos entran en una forma estándar pero la salida es una secuencia. Ejemplos de este formato puede ser la catalogación de vídeos donde la entrada es una película y la salida una frase.
+- Many-to-many: Las salidas y las entradas son secuencias que pueden estar sincronizadas (clasificación de vídeos) o retrasadas (traducción de un idioma a otro).
+
+### Neurona recurrente o unidad recurrente
+
+Veamos como funciona una neurona recurrente, la cual recibe una entrada, produciendo una salida, y enviando esa salida a sí misma, como se muestra en la siguiente figura:
+
+![Neurona recurrente](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*9hkA9Wj8ckF33rM7KXWKIQ.png)
+
+Una neurona recurrente procesará la información un número de veces prefijado de veces o timesteps. En cada timestep, esta neurona recurrente recibe la entrada de la capa anterior, así como su propia salida del instante de tiempo anterior para generar su salida $y$. Podemos representar visualmente esta pequeña red desplegada en el eje del tiempo como se muestra en la figura:
+
+![Neurona recurrente a lo largo del tiempo](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*0BaBYOKeaiuqsB-iyPiyUw.png)
+
+La secuencia la representamos por $X_{t-3} , X_{t-2} , X_{t-1} , X_t$ . En este caso el sub índice indica el orden de
+las instancias. El flujo de la información en pasos temporales adyacentes en la capa oculta va a permitir a la red disponer de un recuerdo de lo ocurrido en su pasado.
+
+Siguiendo esta misma idea, una capa de neuronas recurrentes se puede implementar de tal manera que, en cada instante de tiempo, cada neurona recurrente recibe dos entradas, la entrada correspondiente de la capa anterior y a su vez la salida del instante anterior de la misma capa.
+
+
+Fijemonos más en detalle en la neurona recurrente para ver el proceso iterativo:
+
+![RED recurrente. Paso 1](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*6EazeM37LTXIh_xyOW4tHg.png)
+
+En el timestep inicial, la neurona recurrente recibe el estado oculto $h_t$ inicializado a 0. El output de la neurona, el estado oculto $h_{t+1}$ es pasado de vuelta a la neurona junto con la entrada del siguiente timestep $x_{t+1}$
+
+![RED recurrente. Paso 2](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*2rIM1dp9cGq0nMP1Qvk1iw.png)
+
+
+En esta nueva iteración vemos como la información previa hasta el timestep $t+2$ se almacena en el hidden state $h_{t+2}$. Este $h_{t+2}$ se pasará de vuelta a la neurona recurrente junto con la entrada $x_{t+2}$ para hacer una nuea iteración, y asi sucesivamente.
+
+**Nota:** Dado que $h_0$ se inicializa a cero, se puede obviar ese valor y cambiar la notación anterior para usar $h_{t-1}$ donde antes usabamos $h_t$ para hacer más hincapié en que se trata de información proveniente del pasado.
+
+Veamos matemáticamente como la información se conserva a lo largo del tiempo:
+
+![Red recurrente](https://miro.medium.com/max/2544/1*aIT6tmnk3qHpStkOX3gGcQ.png)
+
+Dada la red recurrente de la imagen,
+La entrada de la capa oculta (la llamaremos $z_t$), se tiene que calcular a través de la suma de las multiplicaciones de las matrices ponderadas con los respectivos vectores y añadir el sesgo:
+
+$$ z_t = W_x \cdot x_t + W_h \cdot h_{t-1} + b$$
+
+El estado oculto con su función de activación se calcula con:
+
+$$h_t = g(z_t) = g(W_x \cdot x_t + W_h \cdot h_{t-1} + b_h)$$
+
+Finalmente, la activación de las unidades de salida se calcula de la siguiente forma:
+
+$$y_t = f(W_y \cdot h_t + b_y)$$
+
+Observando esto, vemos el concepto de recurrencia y la memoria en las redes recurrentes: La salida $y_t$ depende del estado oculto $h_t$, pero a su vez, $h_t$ no solo depende de la entrada actual $x_t$, sino también de $h_{t-1}$. Es así como la información se conserva a lo largo del tiempo.  
+
+
+Dado que la salida de una neurona recurrente en un instante de tiempo determinado es una función de entradas de los instantes de tiempo anteriores, se podría decir que una neurona recurrente tiene en cierta forma memoria. La parte de una red neuronal que preserva un estado a través del tiempo se suele llamar celda de memoria.
+
+Y precisamente esta “memoria interna” es lo que hace de este tipo de redes muy adecuadas para problemas de aprendizaje automático que involucran datos secuenciales. Gracias a su memoria interna, las RNN pueden recordar información relevante sobre la entrada que recibieron, lo que les permite ser más precisas en la predicción de lo que vendrá después manteniendo información de contexto a diferencia de los otros tipos de redes que hemos visto, que no pueden recordar acerca de lo que ha sucedido en el pasado, excepto lo reflejado en su entrenamiento a través de sus pesos.
+
+Proporcionar modelos con memoria y permitirles modelar la evolución temporal de las señales es un factor clave en muchas tareas de clasificación y traducción de secuencias en las que los RNN sobresalen, como la traducción automática, el modelado del lenguaje o el reconocimiento de voz, entre muchas otras áreas.
+
+
+Para ilustrar el concepto de “memoria” de una RNN, imaginemos que tenemos una red neuronal como las vistas en capítulos anteriores, le pasamos la palabra “neurona” como entrada y esta red procesa la palabra carácter a carácter. En el momento en que alcanza el carácter “r”, ya se ha olvidado de “n”, “e” y “u”, lo que hace que sea casi imposible para la red neuronal predecir qué letra vendrá después. Pero en cambio, una RNN permite recordar precisamente esto. Conceptualmente, la RNN tiene como entradas el presente y el pasado reciente. Esto es importante porque la secuencia de datos contiene información crucial para saber lo que viene a continuación.
+
+### Redes recurrentes clásicas: Elman y Jordan
+
+Existen diferentes planteamientos de redes recurrentes. Las primeras redes recurrentes consideradas clásicas y que todavía gozan de cierta popularidad por sus aplicaciones son las redes de Elman y de Jordan.
+
+En las redes de Elman, las entradas de estas neuronas, se toman desde las salidas de las neuronas de una de las capas ocultas, y sus salidas se conectan de nuevo en las entradas de esta misma capa, lo que proporciona una especie de memoria sobre el estado anterior de dicha capa. El esquema es como en la Figura 78, donde X es la entrada, S la salida y el nodo amarillo es la neurona de la capa de contexto.
+
+![Red neuronal de Elman](http://software-tecnico-libre.es/Images/nolang/2016/elman-neural-network.png)
+
+En las redes de Jordan, la diferencia está en que la entrada de las neuronas de la capa de contexto se toma desde la salida de la red:
+
+![Red neuronal de Jordan](http://software-tecnico-libre.es/Images/nolang/2016/jordan-neural-network.png)
+
+Precisamente por esta característica de memoria son apropiadas para modelar series temporales.
+
+¿Por qué necesitariamos una nueva arquitectura, si ya hemos visto que las redes recurrentes tienen memoria?
+
+Las redes neuronales recurrentes (RNN) son especialmente adecuadas para trabajar con datos secuenciales y temporales, como series de tiempo, texto y señales. Sin embargo, presentan un problema conocido como el problema de la desaparición del gradiente (gradient vanishing). Veamos por qué ocurre este problema:
+
+- Backpropagation Through Time (BPTT): Las RNNs se entrenan utilizando una extensión de la retropropagación llamada "Backpropagation Through Time" (BPTT). Este proceso implica descomponer el gradiente del error con respecto a cada peso a través de todas las secuencias temporales.
+
+- Gradientes Muy Pequeños: Durante BPTT, los gradientes pueden volverse extremadamente pequeños debido a la multiplicación repetida de derivadas (que suelen ser números entre 0 y 1) a lo largo de muchas capas de tiempo. Este fenómeno se llama "vanishing gradients" (desaparición del gradiente).
+
+- Efecto en el Entrenamiento: Cuando los gradientes se vuelven muy pequeños, las actualizaciones de los pesos son insignificantes, lo que hace que la red no pueda aprender de manera efectiva. Esto es especialmente problemático para las dependencias a largo plazo, donde las conexiones relevantes se pierden en las iteraciones temporales.
+
+De ahí surgieron las redes LSTM, diseñadas para abordar el problema de la desaparición del gradiente.
+
+### Red Long-Short Term Memory (LSTM)
+
+
+Las redes Long-Short Term Memory(LSTM) son una extensión de las redes neuronales recurrentes, que básicamente amplían su memoria para aprender de experiencias importantes que han pasado hace mucho tiempo. Las LSTM permiten a las RNN recordar sus entradas durante un largo período de tiempo. Esto se debe a que LSTM contiene su información en la memoria, que puede considerarse similar a la memoria de un ordenador, en el sentido de que una neurona de una LSTM puede leer, escribir y borrar información de su memoria.
+
+Esta memoria se puede ver como una “celda de estado”, donde la celda decide si almacenar o eliminar información dentro (abriendo la puerta o no para almacenar), en función de la importancia que asigna a la información que está recibiendo. La asignación de importancia se decide a través de los pesos. Esto lo podemos ver como que aprende con el tiempo qué información es importante y cuál no.
+
+En una neurona LSTM hay tres puertas a estas “celdas” que controlan el flujo de información: puerta de entrada (input gate), puerta de olvidar (forget gate) y puerta de salida (output gate). Estas puertas determinan si se permite o no una nueva entrada, se elimina la información porque no es importante o se deja que afecte a la salida en el paso de tiempo actual.
+
+La puerta de entrada controla cuando la información nueva puede entrar en la memoria. La puerta
+del olvido controla cuando se olvida una parte de la información, lo que permite a la celda recordar
+datos nuevos. Por último, la puerta de salida controla cuando se utiliza en el resultado de la celda
+la información que está contenida en la celda. Las celdas pueden contener ponderaciones, que
+nos sirven para controlar a cada puerta.
+
+Las puertas en una LSTM son análogas a una forma sigmoide, lo que significa que van de 0 a 1 en la forma que hemos visto en capítulos anteriores. El hecho de que sean análogas a una función de activación sigmoidcomo, permite incorporarlas (matemáticamente hablando) al proceso de Backpropagation.
+
+
+Veamos una representación gráfica:
+
+![LSTM](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*Zrht4QBK5_hAxif17ED4ew.png)
+
+Los pasos serían los siguientes:
+
+1. Estado oculto y nuevos datos: El estado oculto del anterior timestep $h_{t-1}$ y el input del actual timestep $x_t$ son combinados antes de pasar por varias puertas.
+
+2. Puerta del olvido: Esta puerta controla qué información debe ser olvidada. Dado que la función sigmoide varía entre 0 y 1, establece qué valores en el estado de la celda deben ser descartados (multiplicados por 0), recordados (multiplicados por 1) o parcialmente recordados (multiplicados por algún valor entre 0 y 1).
+
+3. Puerta de entrada: Ayuda a identificar elementos importantes que necesitan ser añadidos a la celda de estado. Nota que los resultados de la puerta de entrada se multiplican por el candidato del estado de la celda, añadiendo al estado de la celda solo la información considerada importante por la puerta de entrada.
+
+4. Actualizar el estado de la celda: primero, el estado de la celda anterior ($c_{t-1}$) se multiplica por los resultados de la puerta de olvido. Luego, añadimos nueva información de [puerta de entrada × candidato del estado de la celda] para obtener el último estado de la celda ($c_t$).
+
+5. Actualizar el estado oculto: la última parte es actualizar el estado oculto. El último estado de la celda ($c_t$) se pasa a través de la función de activación tanh y se multiplica por los resultados de la puerta de salida.
+
+Finalmente, el último estado de la celda ($c_t$) y el estado oculto ($h_t$) regresan a la unidad recurrente, y el proceso se repite en el tiempo $t+1$. El bucle continúa hasta que llegamos al final de la secuencia.
+
+
+### Red GRU
+
+La red GRU (Gated Recurrent Unit) constituye un enfoque más reciente que las LSTM y fue propuesto
+en el año 2014 por Cho et al. Estas redes tienen una arquitectura más sencilla, lo que implica que
+es más eficiente computacionalmente y el rendimiento es comparable con las LSTM.
+
+Esta arquitectura incluye dos puertas: una puerta de actualización y una puerta de reset. La
+puerta de actualización indica cuánto del contenido de las celdas anteriores hay que mantener. La
+puerta de reset define cómo incorporar la nueva entrada con los contenidos anteriores de la
+celda. Una red GRU puede ser una RNN estándar simplemente estableciendo la puerta de reset
+a 1 y la puerta de actualización a 0.
+
+Para ampliar información de la GRU se puede consultar el documento escrito por Junyoung Chung
+et al. (2014) titulado “Evaluación empírica de redes neuronales recurrentes cerradas en modelo
+secuencial “
+
+
+GRU es similar a LSTM, pero tiene menos puertas de control. Además, se basa únicamente en un estado oculto para la transferencia de memoria entre unidades recurrentes, por lo que no hay un estado de celda separado. Analicemos este diagrama simplificado de GRU en detalle (pesos y sesgos no mostrados).
+
+
+![Red GRU](https://miro.medium.com/v2/resize:fit:828/format:webp/1*3a8HnDUlzhhKcSpQzOyiCQ.png)
+
+
+1–2 Puerta de reset: el estado oculto anterior ($h_{t-1}$) y la entrada actual ($x_t$) se combinan (multiplicados por sus respectivos pesos y con el sesgo añadido) y se pasan a través de una puerta de reset. Dado que la función sigmoide varía entre 0 y 1, el primer paso establece qué valores deben ser descartados (0), recordados (1) o parcialmente retenidos (entre 0 y 1). El segundo paso reinicia el estado oculto anterior multiplicándolo con las salidas del primer paso.
+
+3–4–5 Puerta de actualización: el tercer paso puede parecer análogo al primer paso, pero ten en cuenta que los pesos y sesgos utilizados para escalar estos vectores son diferentes, proporcionando una salida sigmoide distinta. Entonces, después de pasar un vector combinado a través de una función sigmoide, lo restamos de un vector que contiene todos 1s (paso cuatro) y lo multiplicamos por el estado oculto anterior (paso cinco). Esa es una parte de la actualización del estado oculto con nueva información.
+
+
+6–7–8 Candidato para el estado oculto: después de reiniciar un estado oculto anterior en el paso dos, las salidas se combinan con nuevas entradas ($x_t$), multiplicándolas por sus respectivos pesos y añadiendo sesgos antes de pasar a través de una función de activación tanh (paso seis). Luego, el candidato para el estado oculto se multiplica por los resultados de una puerta de actualización (paso siete) y se añade al $h_{t-1}$ previamente modificado para formar el nuevo estado oculto $h_t$.
+
+
+A continuación veremos como trabajar con estos modelos en la práctica. Las librerias que utilizaremos serán las siguientes:
+
+
+``` python
+
+# Tensorflow / Keras
+from tensorflow import keras # for building Neural Networks
+from keras.models import Sequential # for creating a linear stack of layers for our Neural Network
+from keras import Input # for instantiating a keras tensor
+from keras.layers import Embedding, LSTM, Dense, Dropout, SimpleRNN # for creating regular densely-connected NN layers and RNN layers
+from tensorflow.keras.datasets import imdb
+from keras.preprocessing import sequence
+from keras.layers import Bidirectional, RepeatVector, TimeDistributed # for creating layers inside the Neural Network
+from tensorflow.keras.utils import pad_sequences
+
+# Data manipulation
+import pandas as pd # for data manipulation
+import numpy as np # for data manipulation
+import math # to help with data reshaping of the data
+
+# Sklearn
+import sklearn # for model evaluation
+from sklearn.model_selection import train_test_split # for splitting the data into train and test samples
+from sklearn.metrics import mean_squared_error # for model evaluation metrics
+from sklearn.preprocessing import MinMaxScaler # for feature scaling
+
+# Visualization
+import bctools as bc
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
+```
+
+
+### Ejemplo: Predicción de series temporales
+
+Trabajaremos con los [datos abiertos del clima en Australia](https://www.kaggle.com/datasets/jsphyg/weather-dataset-rattle-package). En este caso, tenemos la temperatura minima y maxima diaria de varias ciudades. Nos crearermos la variable `MedTemp` como la mediana entrelas temperaturas máxima y minima e intentaremos predecir el valor de esta variable para el día siguiente.
+En nuestro caso, solo nos interesará hacer las predicciones para una única ciudad, Canberra, por lo que obviaremos el resto.
+
+``` python
+# Set Pandas options to display more columns
+pd.options.display.max_columns=10
+
+# Read in the weather data csv
+df=pd.read_csv('weatherAUS.csv', encoding='utf-8')
+
+# Convert dates to year-months
+df['Year-Month']= (pd.to_datetime(df['Date'], yearfirst=True)).dt.strftime('%Y-%m')
+
+# Drop records where target MinTemp=NaN or MaxTemp=NaN
+df=df[pd.isnull(df['MinTemp'])==False]
+df=df[pd.isnull(df['MaxTemp'])==False]
+
+# Median daily temperature (mid point between Daily Max and Daily Min)
+df['MedTemp']=df[['MinTemp', 'MaxTemp']].median(axis=1)
+
+dfCan=df[df['Location']=='Canberra'].copy()
+
+# Show a snaphsot of data
+dfCan
+```
+
+Graficamos los datos para ver como es la serie temporal:
+
+``` python
+# Plot daily median temperatures in Canberra
+fig = go.Figure()
+
+
+fig.add_trace(go.Scatter(x=dfCan['Date'],
+                         y=dfCan['MedTemp'],
+                         mode='lines',
+                         name='Median Temperature',
+                         opacity=0.8,
+                         line=dict( width=1)
+                        ))
+
+# Update axes lines
+fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey',
+                 zeroline=True, zerolinewidth=1, zerolinecolor='lightgrey',
+                 showline=True, linewidth=1, linecolor='black',
+                 title='Date'
+                )
+
+fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey',
+                 zeroline=True, zerolinewidth=1, zerolinecolor='lightgrey',
+                 showline=True, linewidth=1, linecolor='black',
+                 title='Degrees Celsius'
+                )
+
+# Set figure title
+fig.update_layout(
+    title=dict(text="Temperatures in Canberra",
+    font=dict(color='black'))
+)
+
+fig.show()
+```
+
+
+![Serie temporal](imagenes/capitulo1/redes_recurrentes/serie_temporal.png)
+
+``` python
+def prep_data(datain, time_step):
+    # 1. y-array
+    # First, create an array with indices for y elements based on the chosen time_step
+    y_indices = np.arange(start=time_step, stop=len(datain), step=time_step)
+    # Create y array based on the above indices
+    y_tmp = datain[y_indices]
+
+    # 2. X-array
+    # We want to have the same number of rows for X as we do for y
+    rows_X = len(y_tmp)
+    # Since the last element in y_tmp may not be the last element of the datain,
+    # let's ensure that X array stops with the last y
+    X_tmp = datain[range(time_step*rows_X)]
+    # Now take this array and reshape it into the desired shape
+    X_tmp = np.reshape(X_tmp, (rows_X, time_step, 1))
+    return X_tmp, y_tmp
+```
+
+La función anterior nos ayudara a reestructurar los datos para cualquier número de timesteps. Por ejemplo, si uso 7 timesteps (uso una secuencia de 7 días para predecir la temperatura el proximo día), la transformación será así:
+
+![Transformación de datos](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*l5gBrwymD4RDCmy66pASyg.png)
+
+Una vez tenemos esto, podemo crear nuestro modelo y entrenarlo:
+
+``` python
+
+##### Step 1 - Select data for modeling and apply MinMax scaling
+X=dfCan[['MedTemp']]
+scaler = MinMaxScaler()
+X_scaled=scaler.fit_transform(X)
+
+
+##### Step 2 - Create training and testing samples
+train_data, test_data = train_test_split(X_scaled, test_size=0.2, shuffle=False)
+
+
+##### Step 3 - Prepare input X and target y arrays using previously defined function
+time_step = 7
+X_train, y_train = prep_data(train_data, time_step)
+X_test, y_test = prep_data(test_data, time_step)
+
+# ##### Step 4 - Specify the structure of a Neural Network
+model = Sequential(name="RNN-Model") # Model
+model.add(Input(shape=(time_step,1), name='Input-Layer')) # Input Layer - need to speicfy the shape of inputs
+model.add(SimpleRNN(units=1, activation='tanh', name='Hidden-Recurrent-Layer')) # Hidden Recurrent Layer
+model.add(Dense(units=2, activation='tanh', name='Hidden-Layer')) # Hidden Layer
+model.add(Dense(units=1, activation='linear', name='Output-Layer')) # Output Layer, Linear(x) = x
+
+
+##### Step 5 - Compile keras model
+model.compile(
+    optimizer='adam',
+    loss='mean_squared_error', # Loss function to be optimized.
+    metrics=['MeanSquaredError', 'MeanAbsoluteError'], # List of metrics to be evaluated by the model during training and testing.
+    loss_weights=None,
+    weighted_metrics=None,
+    run_eagerly=None
+)
+
+
+# ##### Step 6 - Fit keras model on the dataset
+model.fit(
+    X_train, # input data
+    y_train, # target data
+    batch_size=1, # Number of samples per gradient update.
+    epochs=20, # default=1, Number of epochs to train the model
+    validation_split=0.0, # default=0.0, Fraction of the training data to be used as validation data. The model will set apart this fraction of the training data, will not train on it, and will evaluate the loss and any model metrics on this data at the end of each epoch.
+    shuffle=True, # default=True, Boolean (whether to shuffle the training data before each epoch) or str (for 'batch').
+    class_weight=None, # default=None, Optional dictionary mapping class indices (integers) to a weight (float) value, used for weighting the loss function (during training only). This can be useful to tell the model to "pay more attention" to samples from an under-represented class.
+    sample_weight=None, # default=None, Optional Numpy array of weights for the training samples, used for weighting the loss function (during training only).
+    initial_epoch=0, # Integer, default=0, Epoch at which to start training (useful for resuming a previous training run).
+    steps_per_epoch=None, # Integer or None, default=None, Total number of steps (batches of samples) before declaring one epoch finished and starting the next epoch. When training with input tensors such as TensorFlow data tensors, the default None is equal to the number of samples in your dataset divided by the batch size, or 1 if that cannot be determined.
+    validation_steps=None, # Only relevant if validation_data is provided and is a tf.data dataset. Total number of steps (batches of samples) to draw before stopping when performing validation at the end of every epoch.
+    validation_batch_size=None, # Integer or None, default=None, Number of samples per validation batch. If unspecified, will default to batch_size.
+    validation_freq=1 # default=1, Only relevant if validation data is provided. If an integer, specifies how many training epochs to run before a new validation run is performed, e.g. validation_freq=2 runs validation every 2 epochs.
+    )
+
+
+##### Step 7 - Make predictions
+# Predict the result on training data
+pred_train = model.predict(X_train)
+# Predict the result on test data
+pred_test = model.predict(X_test)
+
+##### Step 8 - Model Performance Summary
+print("")
+print('-------------------- Model Summary --------------------')
+model.summary() # print model summary
+print("")
+print('-------------------- Weights and Biases --------------------')
+print("Note, the last parameter in each layer is bias while the rest are weights")
+print("")
+for layer in model.layers:
+    print(layer.name)
+    for item in layer.get_weights():
+        print("  ", item)
+print("")
+print('---------- Evaluation on Training Data ----------')
+print("MSE: ", mean_squared_error(y_train, pred_train))
+print("")
+
+print('---------- Evaluation on Test Data ----------')
+print("MSE: ", mean_squared_error(y_test, pred_test))
+print("")
+```
+
+
+![Summary de la red RRN](imagenes/capitulo1/redes_recurrentes/summary_model_rrn.png)
+
+``` python
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=np.array(range(0,len(y_test))),
+                         y=scaler.inverse_transform(y_test).flatten(),
+                         mode='lines',
+                         name='Median Temperature - Actual (Test)',
+                         opacity=0.8,
+                         line=dict(color='black', width=1)
+                        ))
+fig.add_trace(go.Scatter(x=np.array(range(0,len(pred_test))),
+                         y=scaler.inverse_transform(pred_test).flatten(),
+                         mode='lines',
+                         name='Median Temperature - Predicted (Test)',
+                         opacity=0.8,
+                         line=dict(color='red', width=1)
+                        ))
+
+# Update axes lines
+fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey',
+                 zeroline=True, zerolinewidth=1, zerolinecolor='lightgrey',
+                 showline=True, linewidth=1, linecolor='black',
+                 title='Observation'
+                )
+
+fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey',
+                 zeroline=True, zerolinewidth=1, zerolinecolor='lightgrey',
+                 showline=True, linewidth=1, linecolor='black',
+                 title='Degrees Celsius'
+                )
+
+# Set figure title
+fig.update_layout(title=dict(text="Median Daily Temperatures in Canberra",
+                             font=dict(color='black')),
+                  legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+                 )
+
+fig.show()
+```
+
+
+![Serie temporal con predicciones de la red RRN](imagenes/capitulo1/redes_recurrentes/serie_temporal_forecast_1.png)
+
+En la gráfica podemos ver que el modelo hace unas buenas predicciones, pero recordemos que el horizonte a predecir es de un día, no es que nuestro modelo haya podido predecir a 90 días vista.
+
+**Pregunta:** ¿Qué pasará si intentamos predecir horizontes de tiempo mayores?
+
+Vamos ahora a usar un modelo LSTM
+
+``` python
+
+##### Step 3 - Specify the structure of a Neural Network
+model = Sequential(name="LSTM-Model") # Model
+model.add(Input(shape=(X_train.shape[1],1), name='Input-Layer')) # Input Layer
+model.add(LSTM(units=1, activation='tanh', recurrent_activation='sigmoid', stateful=False, name='Hidden-LSTM-Encoder-Layer')) # LSTM layer
+model.add(Dense(units=2, activation='tanh', name='Hidden-Layer')) # Hidden Layer
+model.add(Dense(units=1, activation='linear', name='Output-Layer')) # Output Layer, Linear(x) = x
+
+
+##### Step 4 - Compile the model
+model.compile(
+    optimizer='adam', # default='rmsprop', an algorithm to be used in backpropagation
+    loss='mean_squared_error', # Loss function to be optimized. A string (name of loss function), or a tf.keras.losses.Loss instance.
+    metrics=['MeanSquaredError', 'MeanAbsoluteError'], # List of metrics to be evaluated by the model during training and testing. Each of this can be a string (name of a built-in function), function or a tf.keras.metrics.Metric instance.
+    loss_weights=None, # default=None, Optional list or dictionary specifying scalar coefficients (Python floats) to weight the loss contributions of different model outputs.
+    weighted_metrics=None, # default=None, List of metrics to be evaluated and weighted by sample_weight or class_weight during training and testing.
+    run_eagerly=None # Defaults to False. If True, this Model's logic will not be wrapped in a tf.function. Recommended to leave this as None unless your Model cannot be run inside a tf.function.
+   )
+
+# ##### Step 6 - Fit keras model on the dataset
+model.fit(
+    X_train, # input data
+    y_train, # target data
+    batch_size=1, # Number of samples per gradient update.
+    epochs=20, # default=1, Number of epochs to train the model
+    validation_split=0.0, # default=0.0, Fraction of the training data to be used as validation data. The model will set apart this fraction of the training data, will not train on it, and will evaluate the loss and any model metrics on this data at the end of each epoch.
+    #validation_data=(X_test, y_test), # default=None, Data on which to evaluate the loss and any model metrics at the end of each epoch.
+    shuffle=True, # default=True, Boolean (whether to shuffle the training data before each epoch) or str (for 'batch').
+    class_weight=None, # default=None, Optional dictionary mapping class indices (integers) to a weight (float) value, used for weighting the loss function (during training only). This can be useful to tell the model to "pay more attention" to samples from an under-represented class.
+    sample_weight=None, # default=None, Optional Numpy array of weights for the training samples, used for weighting the loss function (during training only).
+    initial_epoch=0, # Integer, default=0, Epoch at which to start training (useful for resuming a previous training run).
+    steps_per_epoch=None, # Integer or None, default=None, Total number of steps (batches of samples) before declaring one epoch finished and starting the next epoch. When training with input tensors such as TensorFlow data tensors, the default None is equal to the number of samples in your dataset divided by the batch size, or 1 if that cannot be determined.
+    validation_steps=None, # Only relevant if validation_data is provided and is a tf.data dataset. Total number of steps (batches of samples) to draw before stopping when performing validation at the end of every epoch.
+    validation_batch_size=None, # Integer or None, default=None, Number of samples per validation batch. If unspecified, will default to batch_size.
+    validation_freq=1 # default=1, Only relevant if validation data is provided. If an integer, specifies how many training epochs to run before a new validation run is performed, e.g. validation_freq=2 runs validation every 2 epochs.
+)
+
+
+##### Step 7 - Make predictions
+# Predict the result on training data
+pred_train_lstm = model.predict(X_train)
+# Predict the result on test data
+pred_test_lstm = model.predict(X_test)
+
+
+##### Step 8 - Model Performance Summary
+print("")
+print('-------------------- Model Summary --------------------')
+model.summary() # print model summary
+print("")
+print('-------------------- Weights and Biases --------------------')
+print("Note, the last parameter in each layer is bias while the rest are weights")
+print("")
+for layer in model.layers:
+    print(layer.name)
+    for item in layer.get_weights():
+        print("  ", item)
+print("")
+print('---------- Evaluation on Training Data ----------')
+print("MSE: ", mean_squared_error(y_train, pred_train_lstm))
+print("")
+
+print('---------- Evaluation on Test Data ----------')
+print("MSE: ", mean_squared_error(y_test, pred_test_lstm))
+print("")
+```
+
+
+![Summary red LSTM](imagenes/capitulo1/redes_recurrentes/summary_model_lstm.png)
+
+
+``` python
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=np.array(range(0,len(y_test))),
+                         y=scaler.inverse_transform(y_test).flatten(),
+                         mode='lines',
+                         name='Median Temperature - Actual (Test)',
+                         opacity=0.8,
+                         line=dict(color='black', width=1)
+                        ))
+
+fig.add_trace(go.Scatter(x=np.array(range(0,len(pred_test))),
+                         y=scaler.inverse_transform(pred_test).flatten(),
+                         mode='lines',
+                         name='Median Temperature - RRN Predicted (Test)',
+                         opacity=0.8,
+                         line=dict(color='red', width=1)
+                        ))
+
+fig.add_trace(go.Scatter(x=np.array(range(0,len(pred_test_lstm))),
+                         y=scaler.inverse_transform(pred_test_lstm).flatten(),
+                         mode='lines',
+                         name='Median Temperature - LSTM Predicted (Test)',
+                         opacity=0.8,
+                         line=dict(color='blue', width=1)
+                        ))
+
+# Update axes lines
+fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey',
+                 zeroline=True, zerolinewidth=1, zerolinecolor='lightgrey',
+                 showline=True, linewidth=1, linecolor='black',
+                 title='Observation'
+                )
+
+fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgrey',
+                 zeroline=True, zerolinewidth=1, zerolinecolor='lightgrey',
+                 showline=True, linewidth=1, linecolor='black',
+                 title='Degrees Celsius'
+                )
+
+# Set figure title
+fig.update_layout(
+    title = dict(text="Median Daily Temperatures in Canberra", font=dict(color='black')),
+    legend = dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+)
+
+fig.show()
+```
+
+
+![Serie temporal con predicciones](imagenes/capitulo1/redes_recurrentes/serie_temporal_forecast_2.png)
+
+Mirando los resultados, parece que nuestro modelo LSTM tiene un desempeño similar a nuestra RRN, ¿Cómo puede ser?¿Se suponia que la LSTM era más potente?
+
+Y así es. En este caso no apreciamos diferencias porque el modelo tiene la información de los 7 días previos y tiene que predecir solo 1 día. Nuestra RRN es capaz de captar las dependencias entre los datos, por lo que la LSTM no tiene mucho margen de mejora. Otro asunto sería si intentasemos predecir un mayor horizonte de tiempo o si usasemos secuencias más largas. En ese caso, la RRN no podría aprender dependencias a largo plazo y la LSTM obtendría un mejor resultado.
+
+Podéis probar a variar las condiciones del problema para encontrar situaciones en las que la LSTM obtenga un mejor desempeño que la RRN.
+
+**Nota:** Dado que las temperaturas diarias fluctuan mucho, podéis probar a agregar las temperaturas a nivel semanal / mensual para que la secuencia sea más estable.
+
+### Ejemplo: Análisis de sentimiento
+
+A continuación usaremos una red LSTM para clasificar como positivas o negativas las reviews de IMDB. Por simplicidad, no trabajaremos con las reviews directamente, sino que `Keras` nos ofrece la posibilidad de cargar las reviews preprocesadas donde cada una de ellas se codifica como una lista de índices de palabras (números enteros).
+Para mayor comodidad, las palabras se indexan por frecuencia global en el conjunto de datos, de modo que, por ejemplo, el entero "3" codifica la 3ª palabra más frecuente en los datos. Esto permite realizar rápidamente operaciones de filtrado como: "considerar sólo las 10.000 palabras más frecuentes, pero eliminar las 20 palabras más frecuentes". En este caso nosotros usaremos un vocabulario de 6000 palabras.
+
+``` python
+
+from tensorflow.keras.datasets import imdb
+# load the dataset but only keep the top n words, zero the rest
+vocabulary_size = 6000
+(X_train, y_train), (X_test, y_test) = imdb.load_data(num_words=vocabulary_size)
+print (f"Loaded dataset with {len(X_train)} training sampmles, {len(X_test)} test samples")
+```
+
+Una vez generadas nuestras tuplas con los datos de entrenamiento, las etiquetas de entrenamiento y la parte de test correspondiente, podemos visualizarlo:
+
+``` python
+print (" - - - Review - - - ")
+print (X_train [0])
+print (" - - - Label - - - ")
+print (y_train [0])
+
+word2id = imdb.get_word_index()
+id2word = {i: word for word, i in word2id.items()}
+print (" - - - Review (with words) - - - ")
+print ([id2word.get (i, "  ") for i in X_train[0]])
+print (" - - - Label - - - ")
+print (y_train [0])
+```
+
+
+![Reviews](imagenes/capitulo1/redes_recurrentes/reviews.png)
+
+Con esto ya tendríamos los datos tokenizados con las etiquetas. Ahora ya podemos pasarle las reviews a la red. Para ello, lo primero será definir el tamaño de entrada de la red. En este caso utilizaremos un tamaño de 500, lo que quiere decir que los datos de entrada para la predicción y análisis de sentimientos son 500 palabras.
+
+``` python
+max_words = 500
+X_train = pad_sequences(X_train, maxlen = max_words)
+X_test = pad_sequences(X_test, maxlen = max_words)
+```
+
+Ahora crearemos el modelo:
+
+``` python
+
+model = Sequential ()
+model.add (Embedding(vocabulary_size, 128, input_length = max_words))
+model.add(Bidirectional(LSTM(units=64, activation='tanh', return_sequences=True), name='Hidden-LSTM-Encoder-Layer')) # Encoder Layer
+model.add(Bidirectional(LSTM(units=64, activation='tanh'), name='Hidden-LSTM-Decoder-Layer')) # Encoder Layer
+model.add (Dense (1, activation = 'sigmoid'))
+
+model.compile (loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+model.fit(X_train, y_train, batch_size=32, epochs=2, validation_split=0.1)
+```
+
+Con el siguiente comando nos podemos crear una matriz de confusión dinamica, en función del threshold que escogamos. Seleccionando distintos puntos de corte, vemos que nuestro modelo ha obtenido muy buenos resultados
+
+``` python
+pred_test = model.predict(X_test)
+
+cf_fig, var_metrics_df, invar_metrics_df, opt_thresh_df = bc.confusion_matrix_plot(
+    true_y = y_test,
+    predicted_proba = pred_test,
+    threshold_step = 0.05,
+    title = 'Interactive Confusion Matrix for the Test Set')
+cf_fig
+```
+
+![Matriz de confusión](imagenes/capitulo1/redes_recurrentes/binclass.png)

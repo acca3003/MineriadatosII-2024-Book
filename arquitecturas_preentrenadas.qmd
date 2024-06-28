@@ -10,11 +10,11 @@ Las arquitecturas pre-entrenadas suelen ser diseñadas por investigadores y equi
 -   *Facebook AI Research*: ha contribuido con arquitecturas pre-entrenadas como FAIRSEQ y Detectron2, que han impulsado el rendimiento en tareas de procesamiento del lenguaje natural y detección de objetos, respectivamente. Además, también ha desarrollado Llama, Llama2 y Llama3, modelos que han destacado por su versatilidad y precisión en aplicaciones de reconocimiento de voz y procesamiento de texto.
 -   *OpenAI*: conocido por sus arquitecturas pre-entrenadas líderes como GPT-3 y Whisper, ha lanzado recientemente GPT-4. Este modelo promete mejorar la comprensión contextual y la generación de texto, lo que podría tener un gran impacto en aplicaciones de procesamiento del lenguaje natural. GPT-4 representa un avance significativo en la investigación de inteligencia artificial y abre nuevas posibilidades para sistemas más avanzados.
 
-Estos modelos son entrenados en grandes clústeres de servidores con hardware especializado, como GPUs y TPUs, utilizando conjuntos de datos masivos y técnicas de optimización avanzadas. A día de hoy se han convertido en un elemento capital para los desarrolladores de aprendizaje automático puesto que nos permite aprovechar modelos entrenados previamente que, en condiciones normales, sería casi imposible realizar por centros no especializados. Así, podríamos destacar las siguientes ventajas: 
+Estos modelos son entrenados en grandes clústeres de servidores con hardware especializado, como GPUs y TPUs, utilizando conjuntos de datos masivos y técnicas de optimización avanzadas. A día de hoy se han convertido en un elemento capital para los desarrolladores de aprendizaje automático puesto que nos permite aprovechar modelos entrenados previamente que, en condiciones normales, sería casi imposible realizar por centros no especializados. Así, podríamos destacar las siguientes ventajas:
 
-- Ahorro de tiempo y recursos: al aprovechar el conocimiento pre-entrenado, nos permiten a los desarrolladores ahorrar tiempo y recursos computacionales en comparación con entrenar un modelo desde cero 
-- Mayor rendimiento: suelen ofrecer un rendimiento superior a los modelos entrenados desde cero, especialmente para tareas complejas 
-- Facilidad de uso: las librerías y entornos facilitan el acceso y la utilización de arquitecturas pre-entrenadas, incluso para usuarios con poca experiencia en Deep Learning
+-   Ahorro de tiempo y recursos: al aprovechar el conocimiento pre-entrenado, nos permiten a los desarrolladores ahorrar tiempo y recursos computacionales en comparación con entrenar un modelo desde cero
+-   Mayor rendimiento: suelen ofrecer un rendimiento superior a los modelos entrenados desde cero, especialmente para tareas complejas
+-   Facilidad de uso: las librerías y entornos facilitan el acceso y la utilización de arquitecturas pre-entrenadas, incluso para usuarios con poca experiencia en Deep Learning
 
 Como se ha dicho, cada vez más se emplean este tipo de arquitecturas para realizar tareas que, con otro tipo de diseños de aprendizaje automático serían más complejas y costosas de abordar. En este aspecto, destacar que a la hora de elegir qué tipo de arquitectura pre-entrenada es adecuada para un caso de uso es necesario tener en cuenta la tarea específica a abordar, el conjunto de datos con los que ha sido entrenada y la similaridad con los nuestros propios así como si disponemos de ciertas limitaciones en cuanto a recursos computacionales.
 
@@ -52,7 +52,7 @@ Finalmente, indicamos proporcionamos una serie de recursos adicionales:
 
 Las **arquitecturas Zero-Shot**, también conocidas como *modelos de Aprendizaje por Analogía* son capaces de realizar tareas de clasificación sin necesidad de entrenamiento específico para cada categoría. En su lugar, estas arquitecturas aprenden representaciones vectoriales de conceptos a partir de datos no etiquetados, lo que les permite generalizar a nuevas categorías sin haberlas visto nunca antes.
 
-<img src="../apuntes/soporte_imagenes/zero-shot.png" width="720" height="720"/>
+![Red Neuronal Clasica](imagenes/capitulo1/zero-shot.png){#fig-redneuronal}
 
 #### Uso en imágenes
 

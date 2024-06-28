@@ -8,7 +8,7 @@ La arquitectura de un AE es una Red Neuronal Artificial (ANN por sus siglas en i
 
 Si recordamos la estructura de una ANN clásica o también llamada **Red Neuronal Densamente** **Conectada** (ya que cada neurona conecta con todas las de la siguiente capa) nos encontramos en que en esta arquitectura, generalmente, el número de neuronas por capa se va reduciendo hasta llegar a la capa de salida que debería ser normalmente un número (si estamos en un problema regresión), un dato binario (si es un problema de clasificación).
 
-Figura nº 86: Red Neuronal Clasica
+![Red Neuronal Clasica](imagenes/capitulo1/Redneuronal.png){#fig-redneuronal}
 
 Ya se empezó a hablar de AE en la década de los 80 (Bourlard and Kamp 1988), aunque es en estos últimos años donde más se está trabajando con ellos.
 
@@ -16,7 +16,7 @@ La arquitectura de un AE es una Red Neuronal Artificial (ANN por sus siglas en i
 
 Si recordamos la estructura de una ANN clásica o también llamada **Red Neuronal Densamente Conectada** (ya que cada neurona conecta con todas las de la siguiente capa) nos encontramos en que en esta arquitectura, generalmente, el número de neuronas por capa se va reduciendo hasta llegar a la capa de salida que debería ser normalmente un número (si estamos en un problema regresión), un dato binario (si es un problema de clasificación).
 
-![Red Neuronal Clasica](imagenes/capitulo1/Redneuronal.png){#fig-redneuronal}
+
 
 Si pensamos en una estructura básica de AE en la que tenemos una capa de entrada, una capa oculta y una capa de salida, ésta sería su representación:
 
@@ -197,7 +197,6 @@ Es decir, vamos a tratar los datos de entrada como si fueran unos datos numéric
 
 En este caso tendremos una capa de **entrada** con **784 neuronas** (correspondientes a los pixels de cada imagen), una capa **intermedia** de **32 neuronas**, y una capa de salida de nuevo de las 784 neuronas para poder volver a obtener de nuevo los datos originales.
 
-
 ``` python
 
 import keras
@@ -271,17 +270,13 @@ for i in range(n):
     ax.get_yaxis().set_visible(False)
 plt.show()
 
-
 ```
-
-
 
 **Autoencoder Multicapa o profundo**
 
 Vamos a pasar ahora a una versión del autoencoder donde habilitamos **más capas ocultas** y hacemos que el descenso del número de neuronas sea más gradual hasta llegar a nuestro valor deseado, para luego volver a reconstruirlo.
 
 En este caso seguimos con redes densamente conectadas y aplicamos varias capas intermedias reduciendo el número de neuronas en cada una hasta llegar a la capa donde acaba el encoder para volver a ir creciendo en las sucesivas capas hasta llegar a la de salida.
-
 
 ``` python
 
@@ -360,8 +355,6 @@ Al trabajar con redes convolucionales necesitaremos trabajar con capas de convol
 
 En nuestro ejemplo vamos a tener los siguientes elementos.
 
-
-
 ``` python
 
 import keras
@@ -426,7 +419,6 @@ for i in range(1, n + 1):
     ax.get_yaxis().set_visible(False)
 plt.show()
 
-
 ```
 
 **Autoencoder Denoising**
@@ -441,7 +433,7 @@ Usaremos estas imágenes con ruido para que sea capaz de reconstruir la imagen o
 
 • Calcular el error de reconstrucción respecto a las imágenes originales
 
-Al estar trabajando con imágenes vamos a partir del Autoencoder de Convolución para poder aplicar el denosing. 
+Al estar trabajando con imágenes vamos a partir del Autoencoder de Convolución para poder aplicar el denosing.
 
 ``` python
 import keras
@@ -524,4 +516,4 @@ for i in range(1, n + 1):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 plt.show()
-```   
+```

@@ -34,6 +34,9 @@ format:
   html:
     theme: cosmo
     highlight-style: tango
+    #self-contained: true
+    #embed-resources: true
+    #self-contained-math: true
     include-in-header: 
       text: |
         

@@ -173,8 +173,7 @@ Como puede verse, el enfoque planteado es bastante sencillo pero también muy co
 
 El clasificador Naïve-Bayes es una versión simplificada del proceso de modelización anterior. Este método supone que todos los atributos son independientes conocido el valor de la variable clase de forma que la función de probabilidad conjunta queda como:
 
-<div style="text-align:center;">
-
+:::::::::::::::::::::::::: {style="text-align:center;"}
 $$P(C \mid (A_1, A_2, \ldots, A_N)) = P(C) \cdot \prod_{i=1}^{N} P(A_i \mid C)$$
 
 <div>
@@ -185,8 +184,7 @@ Como es de esperar, el supuesto que subyace este clasificador no es muy realista
 
 Como en el caso anterior, se obtiene la hipótesis que maximiza la probabilidad del valor de la clase.
 
-<div style="text-align:center;">
-
+:::::::::::::::::::::::: {style="text-align:center;"}
 $$c_{MAP} = \underset{c \in \Delta}{\arg\max} \left( P(C) \cdot \prod_{i=1}^{N} P(A_i \mid C) \right)$$
 
 <div>
@@ -195,8 +193,7 @@ El clasificador Naïve-Bayes puede emplearse tanto con variables explicativas di
 
 Cuando las variables explicativas son discretas, la probabilidad condicional es obtenida a partir de la frecuencia de los datos muestrales; de forma que ésta se define como el número de casos favorables entre el número de casos posibles. Matemáticamente, se tiene:
 
-<div style="text-align:center;">
-
+:::::::::::::::::::::: {style="text-align:center;"}
 $$P(x_i \mid \text{pa}(x_i)) = \frac{n(x_i, \text{pa}(x_i))}{n(\text{pa}(x_i))}$$
 
 <div>
@@ -205,8 +202,7 @@ Donde $n(x_i, Pa(x_i ))$ denota el número de registros de la muestra en el que 
 
 En el caso en que el tamaño de la muestra de trabajo sea pequeño, el uso de las frecuencias puede ocasionar estimaciones poco fiables por lo que se emplean estimadores basados en suavizados. Uno de los más empleados es el estimador de Laplace en el que la probabilidad viene expresada por el número de casos favorables + 1 dividida por el de casos totales más el número de alternativas.
 
-<div style="text-align:center;">
-
+:::::::::::::::::::: {style="text-align:center;"}
 $$P(x_i \mid \text{Pa}(x_i)) = \frac{n(x_i, \text{pa}(x_i)) + 1}{n(\text{pa}(x_i)) + \alpha}$$
 
 <div>
@@ -429,8 +425,7 @@ plt.show()
 
 El grafo define un modelo probabilístico mediante el producto de varias funciones de probabilidad condicionada:
 
-<div style="text-align:center;">
-
+:::::::::::::::::: {style="text-align:center;"}
 $$P(x_1, \ldots, x_n) = \prod_{i=1}^{N} P(x_i \mid \text{pa}(x_i))$$
 
 <div>
@@ -443,8 +438,7 @@ Es importante resaltar que de no existir la expresión anterior, la red debiese 
 
 Como se ha comentado anteriormente, una variable X es condicionalmente independiente de otra variable Y dada una tercera Z si, el hecho de que se tenga conocimiento Z, hace que Y no tenga influencia en X.
 
-<div style="text-align:center;">
-
+:::::::::::::::: {style="text-align:center;"}
 $$P(X|Y,Z)=P(X|Z)$$
 
 <div>
@@ -457,7 +451,6 @@ Por tanto, la hipótesis de **independencia condicional** establece que cada nod
 
 > Partiendo de la red bayesiana de la imagen anterior, la probabilidad conjunta se define como:
 
-```{=tex}
 \begin{align}
 P(X_1, X_2, \ldots, X_9) &= P(X_1) \cdot P(X_2) \cdot P(X_3 \mid X_2, X_1) \cdot P(X_4 \mid X_3, X_2, X_1) \\
 &\quad \cdot P(X_5 \mid X_4, X_3, X_2, X_1) \cdot P(X_6 \mid X_5, X_4, X_3, X_2, X_1) \\
@@ -465,16 +458,15 @@ P(X_1, X_2, \ldots, X_9) &= P(X_1) \cdot P(X_2) \cdot P(X_3 \mid X_2, X_1) \cdot
 &\quad \cdot P(X_8 \mid X_7, X_6, X_5, X_4, X_3, X_2, X_1) \\
 &\quad \cdot P(X_9 \mid X_8, X_7, X_6, X_5, X_4, X_3, X_2, X_1)
 \end{align}
-```
+
 > En cambio, como las probabilidades condicionales solo dependen de sus padres (teorema anterior), la probabilidad conjunta toma la siguiente forma:
 
-```{=tex}
 \begin{align}
 P(X_1, X_2, \ldots, X_9) &= P(X_1) \cdot P(X_2) \cdot P(X_3 \mid X_2) \cdot P(X_4 \mid X_2, X_1) \\
 &\quad \cdot P(X_5 \mid X_4) \cdot P(X_6 \mid X_4) \cdot P(X_7 \mid X_4) \\
 &\quad \cdot P(X_8 \mid X_3) \cdot P(X_9 \mid X_3)
 \end{align}
-```
+
 Por tanto, \*la propiedad de independencia de las redes bayesianas hace que se reduzca en gran medida los cálculos\*\*.
 
 En una red bayesiana, se conoce como **inferencia probabilística** a la propagación del conocimiento a través de la misma una vez se tienen nuevos datos. Este proceso se lleva a cabo actualizando las probabilidades a posteriori en toda la estructura de la red mediante el Teorema de Bayes.
@@ -750,8 +742,7 @@ Veamos un ejemplo con el que facilitar la comprensión del funcionamiento de una
 
 > La matriz de transición para *T* es:
 
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > T = \begin{pmatrix}
 > 0.80 & 0.10 & 0.10 \\
@@ -761,11 +752,13 @@ Veamos un ejemplo con el que facilitar la comprensión del funcionamiento de una
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > Sabiendo que actualmente, la participación en el mercado de las tres pomadas es:
 
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > p = \begin{pmatrix}
 > 0.30 \\
@@ -775,13 +768,15 @@ Veamos un ejemplo con el que facilitar la comprensión del funcionamiento de una
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > ¿Cuáles serán las participaciones de mercado de cada marca en dos meses más?
 
 > La matriz de transición para $T^2$ es:
 
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > T^2 = \begin{pmatrix}
 > 0.663 & 0.180 & 0.155 \\
@@ -791,11 +786,13 @@ Veamos un ejemplo con el que facilitar la comprensión del funcionamiento de una
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > De forma que usando la fórmula anterior, se tiene:
 
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > p^2 = p^0 \cdot T^2 = \begin{pmatrix}
 > 0.30 & 0.45 & 0.25
@@ -809,6 +806,9 @@ Veamos un ejemplo con el que facilitar la comprensión del funcionamiento de una
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > En vista de los resultados, la cuota de mercado de cada tipo de pomada variará en los dos meses siguientes en: - Pomada 1: de un 30% a 30,2% (estable) - Pomada 2: de un 45% a un 48,8% (leve aumento) - Pomada 3: de un 25% a un 20,9% (ligera caída)
 
@@ -822,8 +822,7 @@ Suponiendo un modelo de impago bancario con los siguientes tres estados: - Pago 
 
 Así, la matriz de transición para esta cadena de Markov es:
 
-<div style="text-align:center;">
-
+:::::::::::: {style="text-align:center;"}
 $$
 T = \begin{pmatrix}
 0.8 & 0.1 & 0.0 \\
@@ -884,8 +883,7 @@ La secuencia de pagos del *Individuo_5* hace que sea de interés focalizarse en 
 
 Las **cadenas de Markov** absorbentes tienen algunas propiedades específicas que las diferencian de las cadenas de Markov más simples. La más destacada es la referida a la forma en que la matriz de transición puede ser escrita. Sea una cadena con *t* estados transitorios y r estados absorbentes, la matriz de transición *T* puede escribirse en su forma canónica como:
 
-<div style="text-align:center;">
-
+:::::::::: {style="text-align:center;"}
 $$
 T = \begin{pmatrix}
 Q & R \\
@@ -899,8 +897,7 @@ Donde *Q* es una matriz de *txt*, *R* es una matriz de *txr*, *0* es una matriz 
 
 En particular, la descomposición de la matriz de transición en la matriz fundamental permite ciertos cálculos, como el *número esperado de pasos hasta la absorción de cada estado*. La matriz fundamental *N* se calcula de la siguiente manera:
 
-<div style="text-align:center;">
-
+:::::::: {style="text-align:center;"}
 $$
 N= (I_t-Q)^{-1}
 $$
@@ -909,8 +906,7 @@ $$
 
 Siendo *I_t* es la matriz identidad de *txt*. Así, para obtener el *número esperado de pasos* se calcula como:
 
-<div style="text-align:center;">
-
+:::::: {style="text-align:center;"}
 $$
 n= N*1
 $$
@@ -921,8 +917,7 @@ Donde 1 denota un vector columna de valor uno y longitud igual al número estado
 
 Por último, la probabilidad de que un estado transitorio sea absorbido es calculada como:
 
-<div style="text-align:center;">
-
+:::: {style="text-align:center;"}
 $$
 p_{trans \rightarrow abs}= N * R
 $$
@@ -939,8 +934,7 @@ Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detal
 
 > Cuestión 1: Del enunciado se conoce que se tienen 5 posibles estados (0, 1, 2, 3, 4) siendo los estados 0 y 4 absorbentes (pierde todo o duplica la apuesta, respectivamente). Teniendo en cuenta los posibles movimientos y las probabilidades asociadas se tiene:
 >
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > T = \begin{pmatrix}
 > t_{00} & t_{01} & t_{02} & t_{03} & t_{04} \\
@@ -958,11 +952,13 @@ Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detal
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > Cuestión 2: Se escribe la matriz T en su forma canónica. Notar que para ello es necesario reorganizar los estados (ahora, los estados absorbentes están en las últimas filas de la matriz T).
 >
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > T =
 > \begin{pmatrix}
@@ -985,19 +981,23 @@ Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detal
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > De forma que Q y R son:
 >
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$ Q = \begin{pmatrix} 0.0 & 0.3 & 0.0 \\ 0.7 & 0.0 & 0.3 \\ 0.0 & 0.7 & 0.0 \end{pmatrix}  $$ $$ R = \begin{pmatrix} 0.7 & 0.0 \\ 0.0 & 0.0 \\ 0.0 & 0.3 \end{pmatrix} $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > El número de apuestas hasta terminar el juego es:
 
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > N= (I_t-Q)^{-1} * 1 = {\begin{pmatrix} 0.0 & 0.3 & 0.0 \\ 0.7 & 0.0 & 0.3 \\ 0.0 & 0.7 & 0.0 \end{pmatrix}}^{-1} *
 > \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix} = 
@@ -1006,13 +1006,15 @@ Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detal
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > Teniendo en cuenta que el cliente empezó su apuesta con 2€, el número de apuestas esperadas hasta que el juego acabe son 3.448€.
 
 > Cuestión 3: En este caso, se sabe que la probabilidad de llegar a un estado absorbente desde uno transitorio sigue la siguiente expresión:
 >
-> <div style="text-align:center;">
->
+> :::: {style="text-align:center;"}
 > $$
 > p_{trans \rightarrow abs}= N * R = (I_t-Q)^{-1} * R = 
 > \begin{pmatrix} 1.362 & 0.517 & 0.155 \\ 1.207 & 1.724 & 0.517 \\ 0.845 &  1.207 & 1.362 \end{pmatrix} *
@@ -1020,6 +1022,9 @@ Veamos un ejemplo de Cadena de Markov absorbente con el que podamos ver en detal
 > $$
 >
 > <div>
+>
+> </div>
+> ::::
 
 > Así, la probabilidad de que el cliente acabe con 4€ es de 15.5%. Por su parte, se tiene un 84.5% de posibilidades de que se vaya de vacío.
 
@@ -1319,3 +1324,36 @@ print(f"Post-tagging de la oración: {predicted_tags}")
 ```
 
 {{< include inferencia_causal.qmd >}}
+
+</div>
+::::
+
+</div>
+::::::
+
+</div>
+::::::::
+
+</div>
+::::::::::
+
+</div>
+::::::::::::
+
+</div>
+::::::::::::::::
+
+</div>
+::::::::::::::::::
+
+</div>
+::::::::::::::::::::
+
+</div>
+::::::::::::::::::::::
+
+</div>
+::::::::::::::::::::::::
+
+</div>
+::::::::::::::::::::::::::

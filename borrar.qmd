@@ -1,0 +1,16 @@
+---
+  execute:
+    eval: false
+  code-block-bg: true
+  code-block-border-color: red
+  code-block-border-left: "#31BAE9"
+  code-line-numbers: true
+  code-block-font-size: 14
+---
+
+# Lógica Difusa
+
+## Contexto y conceptos clave
+
+La lógica difusa tiene un origen que se remonta a la antigua Grecia con Aristóteles, quien ya proponía la idea de grados de verdad o falsedad. Sin embargo, su desarrollo significativo ocurrió en el siglo XVIII, con filósofos como David Hume y Charles Sander Pierce, quienes exploraron conceptos como el razonamiento basado en la experiencia y la idea de vaguedad en lugar de la dicotomía cierto-falso.
+

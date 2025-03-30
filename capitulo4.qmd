@@ -20,9 +20,9 @@ Desde entonces, la lógica difusa ha encontrado aplicaciones prácticas en campo
 
 La importancia de la lógica difusa radica en su capacidad para modelar la incertidumbre y la imprecisión en la toma de decisiones, permitiendo sistemas más adaptables y eficientes en numerosas aplicaciones. Se fundamenta en los conjuntos difusos y un sistema de inferencia basado en reglas, lo que ofrece una manera elegante de abordar problemas con información vaga o incompleta. En contraste con la lógica tradicional, que emplea conceptos absolutos, la lógica difusa permite grados variables de pertenencia a los conjuntos, imitando así el razonamiento humano.
 
-Se definen a continuación los principales conceptos: 
+Se definen a continuación los principales conceptos:
 
-- **Lógica Difusa**: es un sistema matemático que modela funciones no lineales, que convierte unas entradas en salidas acorde con los planteamientos lógicos que usan el razonamiento aproximado.
+-   **Lógica Difusa**: es un sistema matemático que modela funciones no lineales, que convierte unas entradas en salidas acorde con los planteamientos lógicos que usan el razonamiento aproximado.
 
 -   **Lógica Difusa en Inteligencia Artificial**: método de razonamiento de máquina similar al pensamiento humano, que puede procesar información incompleta o incierta, característico de muchos sistemas expertos. Con la lógica difusa o borrosa se puede gobernar un sistema por medio de reglas de “sentido común” las cuales se refieren a cantidades indefinidas. En general, la lógica difusa se puede aplicar tanto a sistemas de control como para modelar cualquier sistema continuo de ingeniería, física, biología o economía.
 
@@ -140,7 +140,6 @@ La **función de membresía** representa la asociación entre un elemento y un c
 
 Imaginemos que medimos la temperatura de una vivienda y queremos analizar el nivel de frío. De forma difusa se podría definir una función de membresía como la presentada en la imagen:
 
-
 ![Ejemplo Funciones Membresia](imagenes/capitulo4/funcion_membresia_ejemplo.png){#fig-funcion_membresia_ejemplo}
 
 Existen diferentes funciones de membresía, las más destacadas son:
@@ -152,7 +151,6 @@ Existen diferentes funciones de membresía, las más destacadas son:
 -   **Gaussiana**: la función de membresía gaussiana tiene una forma de campana y se utiliza comúnmente para representar variables que tienen una distribución normal. Esta función tiene dos parámetros principales: $\mu$, que representa la media de la distribución y $\sigma$ que controla su anchura de la distribución. A medida que *x* se aleja de $\mu$ el grado de pertenencia disminuye gradualmente. La función gaussiana es útil para modelar conjuntos con distribuciones simétricas y para suavizar transiciones entre conjuntos difusos.
 
 -   **Sigmoidal**: se utiliza para representar relaciones no lineales entre variables. Esta función tiene tres parámetros principales: *a*, *b* y *c*, que controlan la pendiente y la posición de la curva sigmoidal. A medida que *x* aumenta desde *a* hasta *b* el grado de pertenencia aumenta gradualmente. Luego, a medida que *x* aumenta desde *b* hasta *c* el grado de pertenencia disminuye gradualmente. La función sigmoidal es útil para modelar relaciones complejas entre conjuntos difusos y es especialmente importante en problemas de inferencia difusa y control difuso.
-
 
 ![Funciones Membresia](imagenes/capitulo4/funciones_membresia.png){#fig-funciones_membresia}
 
